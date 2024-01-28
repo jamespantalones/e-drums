@@ -7,7 +7,13 @@ import { useRouter } from 'next/router';
 import { Sequencer } from '../lib/Sequencer';
 import { Config } from '../config';
 import { generateTrack } from '../lib/utils';
-import { SIG_SERIALIZED_TRACKS } from '../state/track';
+import {
+  SIG_BPM,
+  SIG_REVERB,
+  SIG_SERIALIZED_TRACKS,
+  SIG_SWING,
+  SIG_VOLUME,
+} from '../state/track';
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -21,6 +27,10 @@ const Home: NextPage = () => {
   async function createNew() {
     const id = generateId();
     SIG_SERIALIZED_TRACKS.value = [generateTrack(0)];
+    SIG_VOLUME.value = Config.DEFAULT_VOLUME;
+    SIG_BPM.value = Config.DEFAULT_BPM;
+    SIG_SWING.value = 10;
+    SIG_REVERB.value = 13;
 
     const seq = new Sequencer({ id });
 
@@ -47,36 +57,6 @@ const Home: NextPage = () => {
           </Link>
         </div>
       </nav>
-      {/* 
-      <table className="w-full text-left text-xs">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Updated</th>
-          </tr>
-        </thead>
-        <tbody>
-          {projects.map((p) => (
-            <tr key={p.id}>
-              <td>{p.name}</td>
-              <td>{p.updatedAt}</td>
-              <td>
-                <button
-                  className="border border-current p-1 hover:bg-alert text-xs rounded"
-                  onClick={async (ev) => {
-                    ev.stopPropagation();
-                    ev.preventDefault();
-                    await removeFromCache(p.id);
-                    await fetchIndexCache();
-                  }}
-                >
-                  DEL
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table> */}
 
       <ul className="text-xs">
         <li className="my-1 flex items-center justify-between p-2 border-b">
@@ -98,7 +78,7 @@ const Home: NextPage = () => {
               <div className="w-1/2">{p.name}</div>
               <div className="text-xs w-1/3">{p.updatedAt}</div>
               <button
-                className="border border-current p-1 hover:bg-alert text-xs rounded"
+                className="border border-current p-1 hover:bg-alert text-xs cursor-pointer"
                 onClick={async (ev) => {
                   ev.stopPropagation();
                   ev.preventDefault();
@@ -113,7 +93,7 @@ const Home: NextPage = () => {
         ))}
       </ul>
       <button
-        className="fixed bottom-8 right-8 border border-current p-2 rounded hover:bg-foreground hover:text-background text-xs"
+        className="fixed bottom-8 right-6 border border-current p-2 cursor-pointer hover:bg-foreground hover:text-background text-base"
         onClick={createNew}
       >
         + Create New

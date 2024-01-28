@@ -50,7 +50,7 @@ export function Slider(props: Props) {
         {...attrs}
       />
       <span>
-        {props.label} {padNumber(val)}
+        {props.label} {padNumber(props.value || val)}
       </span>
     </label>
   );

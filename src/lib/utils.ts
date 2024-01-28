@@ -26,7 +26,7 @@ export function generateTrack(index = 0) {
 
   const soundIndex = Math.floor(Math.random() * (SOUNDS.length - 1));
 
-  const sound = SOUNDS[0];
+  const sound = SOUNDS[index];
 
   if (!sound) {
     throw new Error(`Missing sound ${soundIndex}`);

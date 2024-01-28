@@ -175,7 +175,7 @@ export function Edit({
             <Slider
               label="Pitch"
               min={30}
-              max={70}
+              max={100}
               defaultValue={rhythm.pitch}
               onChange={handlePitchChange}
             />

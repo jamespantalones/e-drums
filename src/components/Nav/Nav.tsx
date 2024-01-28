@@ -31,9 +31,9 @@ export function Nav({
   save: () => Promise<void>;
   children: React.ReactNode;
 }) {
-  const { methods } = useAudioContext();
-
   useSignals();
+
+  const { methods } = useAudioContext();
 
   function handleBPMChange(bpm: number) {
     SIG_BPM.value = bpm;

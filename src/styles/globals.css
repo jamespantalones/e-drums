@@ -39,7 +39,10 @@ body {
 }
 
 button {
-  @apply select-none;
+  @apply select-none cursor-pointer;
+  svg {
+    @apply select-none pointer-events-none;
+  }
 }
 
 .edit__area {

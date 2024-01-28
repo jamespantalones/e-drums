@@ -1,6 +1,6 @@
 .button {
   @apply flex items-center justify-center;
-  @apply rounded-sm;
+  @apply rounded-sm cursor-pointer;
   @apply m-0.5 p-0;
   @apply disabled:opacity-20 transition-opacity duration-500;
   width: calc(var(--slice-size));

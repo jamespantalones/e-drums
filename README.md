@@ -1,14 +1,10 @@
 # Todo
 
-- [ ] add signals for each track
-- [ ] mute state does not persist on save
-- [ ] persist master vol, swing, reverb
 - [ ] pwa (offline)
 - [ ] mobile
 - [ ] add createdAt/updatedAt
 - [ ] change idb-keyval store name``````
 - [ ] allow rename from index page
-- [ ] add new instruments by index
 - [x] rename
 - [x] hot keys, cmd+s to save
 - [x] click twice on stop, to move back to start
@@ -27,3 +23,6 @@
 - [x] clear sequencer on route change
 - [x] master volume
 - [x] fix engine issues on back button
+- [x] persist master vol, swing, reverb
+- [x] mute state does not persist on save
+- [x] add new instruments by index

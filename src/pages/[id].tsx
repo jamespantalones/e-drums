@@ -19,6 +19,7 @@ import {
   state,
 } from '../state/track';
 import { Config } from '../config';
+import { Loader } from 'lucide-react';
 
 /**
  *
@@ -26,6 +27,7 @@ import { Config } from '../config';
  */
 const Track: NextPage = () => {
   useSignals();
+  const [loaded, setLoaded] = React.useState(false);
 
   const {
     query: { id },
@@ -54,6 +56,7 @@ const Track: NextPage = () => {
       const project = await loadProjectFromCache(id as string);
       SIG_BPM.value = project?.bpm || Config.DEFAULT_BPM;
       await initialize(project);
+      setLoaded(true);
     }
 
     if (!id) return;
@@ -74,6 +77,10 @@ const Track: NextPage = () => {
     }
   }
 
+  function handleBlur() {
+    save();
+  }
+
   // all hot-keys require commande
   useHotKeys({ 'Meta+s': save, 'Ctrl+n': methods.createTrack });
 
@@ -81,12 +88,19 @@ const Track: NextPage = () => {
   React.useEffect(() => {
     return () => {
       methods.destroy();
-      // destroy all signals
-      destroy();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (!loaded) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <div className="animate-spin">
+          <Loader />
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       <Nav save={() => save()}>
@@ -98,6 +112,7 @@ const Track: NextPage = () => {
             placeholder={id as string}
             defaultValue={SIG_NAME.value || id}
             onChange={updateName}
+            onBlur={handleBlur}
             onKeyDown={handleKeyDown}
           />
         </label>

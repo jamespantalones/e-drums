@@ -34,10 +34,11 @@ export class Sequencer {
   public bpm: number;
   public createdAt: string;
   public updatedAt: string;
-
+  public swing: number;
   public id: string;
+  public reverb: number;
 
-  private reverb!: Tone.Reverb;
+  private reverbChain: Tone.Reverb;
   private chain!: Tone.Volume;
 
   private transport!: Transport;
@@ -50,8 +51,10 @@ export class Sequencer {
     this.name = this.id;
     this.createdAt = new Date().toISOString();
     this.updatedAt = new Date().toISOString();
-    this.reverb = new Tone.Reverb();
+    this.reverbChain = new Tone.Reverb();
     this.chain = new Tone.Volume(SIG_VOLUME.value);
+    this.swing = SIG_SWING.value / 100;
+    this.reverb = 0;
 
     SIG_TRACKS.value = (SIG_SERIALIZED_TRACKS.value || []).map((track) => {
       return new Track({
@@ -69,41 +72,33 @@ export class Sequencer {
       }
 
       this.chain.volume.value = SIG_VOLUME.value;
-      this.reverb.wet.value = SIG_REVERB.value / 100;
+      this.reverbChain.wet.value = SIG_REVERB.value / 100;
     });
   }
 
   async init() {
-    try {
-      // TODO: move this out
-      // create an audio chain
+    this.reverbChain.wet.value = SIG_REVERB.value / 100;
+    // this.reverb.decay = '1';
 
-      this.reverb.wet.value = SIG_REVERB.value;
-      this.reverb.decay = '1m';
+    this.chain.chain(this.reverbChain, Tone.Destination);
 
-      this.chain.chain(this.reverb, Tone.Destination);
+    // load all initial tracks
+    const trackPromises = SIG_TRACKS.value.map((t) => t.init());
+    const resolvedTracks = await Promise.all(trackPromises);
 
-      // load all initial tracks
-      const trackPromises = SIG_TRACKS.value.map((t) => t.init());
-      const resolvedTracks = await Promise.all(trackPromises);
+    // loop through each resolved track and connect to chain
+    resolvedTracks.forEach((track) => {
+      if (track.isReady) {
+        track.sampler.connect(this.chain);
+      }
+    });
+    SIG_TRACKS.value = resolvedTracks;
 
-      // loop through each resolved track and connect to chain
-      resolvedTracks.forEach((track) => {
-        if (track.isReady) {
-          track.sampler.connect(this.chain);
-        }
-      });
-      SIG_TRACKS.value = resolvedTracks;
+    SIG_INITIALIZED.value = true;
 
-      SIG_INITIALIZED.value = true;
+    // for each track, create it
 
-      // for each track, create it
-
-      return this;
-    } catch (err) {
-      console.error('B', err);
-      throw err;
-    }
+    return this;
   }
 
   async start() {
@@ -305,6 +300,9 @@ export class Sequencer {
         tracks: SIG_TRACKS.value.map((t) => t.exportJSON()),
       },
       bpm: SIG_BPM.value,
+      volume: SIG_VOLUME.value,
+      swing: SIG_SWING.value,
+      reverb: SIG_REVERB.value,
       name: SIG_NAME.value || this.id,
       createdAt: this.createdAt,
       updatedAt: new Date().toISOString(),

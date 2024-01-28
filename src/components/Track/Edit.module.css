@@ -74,14 +74,14 @@
 
 .length-panel {
   @apply flex flex-col;
-  @apply w-12;
+  @apply w-12 mt-0.5 ml-1.5;
   button {
     @apply w-full h-1/2 relative flex items-center justify-center;
-    @apply border space-y-0;
     @apply my-1;
+    @apply bg-foreground text-background;
     &:hover {
       @apply bg-foreground text-background;
-      @apply opacity-90;
+      @apply opacity-80;
       &:active {
         @apply opacity-100;
       }

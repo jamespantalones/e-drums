@@ -1,6 +1,12 @@
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
-import { batch, computed } from '@preact/signals-react';
+import {
+  SIG_REVERB,
+  SIG_SWING,
+  SIG_VOLUME,
+  destroy as destroySignals,
+} from '../state/track';
+import { batch } from '@preact/signals-react';
 import { useSignals } from '@preact/signals-react/runtime';
 import {
   AudioContextReturnType,
@@ -38,14 +44,12 @@ const AudioContext = createContext<AudioContextReturnType | undefined>(
 );
 
 export function AudioContextProvider({ children }: { children: ReactNode }) {
+  // make sure signals runtime is present
   useSignals();
 
-  /**
-   * Allows name change
-   */
-  const changeName = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
+  function changeName(ev: React.ChangeEvent<HTMLInputElement>) {
     SIG_NAME.value = ev.target.value;
-  }, []);
+  }
 
   // make sure the AudioContext is initialized
   const initialize = useCallback(async (data?: SerializedSequencer) => {
@@ -57,6 +61,9 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
           // set signals here!
           SIG_BPM.value = data.bpm;
           SIG_NAME.value = data.name;
+          SIG_REVERB.value = data.reverb;
+          SIG_VOLUME.value = data.volume;
+          SIG_SWING.value = data.swing;
           SIG_SERIALIZED_TRACKS.value = data.state.tracks;
           SIG_SEQUENCER.value = new Sequencer({
             ...data,
@@ -98,6 +105,8 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   const destroy = useCallback(() => {
     SIG_SEQUENCER.value?.destroy();
     SIG_SEQUENCER.value = null;
+    // destroy all signals
+    destroySignals();
   }, []);
 
   const createTrack = useCallback(async () => {

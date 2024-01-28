@@ -1,5 +1,5 @@
 import * as Tone from 'tone';
-import { Config, SOUNDS } from '../config';
+import { Config } from '../config';
 import { Instrument, SoundFile, TrackOpts } from '../types';
 import { generateId } from '../utils';
 
@@ -93,6 +93,7 @@ export class Track {
       this.sampler = await createAsyncSampler(
         `/sounds/${this.instrument.sound.files[0]}`
       );
+
       this.isReady = true;
     }
 

@@ -118,6 +118,9 @@ export type SerializedTrack = {
 
 export type SerializedSequencer = {
   bpm: number;
+  swing: number;
+  reverb: number;
+  volume: number;
   id: string;
   name: string;
   createdAt: string;

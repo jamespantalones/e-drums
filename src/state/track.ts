@@ -23,7 +23,7 @@ export const state = {
 };
 
 export const destroy = () => {
-  state.SIG_BPM.value = Config.DEFAULT_BPM;
+  state.SIG_BPM.value = 0;
   state.SIG_SWING.value = 0;
   state.SIG_INITIALIZED.value = false;
   state.SIG_NAME.value = '';

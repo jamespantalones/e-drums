@@ -29,25 +29,20 @@ export const SOUNDS: SoundFile[] = [
     files: ['2_FM_KICK.wav'],
   },
   {
-    name: 'SNR',
-    defaultFreqRange: [40, 80],
-    files: ['23_FM_SNR.wav'],
-  },
-  {
     name: 'HAT1',
     defaultFreqRange: [20, 80],
     files: ['8_FM_HH.wav'],
   },
   {
-    name: 'BASS',
-    defaultFreqRange: [20, 80],
-    files: ['1_FM_BASS.wav'],
+    name: 'JB SNR',
+    defaultFreqRange: [40, 80],
+    files: ['30_JB_SNR.wav'],
   },
 
   {
-    name: 'BONGO',
+    name: 'BASS',
     defaultFreqRange: [20, 80],
-    files: ['3_FM_BONGO.wav'],
+    files: ['1_FM_BASS.wav'],
   },
 
   {
@@ -60,6 +55,12 @@ export const SOUNDS: SoundFile[] = [
     name: 'CLAP',
     defaultFreqRange: [20, 80],
     files: ['5_FM_CLAP.wav'],
+  },
+
+  {
+    name: 'BONGO',
+    defaultFreqRange: [20, 80],
+    files: ['3_FM_BONGO.wav'],
   },
 
   {
@@ -120,6 +121,11 @@ export const SOUNDS: SoundFile[] = [
     files: ['17_FM_RING.wav'],
   },
   {
+    name: 'SNR',
+    defaultFreqRange: [40, 80],
+    files: ['23_FM_SNR.wav'],
+  },
+  {
     name: 'CONGA2',
     defaultFreqRange: [40, 80],
     files: ['18_FM_CONGA_2.wav'],
@@ -175,11 +181,7 @@ export const SOUNDS: SoundFile[] = [
     defaultFreqRange: [40, 80],
     files: ['29_JB_KICK.wav'],
   },
-  {
-    name: 'JB SNR',
-    defaultFreqRange: [40, 80],
-    files: ['30_JB_SNR.wav'],
-  },
+
   {
     name: 'HEY!',
     defaultFreqRange: [40, 80],
