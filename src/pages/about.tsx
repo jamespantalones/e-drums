@@ -5,7 +5,7 @@ export default function About() {
   return (
     <main className="p-4 flex items-center justify-center h-screen w-full">
       <div className="absolute top-4 left-4">
-        <Link href="/">
+        <Link href="/" passHref>
           <ArrowLeft />
         </Link>
       </div>

@@ -65,7 +65,7 @@ const Home: NextPage = () => {
             disabled
             className="opacity-0 border border-current p-1 text-xs"
           >
-            DEL
+            {'DEL'}
           </button>
         </li>
         {projects.map((p) => (
@@ -77,7 +77,7 @@ const Home: NextPage = () => {
               <div className="w-1/2">{p.name}</div>
               <div className="text-xs w-1/3">{p.updatedAt}</div>
               <button
-                className="border border-current p-1 hover:bg-alert text-xs cursor-pointer"
+                className="border border-current p-1 px-6 hover:bg-alert text-xs cursor-pointer"
                 onClick={async (ev) => {
                   ev.stopPropagation();
                   ev.preventDefault();
@@ -92,7 +92,7 @@ const Home: NextPage = () => {
         ))}
       </ul>
       <button
-        className="fixed bottom-8 right-6 border border-current p-2 cursor-pointer hover:bg-foreground hover:text-background text-base"
+        className="fixed bottom-8 right-6 border border-current p-1 text-sm px-8 cursor-pointer hover:bg-background hover:text-foreground bg-foreground text-background active:bg-neutral-200 active:bg-background"
         onClick={createNew}
       >
         + NEW

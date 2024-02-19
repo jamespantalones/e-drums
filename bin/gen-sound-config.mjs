@@ -13,18 +13,32 @@ const EXT = '.wav';
   const config = files
     .filter((f) => f.includes(EXT))
     .map((file) => {
-      const [index, ...name] = file.split(DELIMITER);
+      const [i, ...name] = file.split(DELIMITER);
 
+      const index = parseInt(i, 10);
       let extDirty = name.pop();
 
       let [ext, ..._rest] = (extDirty || '').split('.');
 
-      return {
+      const val = {
         index,
         name: `${name.join(' ')} ${ext}`,
         files: [file],
       };
+
+      return val;
+    })
+    .sort((a, b) => {
+      if (a.index > b.index) {
+        return 1;
+      }
+      if (a.index < b.index) {
+        return -1;
+      }
+      return 0;
     });
+
+  console.log(config);
 
   // now write it
   await fs.writeFile(
