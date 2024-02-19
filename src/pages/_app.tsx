@@ -18,6 +18,8 @@ export default function ERhythms({ Component, pageProps }: AppProps) {
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
         />
 
+        <link href="/manifest.json" rel="manifest" />
+
         <meta name="application-name" content={metaConfig.title} />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
