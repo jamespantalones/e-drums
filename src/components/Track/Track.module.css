@@ -7,7 +7,7 @@
   min-height: calc(var(--slice-size) + 10px);
   width: auto;
   @apply pb-0;
-  @apply pt-2;
+  @apply pt-0;
   @apply bg-background;
 }
 

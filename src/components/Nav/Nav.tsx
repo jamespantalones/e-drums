@@ -24,6 +24,7 @@ import {
 } from '../../state/track';
 import { SequencerPlayState } from '../../types';
 import { Slider } from '../inputs/Slider';
+import { metaConfig } from '../../config/meta';
 export function Nav({
   save,
   children,
@@ -80,7 +81,7 @@ export function Nav({
           >
             <h1>
               <span className="transition-translate inline-block text-lg">
-                E
+                {metaConfig.emoji}
               </span>
             </h1>
           </Link>

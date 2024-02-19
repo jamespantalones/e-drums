@@ -9,15 +9,7 @@ import { useOfflineStorage } from '../contexts/OfflineStorageContext';
 import { useRouter } from 'next/router';
 import isMobile from 'is-mobile';
 import { useHotKeys } from '../hooks/useHotKeys';
-import {
-  SIG_BPM,
-  SIG_NAME,
-  SIG_SEQUENCER,
-  SIG_TRACKS,
-  SIG_VOLUME,
-  destroy,
-  state,
-} from '../state/track';
+import { SIG_BPM, SIG_NAME, SIG_SEQUENCER, SIG_TRACKS } from '../state/track';
 import { Config } from '../config';
 import { Loader } from 'lucide-react';
 

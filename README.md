@@ -1,10 +1,10 @@
 # Todo
 
-- [ ] pwa (offline)
 - [ ] mobile
 - [ ] add createdAt/updatedAt
 - [ ] change idb-keyval store name``````
 - [ ] allow rename from index page
+- [x] pwa (offline)
 - [x] rename
 - [x] hot keys, cmd+s to save
 - [x] click twice on stop, to move back to start

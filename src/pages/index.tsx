@@ -14,6 +14,7 @@ import {
   SIG_SWING,
   SIG_VOLUME,
 } from '../state/track';
+import { metaConfig } from '../config/meta';
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -48,9 +49,7 @@ const Home: NextPage = () => {
   return (
     <section className="p-4">
       <nav className="flex w-full justify-between items-center">
-        <h1 className="text-8xl mb-8">
-          <span className="inline-block">E</span>-Drums
-        </h1>
+        <h1 className="text-5xl mb-8">{metaConfig.title}</h1>
         <div>
           <Link href="/about" className="border-b">
             About
@@ -96,7 +95,7 @@ const Home: NextPage = () => {
         className="fixed bottom-8 right-6 border border-current p-2 cursor-pointer hover:bg-foreground hover:text-background text-base"
         onClick={createNew}
       >
-        + Create New
+        + NEW
       </button>
     </section>
   );

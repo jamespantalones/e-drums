@@ -12,7 +12,7 @@
     @apply text-yellow-400;
     span {
       display: inline-block;
-      @apply rotate-180;
+      tranform: rotateY(180deg);
     }
   }
 }

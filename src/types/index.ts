@@ -43,7 +43,7 @@ export type SequencerAction = {
 export type SoundFile = {
   name: string;
   files: string[];
-  defaultFreqRange: [number, number];
+  defaultFreqRange?: [number, number];
 };
 
 export type Instrument = {

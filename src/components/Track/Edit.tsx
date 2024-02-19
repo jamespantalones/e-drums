@@ -106,9 +106,9 @@ export function Edit({
               className={styles['instrument-select']}
               onChange={handleInstrumentChange}
             >
-              {SOUNDS.map((sound) => (
+              {SOUNDS.map((sound, index) => (
                 <option key={sound.name} value={sound.name}>
-                  {sound.name}
+                  {index} {sound.name}
                 </option>
               ))}
             </select>

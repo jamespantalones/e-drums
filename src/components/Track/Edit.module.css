@@ -41,7 +41,7 @@
 .instrument-select {
   width: calc(100% - 4px);
   @apply select-none;
-  @apply bg-transparent border;
+  @apply bg-transparent;
   @apply text-xs;
 }
 
@@ -78,7 +78,7 @@
   button {
     @apply w-full h-1/2 relative flex items-center justify-center;
     @apply my-1;
-    @apply bg-foreground text-background;
+
     &:hover {
       @apply bg-foreground text-background;
       @apply opacity-80;
