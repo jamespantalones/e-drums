@@ -14,17 +14,21 @@
       "purpose": "any maskable"
     },
     {
-      "src": "/icons/icon-512x512.png",
+      "src": "/icons/pwa-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
-    },
-    {
-      "src": "/icons/maskable-icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "icons/image1.jpg",
+      "sizes": "640x320",
+      "type": "image/jpg",
+      "form_factor": "wide",
+      "label": "𓇶 E-DRUMS"
+    }
+  ],
+  "description": "A simple, peasant Euclidean rhythm generator",
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
   "start_url": "/",
