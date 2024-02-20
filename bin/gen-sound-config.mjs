@@ -8,8 +8,6 @@ const EXT = '.wav';
 (async function start() {
   const files = await fs.readdir(SRC_DIR);
 
-  console.log({ files });
-
   const config = files
     .filter((f) => f.includes(EXT))
     .map((file) => {
@@ -29,16 +27,12 @@ const EXT = '.wav';
       return val;
     })
     .sort((a, b) => {
-      if (a.index > b.index) {
-        return 1;
-      }
-      if (a.index < b.index) {
-        return -1;
-      }
+      if (a.index > b.index) return 1;
+      if (a.index < b.index) return -1;
       return 0;
     });
 
-  console.log(config);
+  console.log({ 'Wrote config file:': config });
 
   // now write it
   await fs.writeFile(
