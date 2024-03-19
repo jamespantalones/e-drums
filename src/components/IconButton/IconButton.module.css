@@ -7,8 +7,12 @@
   height: calc(var(--slice-size));
   transition: transform 0.05s cubic-bezier(0.17, 0.67, 0.83, 0.67);
   &.small {
-    width: calc(var(--slice-size) / 2);
-    height: calc(var(--slice-size) / 2);
+    width: calc(var(--slice-size) / 3);
+    height: calc(var(--slice-size) / 3);
+    @media (min-width: 768px) {
+      width: calc(var(--slice-size) / 2);
+      height: calc(var(--slice-size) / 2);
+    }
   }
   &.useBorder {
     @apply border border-current;
@@ -21,5 +25,9 @@
     &:active {
       transform: scale(0.9);
     }
+  }
+
+  svg {
+    @apply w-4 h-4 md:w-6 md:h-6;
   }
 }

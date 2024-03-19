@@ -6,9 +6,9 @@
 
   span {
     @apply text-xxs;
-    @apply block mt-1 p-0;
+    @apply block mt-1 p-0 text-right uppercase;
     line-height: 1;
-    @apply select-none uppercase;
+    @apply select-none;
   }
   input[type='range'] {
     /* removing default appearance */
@@ -20,7 +20,7 @@
     @apply mb-1;
     cursor: pointer;
     outline: none;
-    height: 0.5px;
+    height: 1px;
     @apply bg-neutral-500;
     &:active {
       @apply bg-foreground;
@@ -31,7 +31,7 @@
   input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    @apply w-2 h-2;
+    @apply w-4 h-2;
     @apply rounded;
     border: none;
     transition: 0.2s ease-in-out;

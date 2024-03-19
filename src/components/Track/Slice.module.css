@@ -3,12 +3,14 @@
   flex-shrink: 0;
   flex-grow: 0;
   touch-action: none;
-  margin: 0.5rem;
   width: var(--slice-size);
   height: var(--slice-size);
   @apply mx-1 my-0;
   &.muted {
     @apply opacity-20;
+  }
+  @media (orientation: portrait) {
+    @apply my-1;
   }
 }
 

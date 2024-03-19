@@ -2,19 +2,14 @@
   width: auto;
   position: relative;
   @apply flex;
-  @apply mr-2;
+  @apply mr-0 portrait:mr-2;
   @apply flex-shrink-0;
 }
 
 .total {
-  @apply ml-2 text-xs font-mono;
-  @apply text-center flex items-center justify-center;
+  @apply ml-2 text-xs;
+  @apply text-center flex portrait:hidden items-center justify-center;
   @apply rounded-full;
-}
-
-.grab {
-  @apply w-4 h-2 border-t border-b cursor-grab active:cursor-grabbing;
-  display: block;
 }
 
 .button-group {
@@ -30,11 +25,18 @@
   @apply space-y-0;
   @apply my-1;
 
+  &:has(.no-portrait) {
+    @apply my-0;
+  }
+
   button {
     @apply w-1/2 h-4 flex items-center justify-center;
     @apply text-xxs;
     @apply mr-1;
     @apply cursor-pointer;
+    &.no-portrait {
+      @apply portrait:hidden;
+    }
   }
 }
 
@@ -42,7 +44,7 @@
   width: calc(100% - 4px);
   @apply select-none;
   @apply bg-transparent;
-  @apply text-xs;
+  @apply text-xxs md:text-xs;
 }
 
 .toggle {
@@ -73,7 +75,7 @@
 }
 
 .length-panel {
-  @apply flex flex-col;
+  @apply flex flex-col portrait:flex-row-reverse;
   @apply w-12 mt-0.5 ml-1.5;
   button {
     @apply w-full h-1/2 relative flex items-center justify-center;

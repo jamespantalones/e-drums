@@ -99,7 +99,7 @@ export function Edit({
     <>
       <div className="mr-2">
         {/* left panel */}
-        <div className="flex">
+        <div className="flex flex-row portrait:flex-col">
           <section className="w-24">
             <select
               value={rhythm.instrument?.sound.name}
@@ -115,7 +115,7 @@ export function Edit({
             <div className="flex">
               <ReorderIcon dragControls={dragControls} />
               <section className={styles.total}>
-                – {padNumber(rhythm.totalNotes)}
+                {padNumber(rhythm.totalNotes)}
               </section>
             </div>
 
@@ -125,12 +125,14 @@ export function Edit({
                 onClick={toggleColor}
                 style={{ backgroundColor: `hsl(${rhythm.color.join(' ')})` }}
                 className={clsx({
+                  [styles['no-portrait']]: true,
                   [styles['toggle-color']]: true,
                 })}
               ></button>
               <button
                 onClick={toggleMute}
                 className={clsx(styles.toggle, {
+                  [styles['no-portrait']]: true,
                   [styles.muted]: muted,
                 })}
               >
@@ -140,6 +142,7 @@ export function Edit({
               <button
                 onClick={toggleEditPitch}
                 className={clsx(styles.toggle, {
+                  [styles['no-portrait']]: true,
                   [styles.pitch]: editPitch,
                 })}
               >
@@ -170,7 +173,7 @@ export function Edit({
             </button>
           </section>
         </div>
-        <section className="block">
+        <section className="block portrait:hidden">
           <div className={styles['knob-group']}>
             <Slider
               label="Pitch"
@@ -187,23 +190,6 @@ export function Edit({
               max={100}
               step={1}
             />
-
-            {/* <Knob
-              label="tone"
-              step={1}
-              onChange={handlePitchChange}
-              value={rhythm.pitch}
-              min={30}
-              max={70}
-            />
-            <Knob
-              onChange={handleVolumeChange}
-              value={rhythm.prevVolume}
-              label="vol"
-              min={0}
-              max={100}
-              step={1}
-            /> */}
           </div>
         </section>
       </div>

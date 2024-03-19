@@ -10,7 +10,6 @@ import { IconButton } from '../IconButton/IconButton';
 import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Config } from '../../config';
-import { TempoInput } from './TempoInput';
 import Link from 'next/link';
 import clsx from 'clsx';
 import {
@@ -99,17 +98,28 @@ export function Nav({
             <StopIcon strokeWidth={1} />
           </IconButton>
 
-          <div className="w-[50vw] ml-16 flex flex-wrap">
+          <div className="w-[50vw] ml-16 flex flex-wrap portrait:hidden">
             <div className={styles.slidecontainer}>
               <Slider
                 onChange={handleBPMChange}
-                label="BPM"
+                label="Tempo"
                 value={SIG_BPM.value}
                 min={Config.MIN_BPM}
                 max={Config.MAX_BPM}
               />
             </div>
+
             <div className={styles.slidecontainer}>
+              <Slider
+                onChange={handleVolumeChange}
+                label="Vol."
+                value={SIG_VOLUME.value}
+                min={Config.MIN_VOLUME}
+                max={Config.MAX_VOLUME}
+                step={0.1}
+              />
+            </div>
+            {/* <div className={styles.slidecontainer}>
               <Slider
                 onChange={handleSwingChange}
                 label="Swing"
@@ -118,27 +128,7 @@ export function Nav({
                 max={100}
                 step={1}
               />
-            </div>
-            <div className={styles.slidecontainer}>
-              <Slider
-                onChange={handleVolumeChange}
-                label="Vol"
-                value={SIG_VOLUME.value}
-                min={Config.MIN_VOLUME}
-                max={Config.MAX_VOLUME}
-                step={0.1}
-              />
-            </div>
-            <div className={styles.slidecontainer}>
-              <Slider
-                label="Reverb"
-                onChange={handleReverbChange}
-                value={SIG_REVERB.value}
-                min={Config.MIN_REVERB}
-                max={Config.MAX_REVERB}
-                step={1}
-              />
-            </div>
+            </div> */}
           </div>
         </div>
 

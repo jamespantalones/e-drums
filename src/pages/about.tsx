@@ -1,4 +1,4 @@
-import { ArrowLeft, Home } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export default function About() {
@@ -10,9 +10,19 @@ export default function About() {
         </Link>
       </div>
       <p className="max-w-sm mx-auto">
-        TK TK TK Put some information and links here. TK TK TK Put some
-        information and links here. TK TK TK Put some information and links
-        here. TK TK TK Put some information and links here
+        <a
+          target="_blank"
+          className="underline"
+          href="https://tttbbbzzz.bandcamp.com/"
+          rel="noreferrer"
+        >
+          TBZ
+        </a>{' '}
+        and{' '}
+        <a className="underline" href="https://jamespants.com/">
+          James Pants
+        </a>{' '}
+        made this a while back and finally put it out in 2024.
       </p>
     </main>
   );

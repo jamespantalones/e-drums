@@ -9,6 +9,10 @@
   @apply pb-0;
   @apply pt-0;
   @apply bg-background;
+  @media (orientation: portrait) {
+    height: 100vh;
+    width: calc(var(--slice-size) + 10px);
+  }
 }
 
 .toggle {
@@ -20,6 +24,11 @@
   transition: transform 0.2s ease;
   height: auto;
   @apply flex items-start justify-start;
+  @media (orientation: portrait) {
+    @apply flex-col;
+    height: 100vh;
+    width: calc(var(--slice-size) + 10px);
+  }
 }
 
 .edit-name-wrapper {

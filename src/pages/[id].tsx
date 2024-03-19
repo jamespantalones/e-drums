@@ -99,7 +99,7 @@ const Track: NextPage = () => {
         <label className="block text-xxs">
           Name
           <input
-            className="text-xs block py-1 bg-transparent border-b border-neutral-700 w-48 mr-16"
+            className="text-xs block py-1 bg-transparent border-b border-neutral-700 w-16 md:w-48 mr-16"
             type="text"
             placeholder={id as string}
             defaultValue={SIG_NAME.value || id}

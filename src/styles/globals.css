@@ -15,7 +15,13 @@
   --layout-nav-height: 48px;
   --scroll-x-height: 40px;
 
-  --slice-size: 94px;
+  --slice-size: 54px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --slice-size: 94px;
+  }
 }
 
 html {
@@ -24,12 +30,11 @@ html {
   color: var(--color-text);
   min-height: 100vh;
   /* min-height: -webkit-fill-available; */
-  font-family: sans-serif;
+  font-family: 'Fira Sans', sans-serif;
 }
 
 body {
   width: 100%;
-  min-width: 750px;
 }
 
 /* i don't remember why i have this in here */
@@ -52,4 +57,5 @@ button {
   flex-direction: column;
   @apply p-4;
   @apply min-h-screen;
+  @apply portrait:flex-row portrait:mt-10 portrait:md:mt-16;
 }

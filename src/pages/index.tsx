@@ -47,20 +47,19 @@ const Home: NextPage = () => {
   }
 
   return (
-    <section className="p-4">
-      <nav className="flex w-full justify-between items-center">
-        <h1 className="text-5xl mb-8">{metaConfig.title}</h1>
+    <section className="p-2 md:p-4">
+      <nav className="flex w-full max-w-screen justify-between items-center mb-8">
+        <h1 className="">{metaConfig.title}</h1>
         <div>
-          <Link href="/about" className="border-b">
+          <Link href="/about" className="border-b text-xs">
             About
           </Link>
         </div>
       </nav>
 
       <ul className="text-xs">
-        <li className="my-1 flex items-center justify-between p-2 border-b">
-          <div className="w-1/2 text-xs">Name</div>
-          <div className="text-xs w-1/3">Updated</div>
+        <li className="my-1 flex items-center justify-between p-2 border-b border-b-neutral-600">
+          <div className="w-1/3 text-xs">Name</div>
           <button
             disabled
             className="opacity-0 border border-current p-1 text-xs"
@@ -74,10 +73,16 @@ const Home: NextPage = () => {
               key={p.id}
               className="my-1 flex items-center justify-between p-2 hover:bg-foreground hover:text-background"
             >
-              <div className="w-1/2">{p.name}</div>
-              <div className="text-xs w-1/3">{p.updatedAt}</div>
+              <div className="w-1/3 flex-shrink">{p.name}</div>
+              <div className="text-xs w-1/3 flex-shrink">
+                {new Date(p.updatedAt).toLocaleTimeString(undefined, {
+                  month: 'short',
+                  day: '2-digit',
+                  year: 'numeric',
+                })}
+              </div>
               <button
-                className="border border-current p-1 px-6 hover:bg-alert text-xs cursor-pointer"
+                className="border border-current p-1 px-4 hover:bg-alert text-xs cursor-pointer"
                 onClick={async (ev) => {
                   ev.stopPropagation();
                   ev.preventDefault();
@@ -92,7 +97,7 @@ const Home: NextPage = () => {
         ))}
       </ul>
       <button
-        className="fixed bottom-8 right-6 border border-current p-1 text-sm px-8 cursor-pointer hover:bg-background hover:text-foreground bg-foreground text-background active:bg-neutral-200 active:bg-background"
+        className="fixed bottom-8 right-6 border border-current p-1 text-sm px-8 cursor-pointer hover:bg-foreground hover:text-background bg-background text-foreground active:bg-neutral-200 active:bg-background"
         onClick={createNew}
       >
         + NEW
