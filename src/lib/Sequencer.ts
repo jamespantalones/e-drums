@@ -119,11 +119,13 @@ export class Sequencer {
 
     Tone.Transport.start();
     SIG_PLAY_STATE.value = SequencerPlayState.STARTED;
+
+    console.log('START');
   }
 
   // stop the transport
   stop() {
-    this.transport?.pause();
+    this.transport?.stop();
     if (SIG_PLAY_STATE.value === SequencerPlayState.STARTED) {
       SIG_PLAY_STATE.value = SequencerPlayState.STOPPED;
       return;

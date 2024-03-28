@@ -21,10 +21,9 @@
     cursor: pointer;
     outline: none;
     height: 1px;
-    @apply bg-neutral-500;
-    &:active {
-      @apply bg-foreground;
-    }
+    background: var(--track);
+    filter: grayscale(var(--grayscale));
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   /* Thumb: webkit */
@@ -48,10 +47,10 @@
     @apply rounded;
     border: none;
     transition: 0.2s ease-in-out;
-    @apply bg-neutral-500;
-    &:active {
-      @apply bg-foreground;
-    }
+
+    background: var(--track);
+    filter: grayscale(var(--grayscale));
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   /* Hover, active & focus Thumb: Webkit */

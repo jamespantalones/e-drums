@@ -14,6 +14,7 @@ type Props = {
   small?: boolean;
   margin?: boolean;
   muted?: boolean;
+  title?: string;
 };
 
 const Button = React.forwardRef<HTMLButtonElement, Props>(function Component(
@@ -21,6 +22,7 @@ const Button = React.forwardRef<HTMLButtonElement, Props>(function Component(
   ref
 ) {
   const {
+    title,
     fill,
     color,
     children,
@@ -39,6 +41,7 @@ const Button = React.forwardRef<HTMLButtonElement, Props>(function Component(
       ref={ref}
       onClick={onClick}
       type="button"
+      title={title}
       className={cx}
       disabled={Boolean(disabled)}
       style={{

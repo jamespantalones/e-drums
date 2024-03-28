@@ -1,373 +1,170 @@
 [
   {
     "index": 1,
-    "name": "FM BASS",
+    "name": "FM BASS 1",
     "files": [
-      "1_FM_BASS.wav"
+      "01_FM_BASS_1.wav"
     ]
   },
   {
     "index": 2,
-    "name": "FM KICK",
+    "name": "FM BASS 91",
     "files": [
-      "2_FM_KICK.wav"
+      "02_FM_BASS_91.wav"
     ]
   },
   {
     "index": 3,
-    "name": "FM BONGO",
+    "name": "FM BASS DRUM",
     "files": [
-      "3_FM_BONGO.wav"
-    ]
-  },
-  {
-    "index": 4,
-    "name": "FM CONGA",
-    "files": [
-      "4_FM_CONGA.wav"
+      "03_FM_BASS_DRUM.wav"
     ]
   },
   {
     "index": 5,
-    "name": "FM CLAP",
+    "name": "FM BELLS",
     "files": [
-      "5_FM_CLAP.wav"
+      "05_FM_BELLS.wav"
     ]
   },
   {
     "index": 6,
-    "name": "FM BELLS",
+    "name": "FM BONGO",
     "files": [
-      "6_FM_BELLS.wav"
-    ]
-  },
-  {
-    "index": 7,
-    "name": "FM DOG",
-    "files": [
-      "7_FM_DOG.wav"
+      "06_FM_BONGO.wav"
     ]
   },
   {
     "index": 8,
-    "name": "FM HH",
+    "name": "FM CONGA 1",
     "files": [
-      "8_FM_HH.wav"
+      "08_FM_CONGA_1.wav"
     ]
   },
   {
     "index": 9,
-    "name": "FM HH 2",
+    "name": "FM CONGA 2",
     "files": [
-      "9_FM_HH_2.wav"
+      "09_FM_CONGA_2.wav"
     ]
   },
   {
     "index": 10,
-    "name": "FM HONK",
+    "name": "FM DOG",
     "files": [
-      "10_FM_HONK.wav"
+      "10_FM_DOG.wav"
     ]
   },
   {
     "index": 11,
-    "name": "FM RIM",
+    "name": "FM HH",
     "files": [
-      "11_FM_RIM.wav"
+      "11_FM_HH.wav"
     ]
   },
   {
     "index": 12,
-    "name": "FM MARACAS",
+    "name": "FM LO TOM",
     "files": [
-      "12_FM_MARACAS.wav"
+      "12_FM_LO_TOM.wav"
     ]
   },
   {
     "index": 13,
-    "name": "FM NOISE",
+    "name": "FM PLUCK",
     "files": [
-      "13_FM_NOISE.wav"
+      "13_FM_PLUCK.wav"
     ]
   },
   {
     "index": 14,
-    "name": "FM PLUCK",
+    "name": "FM RIM",
     "files": [
-      "14_FM_PLUCK.wav"
+      "14_FM_RIM.wav"
     ]
   },
   {
     "index": 15,
-    "name": "FM CYMBAL",
+    "name": "FM RING",
     "files": [
-      "15_FM_CYMBAL.wav"
+      "15_FM_RING.wav"
     ]
   },
   {
     "index": 16,
-    "name": "JB KAH!",
+    "name": "FM ROTO",
     "files": [
-      "16_JB_KAH!.wav"
+      "16_FM_ROTO.wav"
     ]
   },
   {
     "index": 17,
-    "name": "FM RING",
+    "name": "FM SNR",
     "files": [
-      "17_FM_RING.wav"
+      "17_FM_SNR.wav"
     ]
   },
   {
     "index": 18,
-    "name": "FM CONGA 2",
+    "name": "FM SWEEP",
     "files": [
-      "18_FM_CONGA_2.wav"
+      "18_FM_SWEEP.wav"
     ]
   },
   {
     "index": 19,
-    "name": "FM ROTO",
+    "name": "JB BONGO",
     "files": [
-      "19_FM_ROTO.wav"
+      "19_JB_BONGO.wav"
     ]
   },
   {
     "index": 20,
-    "name": "FM SCRATCH",
+    "name": "JB KICK",
     "files": [
-      "20_FM_SCRATCH.wav"
+      "20_JB_KICK.wav"
     ]
   },
   {
     "index": 21,
-    "name": "FM SHAKER",
+    "name": "JB SNR",
     "files": [
-      "21_FM_SHAKER.wav"
+      "21_JB_SNR.wav"
     ]
   },
   {
     "index": 22,
-    "name": "FM SWEEP",
+    "name": "JB STAB",
     "files": [
-      "22_FM_SWEEP.wav"
+      "22_JB_STAB.wav"
     ]
   },
   {
     "index": 23,
-    "name": "FM SNR",
+    "name": "JB VOX",
     "files": [
-      "23_FM_SNR.wav"
+      "23_JB_VOX.wav"
     ]
   },
   {
     "index": 24,
-    "name": "JB STAB",
+    "name": "FM BASS SAW",
     "files": [
-      "24_JB_STAB.wav"
+      "24_FM_BASS_SAW.wav"
+    ]
+  },
+  {
+    "index": 24,
+    "name": "YP VOX",
+    "files": [
+      "24_YP_VOX.wav"
     ]
   },
   {
     "index": 25,
-    "name": "TRITON BASS",
+    "name": "FM CLAP",
     "files": [
-      "25_TRITON_BASS.wav"
-    ]
-  },
-  {
-    "index": 26,
-    "name": "TRITON CUICA",
-    "files": [
-      "26_TRITON_CUICA.wav"
-    ]
-  },
-  {
-    "index": 27,
-    "name": "TRITON MUTE GIT",
-    "files": [
-      "27_TRITON_MUTE_GIT.wav"
-    ]
-  },
-  {
-    "index": 28,
-    "name": "TRITON SCRATCH",
-    "files": [
-      "28_TRITON_SCRATCH.wav"
-    ]
-  },
-  {
-    "index": 29,
-    "name": "JB KICK",
-    "files": [
-      "29_JB_KICK.wav"
-    ]
-  },
-  {
-    "index": 30,
-    "name": "JB SNR",
-    "files": [
-      "30_JB_SNR.wav"
-    ]
-  },
-  {
-    "index": 31,
-    "name": "JB HEY!",
-    "files": [
-      "31_JB_HEY!.wav"
-    ]
-  },
-  {
-    "index": 32,
-    "name": "YP HEY!",
-    "files": [
-      "32_YP_HEY!.wav"
-    ]
-  },
-  {
-    "index": 33,
-    "name": "FM BASS 2",
-    "files": [
-      "33_FM_BASS_2.wav"
-    ]
-  },
-  {
-    "index": 34,
-    "name": "FM CLAP 2",
-    "files": [
-      "34_FM_CLAP_2.wav"
-    ]
-  },
-  {
-    "index": 35,
-    "name": "FM DIB",
-    "files": [
-      "35_FM_DIB.wav"
-    ]
-  },
-  {
-    "index": 36,
-    "name": "FM LOW TOM",
-    "files": [
-      "36_FM_LOW_TOM.wav"
-    ]
-  },
-  {
-    "index": 37,
-    "name": "FM PIANO",
-    "files": [
-      "37_FM_PIANO.wav"
-    ]
-  },
-  {
-    "index": 38,
-    "name": "FM PLUCK 2",
-    "files": [
-      "38_FM_PLUCK_2.wav"
-    ]
-  },
-  {
-    "index": 39,
-    "name": "FM SHAKER 2",
-    "files": [
-      "39_FM_SHAKER_2.wav"
-    ]
-  },
-  {
-    "index": 40,
-    "name": "BUSHWICK 4 BASSHIT",
-    "files": [
-      "40_BUSHWICK_4_BASSHIT.wav"
-    ]
-  },
-  {
-    "index": 41,
-    "name": "DEM 3 TRIANGLE",
-    "files": [
-      "41_DEM_3_TRIANGLE.wav"
-    ]
-  },
-  {
-    "index": 42,
-    "name": "FM BASS 91",
-    "files": [
-      "42_FM_BASS_91.wav"
-    ]
-  },
-  {
-    "index": 43,
-    "name": "FM CLAP 91",
-    "files": [
-      "43_FM_CLAP_91.wav"
-    ]
-  },
-  {
-    "index": 44,
-    "name": "FM KICK 91",
-    "files": [
-      "44_FM_KICK_91.wav"
-    ]
-  },
-  {
-    "index": 45,
-    "name": "ICE 24 BIGSNR",
-    "files": [
-      "45_ICE_24_BIGSNR.wav"
-    ]
-  },
-  {
-    "index": 46,
-    "name": "JB21 24 HUH",
-    "files": [
-      "46_JB21_24_HUH.wav"
-    ]
-  },
-  {
-    "index": 47,
-    "name": "JB45 1 BONGO",
-    "files": [
-      "47_JB45_1_BONGO.wav"
-    ]
-  },
-  {
-    "index": 48,
-    "name": "JB45 5 SNR",
-    "files": [
-      "48_JB45_5_SNR.wav"
-    ]
-  },
-  {
-    "index": 49,
-    "name": "JB45 21 BREATH",
-    "files": [
-      "49_JB45_21_BREATH.wav"
-    ]
-  },
-  {
-    "index": 50,
-    "name": "JB45 24 SNR+VOX",
-    "files": [
-      "50_JB45_24_SNR+VOX.wav"
-    ]
-  },
-  {
-    "index": 51,
-    "name": "TRITON 1 808SNR",
-    "files": [
-      "51_TRITON_1_808SNR.wav"
-    ]
-  },
-  {
-    "index": 52,
-    "name": "TRITON 16 SHAKE",
-    "files": [
-      "52_TRITON_16_SHAKE.wav"
-    ]
-  },
-  {
-    "index": 53,
-    "name": "TRITON 28 KICK+OHH",
-    "files": [
-      "53_TRITON_28_KICK+OHH.wav"
+      "25_FM_CLAP.wav"
     ]
   }
 ]

@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import styles from './slider.module.css';
-import { padNumber } from '../../utils';
+import { normalize, padNumber, scaleColor } from '../../utils';
 import { useSignals } from '@preact/signals-react/runtime';
 import { effect } from '@preact/signals-react';
 
 export type Props = {
   value?: number;
   defaultValue?: number;
+  mockValue?: number;
   label: string;
   onChange: (val: number) => void;
   min?: number;
@@ -36,8 +37,22 @@ export function Slider(props: Props) {
     }),
   };
 
+  const n = normalize(
+    props.mockValue || props.value || 0,
+    props.min || 0,
+    props.max || 100
+  );
+
   return (
-    <label className={styles.slider}>
+    <label
+      className={styles.slider}
+      style={
+        {
+          '--grayscale': Math.round(100 - n) / 100,
+          '--track': scaleColor(n),
+        } as CSSProperties
+      }
+    >
       <input
         type="range"
         onChange={handleChange}

@@ -12,17 +12,8 @@ import { useAudioContext } from '../../contexts/AudioContext';
 import { Config } from '../../config';
 import Link from 'next/link';
 import clsx from 'clsx';
-import {
-  SIG_BPM,
-  SIG_INITIALIZED,
-  SIG_PLAY_STATE,
-  SIG_REVERB,
-  SIG_SWING,
-  SIG_TRACKS,
-  SIG_VOLUME,
-} from '../../state/track';
+import { SIG_INITIALIZED, SIG_PLAY_STATE, SIG_TRACKS } from '../../state/track';
 import { SequencerPlayState } from '../../types';
-import { Slider } from '../inputs/Slider';
 import { metaConfig } from '../../config/meta';
 export function Nav({
   save,
@@ -34,22 +25,6 @@ export function Nav({
   useSignals();
 
   const { methods } = useAudioContext();
-
-  function handleBPMChange(bpm: number) {
-    SIG_BPM.value = bpm;
-  }
-
-  function handleSwingChange(swing: number) {
-    SIG_SWING.value = swing;
-  }
-
-  function handleVolumeChange(vol: number) {
-    SIG_VOLUME.value = vol;
-  }
-
-  function handleReverbChange(rev: number) {
-    SIG_REVERB.value = rev;
-  }
 
   function play() {
     if (SIG_PLAY_STATE.value !== SequencerPlayState.STARTED) {
@@ -97,43 +72,11 @@ export function Nav({
           >
             <StopIcon strokeWidth={1} />
           </IconButton>
-
-          <div className="w-[50vw] ml-16 flex flex-wrap portrait:hidden">
-            <div className={styles.slidecontainer}>
-              <Slider
-                onChange={handleBPMChange}
-                label="Tempo"
-                value={SIG_BPM.value}
-                min={Config.MIN_BPM}
-                max={Config.MAX_BPM}
-              />
-            </div>
-
-            <div className={styles.slidecontainer}>
-              <Slider
-                onChange={handleVolumeChange}
-                label="Vol."
-                value={SIG_VOLUME.value}
-                min={Config.MIN_VOLUME}
-                max={Config.MAX_VOLUME}
-                step={0.1}
-              />
-            </div>
-            {/* <div className={styles.slidecontainer}>
-              <Slider
-                onChange={handleSwingChange}
-                label="Swing"
-                value={SIG_SWING.value}
-                min={0}
-                max={100}
-                step={1}
-              />
-            </div> */}
-          </div>
         </div>
 
         <div className="flex">
           <IconButton
+            title="Add Track"
             onClick={methods.createTrack}
             small
             disabled={
@@ -144,7 +87,7 @@ export function Nav({
             <NewIcon strokeWidth={1} />
           </IconButton>
 
-          <IconButton onClick={save} small>
+          <IconButton onClick={save} small title="Save">
             <SaveIcon strokeWidth={1} />
           </IconButton>
         </div>

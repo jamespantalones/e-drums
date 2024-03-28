@@ -15,7 +15,15 @@ import clsx from 'clsx';
 import { ReorderIcon } from './ReorderIcon';
 import { generateRandomColor } from '../../lib/utils';
 import { padNumber } from '../../utils';
-import { Minus, Music2, Music3, Plus, Volume, Volume2 } from 'lucide-react';
+import {
+  Minus,
+  Music2,
+  Music3,
+  Plus,
+  Trash,
+  Volume,
+  Volume2,
+} from 'lucide-react';
 import { Slider } from '../inputs/Slider';
 import { useSignals } from '@preact/signals-react/runtime';
 
@@ -85,15 +93,7 @@ export function Edit({
     });
   }
 
-  const toggleColor = useCallback(
-    (_ev: React.MouseEvent<HTMLButtonElement>) => {
-      setTrackVal(rhythm, {
-        method: 'changeColor',
-        value: generateRandomColor(),
-      });
-    },
-    [setTrackVal, rhythm]
-  );
+  console.log(rhythm.pitch);
 
   return (
     <>
@@ -122,18 +122,12 @@ export function Edit({
             {/* mute/solo */}
             <div className={styles['poly-button-group']}>
               <button
-                onClick={toggleColor}
-                style={{ backgroundColor: `hsl(${rhythm.color.join(' ')})` }}
-                className={clsx({
-                  [styles['no-portrait']]: true,
-                  [styles['toggle-color']]: true,
-                })}
-              ></button>
-              <button
                 onClick={toggleMute}
+                title="Toggle Mute"
                 className={clsx(styles.toggle, {
                   [styles['no-portrait']]: true,
                   [styles.muted]: muted,
+                  [styles.active]: !muted,
                 })}
               >
                 {muted && <Volume size={12} />}
@@ -141,6 +135,7 @@ export function Edit({
               </button>
               <button
                 onClick={toggleEditPitch}
+                title="Pitch Notes"
                 className={clsx(styles.toggle, {
                   [styles['no-portrait']]: true,
                   [styles.pitch]: editPitch,
@@ -148,18 +143,30 @@ export function Edit({
               >
                 <Music2 size={12} />
               </button>
+              <button
+                title="Delete Track"
+                onClick={() => deleteTrack(rhythm.id)}
+                className={clsx(styles.toggle, {
+                  [styles['no-portrait']]: true,
+                  [styles.destructive]: true,
+                })}
+              >
+                <Trash size={10} />
+              </button>
             </div>
           </section>
 
           <section className={styles['length-panel']}>
             <button
               onClick={addNote}
+              title="Add Note"
               className={styles['add-button']}
               disabled={rhythm.totalNotes >= Config.MAX_SLICES}
             >
               <Plus size={16} />
             </button>
             <button
+              title="Remove Note"
               onClick={() => {
                 if (rhythm.pattern.length - 1 === 0) {
                   deleteTrack(rhythm.id);

@@ -60,6 +60,12 @@
   &.pitch {
     @apply bg-neutral-300 text-background;
   }
+  &.active {
+    @apply bg-green-400 text-background;
+  }
+  &.destructive {
+    @apply bg-neutral-800 hover:bg-red-400 text-foreground hover:text-background;
+  }
 }
 
 .toggle-color {
