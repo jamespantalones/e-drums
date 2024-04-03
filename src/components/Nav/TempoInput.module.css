@@ -13,7 +13,7 @@
   color: currentColor;
   @apply rounded;
   font-size: 14px;
-  font-family: sans-serif;
+  @apply font-sans;
   font-weight: lighter;
   border: 1px solid currentColor;
 }

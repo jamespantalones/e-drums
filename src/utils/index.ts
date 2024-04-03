@@ -31,7 +31,7 @@ export function normalize(value: number, min: number, max: number) {
 
 export function scaleColor(value: number) {
   // Ensure the input value is within the range [0, 100]
-  value = Math.min(100, Math.max(0, value));
+  value = Math.min(100, Math.max(50, value));
 
   // Calculate the amount of red component
   let red = Math.floor(255 * (value / 100));

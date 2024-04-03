@@ -36,7 +36,7 @@ export function Nav({
   return (
     <nav className={styles.nav}>
       <section className={styles.section}>
-        <div className="flex items-center justify-between ml-1.5 ">
+        <div className="flex items-center justify-between ml-4 mt-0.5">
           <Link
             href="/"
             className={clsx(styles.link, 'block text-sm mr-6')}
@@ -55,7 +55,7 @@ export function Nav({
           >
             <h1>
               <span className="transition-translate inline-block text-lg">
-                {metaConfig.emoji}
+                {metaConfig.emoji} e-drums
               </span>
             </h1>
           </Link>

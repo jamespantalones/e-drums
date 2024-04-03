@@ -1,8 +1,8 @@
 export const metaConfig = {
-  title: '𓀔 E-DRUMS',
-  shortTitle: 'E-DRUMS',
+  title: '𓀔 e-drums',
+  shortTitle: 'e-drums',
   emoji: '𓀔',
-  description: 'A peasant Euclidean rhythm generator',
+  description: 'A simple polyrhythm generator',
   canonicalURL: 'https://e-drums.biz',
   themeColor: '#ffffff',
 };

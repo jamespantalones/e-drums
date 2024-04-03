@@ -48,7 +48,7 @@ export function Slider(props: Props) {
       className={styles.slider}
       style={
         {
-          '--grayscale': Math.round(100 - n) / 100,
+          '--grayscale': Math.round(150 - n) / 100,
           '--track': scaleColor(n),
         } as CSSProperties
       }

@@ -18,6 +18,7 @@
 
 .poly-button-group {
   height: auto;
+  width: var(--slice-size);
   @apply flex flex-col items-center justify-center;
   @apply mt-4;
   @apply justify-between flex-row;
@@ -34,17 +35,13 @@
     @apply text-xxs;
     @apply mr-1;
     @apply cursor-pointer;
+    @media (orientation: portrait) {
+      @apply w-full mx-auto ml-1.5;
+    }
     &.no-portrait {
       @apply portrait:hidden;
     }
   }
-}
-
-.instrument-select {
-  width: calc(100% - 4px);
-  @apply select-none;
-  @apply bg-transparent;
-  @apply text-xxs md:text-xs;
 }
 
 .toggle {
@@ -68,6 +65,9 @@
   }
 }
 
+.mutebutton {
+}
+
 .toggle-color {
   background: hsl(
     var(--color-track-h) var(--color-track-s) calc(var(--color-track-l))
@@ -82,10 +82,18 @@
 
 .length-panel {
   @apply flex flex-col portrait:flex-row-reverse;
-  @apply w-12 mt-0.5 ml-1.5;
+  @apply w-12 mt-0 ml-1.5;
+  touch-action: none;
+  @media (orientation: portrait) {
+    width: var(--slice-size);
+    @apply -translate-x-0.5;
+    @apply mt-0.5;
+  }
   button {
     @apply w-full h-1/2 relative flex items-center justify-center;
-    @apply my-1;
+    @apply my-0.5;
+    @apply bg-neutral-800 text-foreground;
+    @apply border-background border;
 
     &:hover {
       @apply bg-foreground text-background;
@@ -93,6 +101,12 @@
       &:active {
         @apply opacity-100;
       }
+    }
+
+    @media (orientation: portrait) {
+      @apply w-1/2 p-1;
+      @apply flex-grow-0 flex-shrink-0;
+      @apply my-1;
     }
   }
 }

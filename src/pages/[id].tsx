@@ -13,6 +13,7 @@ import { SIG_BPM, SIG_NAME, SIG_SEQUENCER, SIG_TRACKS } from '../state/track';
 import { Config } from '../config';
 import { Loader } from 'lucide-react';
 import { Footer } from '../components/Nav/Footer';
+import { Input } from '../components/inputs/input';
 
 /**
  *
@@ -97,18 +98,15 @@ const Track: NextPage = () => {
   return (
     <>
       <Nav save={() => save()}>
-        <label className="block text-xxs">
-          Name
-          <input
-            className="text-xs block py-1 bg-transparent border-b border-neutral-700 w-48 mr-16"
-            type="text"
-            placeholder={id as string}
-            defaultValue={SIG_NAME.value || id}
-            onChange={updateName}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
-          />
-        </label>
+        <Input
+          placeholder={(SIG_NAME.value || id) as string}
+          defaultValue={SIG_NAME.value || id}
+          onChange={updateName}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          type="text"
+          title="Name"
+        ></Input>
       </Nav>
       <main>
         <Reorder.Group

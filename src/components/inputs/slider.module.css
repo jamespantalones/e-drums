@@ -3,7 +3,7 @@
   --thumb: rgba(255, 255, 255, 0.2);
   @apply w-full;
   @apply mt-2 block;
-
+  touch-action: none;
   span {
     @apply text-xxs;
     @apply block mt-1 p-0 text-right uppercase;
@@ -21,9 +21,10 @@
     cursor: pointer;
     outline: none;
     height: 1px;
+    touch-action: none;
     background: var(--track);
     filter: grayscale(var(--grayscale));
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* border: 1px solid rgba(255, 255, 255, 0.2); */
   }
 
   /* Thumb: webkit */
@@ -31,26 +32,20 @@
     -webkit-appearance: none;
     appearance: none;
     @apply w-4 h-2;
-    @apply rounded;
     border: none;
+    background: var(--track);
+    filter: grayscale(var(--grayscale));
     transition: 0.2s ease-in-out;
-    @apply bg-neutral-500;
-    &:active {
-      @apply bg-foreground;
-    }
   }
 
   /* Thumb: Firefox */
   input[type='range']::-moz-range-thumb {
     height: 15px;
     width: 15px;
-    @apply rounded;
     border: none;
     transition: 0.2s ease-in-out;
-
     background: var(--track);
     filter: grayscale(var(--grayscale));
-    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   /* Hover, active & focus Thumb: Webkit */

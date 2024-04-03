@@ -1,18 +1,13 @@
 .button {
   @apply flex items-center justify-center;
   @apply rounded-sm cursor-pointer;
-  @apply m-0.5 p-0;
-  @apply disabled:opacity-20 transition-opacity duration-500;
+  @apply m-0.5 mx-2 p-0;
+  @apply disabled:opacity-20 transition-opacity duration-100;
   width: calc(var(--slice-size));
   height: calc(var(--slice-size));
-  transition: transform 0.05s cubic-bezier(0.17, 0.67, 0.83, 0.67);
   &.small {
-    width: calc(var(--slice-size) / 3);
-    height: calc(var(--slice-size) / 3);
-    @media (min-width: 768px) {
-      width: calc(var(--slice-size) / 2);
-      height: calc(var(--slice-size) / 2);
-    }
+    width: calc(var(--slice-size) / 2);
+    height: calc(var(--slice-size) / 2);
   }
   &.useBorder {
     @apply border border-current;
@@ -20,10 +15,10 @@
 
   &:not(:disabled) {
     &:hover {
-      transform: scale(1.2);
+      @apply bg-neutral-800;
     }
     &:active {
-      transform: scale(0.9);
+      @apply bg-neutral-700;
     }
   }
 

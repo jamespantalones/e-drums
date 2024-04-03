@@ -1,170 +1,125 @@
 [
   {
     "index": 1,
-    "name": "FM BASS 1",
-    "files": [
-      "01_FM_BASS_1.wav"
-    ]
+    "name": "BASS1",
+    "files": ["01_FM_BASS_1.wav"]
   },
   {
     "index": 2,
-    "name": "FM BASS 91",
-    "files": [
-      "02_FM_BASS_91.wav"
-    ]
+    "name": "BASS91",
+    "files": ["02_FM_BASS_91.wav"]
   },
   {
     "index": 3,
-    "name": "FM BASS DRUM",
-    "files": [
-      "03_FM_BASS_DRUM.wav"
-    ]
+    "name": "BD",
+    "files": ["03_FM_BASS_DRUM.wav"]
   },
   {
     "index": 5,
-    "name": "FM BELLS",
-    "files": [
-      "05_FM_BELLS.wav"
-    ]
+    "name": "TAMB",
+    "files": ["05_FM_BELLS.wav"]
   },
   {
     "index": 6,
-    "name": "FM BONGO",
-    "files": [
-      "06_FM_BONGO.wav"
-    ]
+    "name": "BONGO",
+    "files": ["06_FM_BONGO.wav"]
   },
   {
     "index": 8,
-    "name": "FM CONGA 1",
-    "files": [
-      "08_FM_CONGA_1.wav"
-    ]
+    "name": "CONGA1",
+    "files": ["08_FM_CONGA_1.wav"]
   },
   {
     "index": 9,
-    "name": "FM CONGA 2",
-    "files": [
-      "09_FM_CONGA_2.wav"
-    ]
-  },
-  {
-    "index": 10,
-    "name": "FM DOG",
-    "files": [
-      "10_FM_DOG.wav"
-    ]
+    "name": "CONGA2",
+    "files": ["09_FM_CONGA_2.wav"]
   },
   {
     "index": 11,
-    "name": "FM HH",
-    "files": [
-      "11_FM_HH.wav"
-    ]
+    "name": "HH",
+    "files": ["11_FM_HH.wav"]
   },
   {
     "index": 12,
-    "name": "FM LO TOM",
-    "files": [
-      "12_FM_LO_TOM.wav"
-    ]
-  },
-  {
-    "index": 13,
-    "name": "FM PLUCK",
-    "files": [
-      "13_FM_PLUCK.wav"
-    ]
-  },
-  {
-    "index": 14,
-    "name": "FM RIM",
-    "files": [
-      "14_FM_RIM.wav"
-    ]
-  },
-  {
-    "index": 15,
-    "name": "FM RING",
-    "files": [
-      "15_FM_RING.wav"
-    ]
-  },
-  {
-    "index": 16,
-    "name": "FM ROTO",
-    "files": [
-      "16_FM_ROTO.wav"
-    ]
-  },
-  {
-    "index": 17,
-    "name": "FM SNR",
-    "files": [
-      "17_FM_SNR.wav"
-    ]
-  },
-  {
-    "index": 18,
-    "name": "FM SWEEP",
-    "files": [
-      "18_FM_SWEEP.wav"
-    ]
-  },
-  {
-    "index": 19,
-    "name": "JB BONGO",
-    "files": [
-      "19_JB_BONGO.wav"
-    ]
-  },
-  {
-    "index": 20,
-    "name": "JB KICK",
-    "files": [
-      "20_JB_KICK.wav"
-    ]
-  },
-  {
-    "index": 21,
-    "name": "JB SNR",
-    "files": [
-      "21_JB_SNR.wav"
-    ]
-  },
-  {
-    "index": 22,
-    "name": "JB STAB",
-    "files": [
-      "22_JB_STAB.wav"
-    ]
-  },
-  {
-    "index": 23,
-    "name": "JB VOX",
-    "files": [
-      "23_JB_VOX.wav"
-    ]
-  },
-  {
-    "index": 24,
-    "name": "FM BASS SAW",
-    "files": [
-      "24_FM_BASS_SAW.wav"
-    ]
-  },
-  {
-    "index": 24,
-    "name": "YP VOX",
-    "files": [
-      "24_YP_VOX.wav"
-    ]
+    "name": "LOTOM",
+    "files": ["12_FM_LO_TOM.wav"]
   },
   {
     "index": 25,
-    "name": "FM CLAP",
-    "files": [
-      "25_FM_CLAP.wav"
-    ]
+    "name": "CLAP",
+    "files": ["25_FM_CLAP.wav"]
+  },
+
+  {
+    "index": 14,
+    "name": "RIM",
+    "files": ["14_FM_RIM.wav"]
+  },
+
+  {
+    "index": 16,
+    "name": "ROTO",
+    "files": ["16_FM_ROTO.wav"]
+  },
+  {
+    "index": 17,
+    "name": "SNR",
+    "files": ["17_FM_SNR.wav"]
+  },
+  {
+    "index": 18,
+    "name": "SWEEP",
+    "files": ["18_FM_SWEEP.wav"]
+  },
+  {
+    "index": 19,
+    "name": "BONGO2",
+    "files": ["19_JB_BONGO.wav"]
+  },
+  {
+    "index": 20,
+    "name": "KICK",
+    "files": ["20_JB_KICK.wav"]
+  },
+  {
+    "index": 21,
+    "name": "SNR2",
+    "files": ["21_JB_SNR.wav"]
+  },
+  {
+    "index": 22,
+    "name": "STAB",
+    "files": ["22_JB_STAB.wav"]
+  },
+  {
+    "index": 13,
+    "name": "PLUCK",
+    "files": ["13_FM_PLUCK.wav"]
+  },
+  {
+    "index": 23,
+    "name": "VOX",
+    "files": ["23_JB_VOX.wav"]
+  },
+  {
+    "index": 24,
+    "name": "SAW",
+    "files": ["24_FM_BASS_SAW.wav"]
+  },
+  {
+    "index": 24,
+    "name": "VOX2",
+    "files": ["24_YP_VOX.wav"]
+  },
+
+  {
+    "index": 10,
+    "name": "DOG",
+    "files": ["26_FM_DOG.wav"]
+  },
+  {
+    "index": 15,
+    "name": "RING",
+    "files": ["15_FM_RING.wav"]
   }
 ]

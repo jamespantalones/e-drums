@@ -47,34 +47,44 @@ const Home: NextPage = () => {
   }
 
   return (
-    <section className="p-2 md:p-4">
+    <section className="p-3 pt-5">
       <nav className="flex w-full max-w-screen justify-between items-center mb-8">
-        <h1 className="">{metaConfig.title}</h1>
+        <Link href="/" passHref>
+          <h1 className="text-lg">{metaConfig.title}</h1>
+        </Link>
         <div>
-          <Link href="/about" className="border-b text-xs">
+          <Link href="/about" className="border-b text-base">
             About
           </Link>
         </div>
       </nav>
 
-      <ul className="text-xs">
-        <li className="my-1 flex items-center justify-between p-2 border-b border-b-neutral-600">
-          <div className="w-1/3 text-xs">Name</div>
-          <button
-            disabled
-            className="opacity-0 border border-current p-1 text-xs"
-          >
-            {'DEL'}
-          </button>
-        </li>
+      <section className="max-w-2xl mx-auto">
+        <h2 className="text-base text-neutral-400">
+          An simple polyrhythm generator that works offline.
+        </h2>
+        <p className="mt-4 text-neutral-500">
+          <small>
+            *If visiting on a mobile device in portrait orientation, note that
+            not all features are present. For now.
+          </small>
+        </p>
+      </section>
+
+      <ul className="text-xxs md:text-xs my-8 bg-neutral-900 max-w-2xl mx-auto">
         {projects.map((p) => (
-          <Link href={`/${p.id}`} className="block " passHref key={p.id}>
+          <Link
+            href={`/${p.id}`}
+            className="block border-b border-1 border-neutral-800 last:border-none"
+            passHref
+            key={p.id}
+          >
             <li
               key={p.id}
-              className="my-1 flex items-center justify-between p-2 hover:bg-foreground hover:text-background"
+              className="my-1 flex items-center justify-between p-2 px-4 hover:bg-foreground hover:text-background"
             >
               <div className="w-1/3 flex-shrink">{p.name}</div>
-              <div className="text-xs w-1/3 flex-shrink">
+              <div className="w-1/3 flex-shrink">
                 {new Date(p.updatedAt).toLocaleTimeString(undefined, {
                   month: 'short',
                   day: '2-digit',
@@ -82,7 +92,7 @@ const Home: NextPage = () => {
                 })}
               </div>
               <button
-                className="border border-current p-1 px-4 hover:bg-alert text-xs cursor-pointer"
+                className="p-1 px-4 bg-neutral-600 hover:bg-neutral-800 hover:text-foreground cursor-pointer"
                 onClick={async (ev) => {
                   ev.stopPropagation();
                   ev.preventDefault();
@@ -97,7 +107,7 @@ const Home: NextPage = () => {
         ))}
       </ul>
       <button
-        className="fixed bottom-8 right-6 border border-current p-1 text-sm px-8 cursor-pointer hover:bg-foreground hover:text-background bg-background text-foreground active:bg-neutral-200 active:bg-background"
+        className="fixed bottom-8 right-6 border border-current py-3 text-sm px-12 cursor-pointer bg-foreground text-background hover:bg-neutral-200 bg:text-foreground active:bg-neutral-200 active:bg-background"
         onClick={createNew}
       >
         + NEW

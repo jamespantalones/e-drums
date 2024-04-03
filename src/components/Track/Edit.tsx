@@ -26,6 +26,13 @@ import {
 } from 'lucide-react';
 import { Slider } from '../inputs/Slider';
 import { useSignals } from '@preact/signals-react/runtime';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../inputs/select';
 
 export function Edit({
   dragControls,
@@ -62,8 +69,8 @@ export function Edit({
   }, [rhythm]);
 
   const handleInstrumentChange = useCallback(
-    (ev: ChangeEvent<HTMLSelectElement>) => {
-      const target = SOUNDS.find((s) => s.name === ev.target.value);
+    (val: string) => {
+      const target = SOUNDS.find((s) => s.name === val);
       if (target) {
         setTrackVal(rhythm, {
           method: 'changeInstrument',
@@ -101,17 +108,23 @@ export function Edit({
         {/* left panel */}
         <div className="flex flex-row portrait:flex-col">
           <section className="w-24">
-            <select
+            <Select
               value={rhythm.instrument?.sound.name}
-              className={styles['instrument-select']}
-              onChange={handleInstrumentChange}
+              onValueChange={handleInstrumentChange}
             >
-              {SOUNDS.map((sound, index) => (
-                <option key={sound.name} value={sound.name}>
-                  {index} {sound.name}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+
+              <SelectContent>
+                {SOUNDS.map((sound, index) => (
+                  <SelectItem key={sound.name} value={sound.name}>
+                    {sound.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             <div className="flex">
               <ReorderIcon dragControls={dragControls} />
               <section className={styles.total}>
@@ -124,8 +137,8 @@ export function Edit({
               <button
                 onClick={toggleMute}
                 title="Toggle Mute"
-                className={clsx(styles.toggle, {
-                  [styles['no-portrait']]: true,
+                className={clsx(styles.toggle, styles.mutebutton, {
+                  // [styles['no-portrait']]: true,
                   [styles.muted]: muted,
                   [styles.active]: !muted,
                 })}
@@ -163,7 +176,7 @@ export function Edit({
               className={styles['add-button']}
               disabled={rhythm.totalNotes >= Config.MAX_SLICES}
             >
-              <Plus size={16} />
+              <Plus size={20} />
             </button>
             <button
               title="Remove Note"
@@ -176,7 +189,7 @@ export function Edit({
               }}
               className={styles['subtract-button']}
             >
-              <Minus size={16} />
+              <Minus size={20} />
             </button>
           </section>
         </div>
