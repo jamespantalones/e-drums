@@ -56,10 +56,16 @@ body {
 
 h1 {
   font-style: italic;
-  transform: skewY(-10deg) skewX(10deg) scaleY(2.5);
+  transform: skewY(-10deg) skewX(10deg) scaleY(1);
   transition: transform 0.1s ease;
   &:hover {
-    transform: skewY(0deg) skewX(20deg) scaleY(8);
+    transform: skewY(0deg) skewX(20deg) scaleY(4);
+  }
+  @media (min-width: 768px) {
+    transform: skewY(-10deg) skewX(10deg) scaleY(2.5);
+    &:hover {
+      transform: skewY(0deg) skewX(20deg) scaleY(3);
+    }
   }
 }
 /* i don't remember why i have this in here */
@@ -81,5 +87,5 @@ button {
   flex-direction: column;
   @apply py-4 pb-32;
   @apply min-h-screen;
-  @apply portrait:flex-row portrait:mt-10 portrait:md:mt-16;
+  @apply portrait:flex-row portrait:mt-12 portrait:md:mt-16;
 }

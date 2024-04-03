@@ -14,7 +14,7 @@
 
 .link {
   &:hover {
-    @apply text-neutral-400;
+    @apply text-neutral-300;
     span {
       display: inline-block;
       tranform: rotateY(180deg);
@@ -29,6 +29,10 @@
   @apply items-center;
   @apply justify-between;
   @apply text-xs;
+
+  input {
+    @apply hidden md:flex;
+  }
 }
 
 .tempo-button {
