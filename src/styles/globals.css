@@ -55,7 +55,12 @@ body {
 }
 
 h1 {
-  @apply font-light;
+  font-style: italic;
+  transform: skewY(-10deg) skewX(10deg) scaleY(2.5);
+  transition: transform 0.1s ease;
+  &:hover {
+    transform: skewY(0deg) skewX(20deg) scaleY(8);
+  }
 }
 /* i don't remember why i have this in here */
 #__next {

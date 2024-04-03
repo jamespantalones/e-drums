@@ -53,7 +53,10 @@ const Home: NextPage = () => {
           <h1 className="text-lg">{metaConfig.title}</h1>
         </Link>
         <div>
-          <Link href="/about" className="border-b text-base">
+          <Link
+            href="/about"
+            className="border-b text-base block transition-transform hover:scale-x-75 hover:scale-y-150"
+          >
             About
           </Link>
         </div>
@@ -71,11 +74,11 @@ const Home: NextPage = () => {
         </p>
       </section>
 
-      <ul className="text-xxs md:text-xs my-8 bg-neutral-900 max-w-2xl mx-auto">
+      <ul className="text-xxs md:text-xs my-8 bg-neutral-900 max-w-2xl mx-auto p-4 rounded">
         {projects.map((p) => (
           <Link
             href={`/${p.id}`}
-            className="block border-b border-1 border-neutral-800 last:border-none"
+            className="block border-b border-1 border-neutral-800 last:border-none transition-transform hover:scale-y-150"
             passHref
             key={p.id}
           >
