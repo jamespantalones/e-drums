@@ -51,7 +51,18 @@ body {
   @apply font-light;
   letter-spacing: 0.05rem;
   /* get around notch*/
-  @apply px-8 lg:px-3 portrait:px-1 portrait:pr-0;
+  @apply px-12 lg:px-3 portrait:px-1 portrait:pr-0;
+}
+
+body[data-scroll-locked] {
+  overflow: hidden !important;
+  overscroll-behavior: contain;
+  position: relative !important;
+  @apply !px-12 lg:!px-3 portrait:!px-1 portrait:!pr-0;
+  padding-right: 0px;
+  margin-left: ;
+  margin-top: 0;
+  margin-right: 0px !important;
 }
 
 h1 {

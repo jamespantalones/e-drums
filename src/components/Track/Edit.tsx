@@ -116,9 +116,16 @@ export function Edit({
                 <SelectValue />
               </SelectTrigger>
 
-              <SelectContent>
+              <SelectContent
+                position="item-aligned"
+                style={{ touchAction: 'none' }}
+              >
                 {SOUNDS.map((sound, index) => (
-                  <SelectItem key={sound.name} value={sound.name}>
+                  <SelectItem
+                    key={sound.name}
+                    value={sound.name}
+                    className="text-sm"
+                  >
                     {sound.name}
                   </SelectItem>
                 ))}

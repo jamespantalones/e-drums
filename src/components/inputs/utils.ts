@@ -1,3 +1,6 @@
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
 // Define the output range [0, 3]
 const outputMin = 0;
 const outputMax = 3;
@@ -61,4 +64,8 @@ export function scaleDegrees(degrees: number) {
   const mappedValue = (degrees / 360) * (outputMax - outputMin) + outputMin;
 
   return mappedValue;
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
