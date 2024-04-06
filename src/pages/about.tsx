@@ -23,7 +23,7 @@ export default function About() {
       <p className="text-8xl mb-8">{metaConfig.emoji}</p>
       <p className="max-w-sm mx-auto text-sm">
         <Link
-          href="https://tttbbbzzz.bandcamp.com/"
+          href="https://tttbbbzzz.com/"
           target="_blank"
           className="underline"
         >
