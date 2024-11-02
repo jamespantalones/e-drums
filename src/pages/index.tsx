@@ -99,8 +99,13 @@ const Home: NextPage = () => {
                 onClick={async (ev) => {
                   ev.stopPropagation();
                   ev.preventDefault();
-                  await removeFromCache(p.id);
-                  await fetchIndexCache();
+                  const confirm = window.confirm(
+                    `Are you sure you want to delete ${p.name}? This cannot be undone.`
+                  );
+                  if (confirm) {
+                    await removeFromCache(p.id);
+                    await fetchIndexCache();
+                  }
                 }}
               >
                 DEL
