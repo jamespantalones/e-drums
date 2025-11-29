@@ -1,13 +1,8 @@
+'use client';
+
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
-import {
-  SIG_REVERB,
-  SIG_SWING,
-  SIG_VOLUME,
-  destroy as destroySignals,
-} from '../state/track';
-import { batch } from '@preact/signals-react';
-import { useSignals } from '@preact/signals-react/runtime';
+
 import {
   AudioContextReturnType,
   SerializedSequencer,
@@ -20,19 +15,10 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useReducer,
-  useRef,
 } from 'react';
 import { generateTrack } from '../lib/utils';
 import { Config } from '../config';
-import {
-  SIG_BPM,
-  SIG_INITIALIZED,
-  SIG_NAME,
-  SIG_SEQUENCER,
-  SIG_SERIALIZED_TRACKS,
-  SIG_TRACKS,
-} from '../state/track';
+import { useTrackStore } from '../state';
 
 /**
  * Main goal of this AudioContext is
@@ -44,11 +30,13 @@ const AudioContext = createContext<AudioContextReturnType | undefined>(
 );
 
 export function AudioContextProvider({ children }: { children: ReactNode }) {
-  // make sure signals runtime is present
-  useSignals();
+  const actions = useTrackStore((state) => state.action);
+  const tracks = useTrackStore((state) => state.tracks);
+  const sequencer = useTrackStore((state) => state.sequencer);
+  const bpm = useTrackStore((state) => state.bpm);
 
   function changeName(ev: React.ChangeEvent<HTMLInputElement>) {
-    SIG_NAME.value = ev.target.value;
+    actions.changeName(ev.target.value);
   }
 
   // make sure the AudioContext is initialized
@@ -57,29 +45,27 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       // if pulling from offline storage
       if (data) {
         // set all values here
-        batch(() => {
-          // set signals here!
-          SIG_BPM.value = data.bpm;
-          SIG_NAME.value = data.name;
-          SIG_REVERB.value = data.reverb;
-          SIG_VOLUME.value = data.volume;
-          SIG_SWING.value = data.swing;
-          SIG_SERIALIZED_TRACKS.value = data.state.tracks;
-          SIG_SEQUENCER.value = new Sequencer({
+        actions.changeBpm(data.bpm);
+        actions.changeName(data.name);
+        actions.changeReverb(data.reverb);
+        actions.changeVolume(data.volume);
+        actions.changeSwing(data.swing);
+        actions.setSerializedTracks(data.state.tracks);
+        actions.setSequencer(
+          new Sequencer({
             ...data,
             // TODO Fix
             id: data.id,
-          });
-        });
+          })
+        );
       }
       // otherwise, create a new track
       else {
         throw new Error('No data passed');
       }
 
-      await SIG_SEQUENCER.value?.init();
-
-      SIG_INITIALIZED.value = true;
+      await sequencer?.init();
+      actions.setInitialized(true);
     } catch (err) {
       console.log(err);
       return null;
@@ -91,7 +77,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
    */
   const play = useCallback(async () => {
     // start the AudioContext engine (on user interactive only)
-    SIG_SEQUENCER.value?.start();
+    sequencer?.start();
   }, []);
 
   /**
@@ -99,32 +85,28 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
    */
   const stop = useCallback(async () => {
     // call stop on the sequencer
-    SIG_SEQUENCER.value?.stop();
+    sequencer?.stop();
   }, []);
 
   const destroy = useCallback(() => {
-    SIG_SEQUENCER.value?.destroy();
-    SIG_SEQUENCER.value = null;
-    // destroy all signals
-    destroySignals();
+    sequencer?.destroy();
+    actions.setSequencer(null);
   }, []);
 
   const createTrack = useCallback(async () => {
     // add to Sequencer
-    await SIG_SEQUENCER.value?.addNewRhythm(
-      generateTrack(SIG_TRACKS.value.length)
-    );
-  }, []);
+    await sequencer?.addNewRhythm(generateTrack(tracks.length));
+  }, [tracks.length]);
 
   const repitchTick = useCallback(
     (id: string, index: number, type: 'INCREMENT' | 'DECREMENT') => {
-      SIG_SEQUENCER.value?.repitchTick(id, index, type);
+      sequencer?.repitchTick(id, index, type);
     },
     []
   );
 
   const toggleTick = useCallback((id: string, index: number) => {
-    SIG_SEQUENCER.value?.toggleTick(id, index);
+    sequencer?.toggleTick(id, index);
   }, []);
 
   const setTrackVal = useCallback(
@@ -139,31 +121,30 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   );
 
   const clear = useCallback(() => {
-    SIG_SEQUENCER.value?.clear();
+    sequencer?.clear();
   }, []);
 
   const decrementBpm = useCallback(() => {
-    const curr = SIG_BPM.value;
+    const curr = bpm;
     if (curr - 1 >= Config.MIN_BPM) {
-      SIG_BPM.value--;
+      actions.changeBpm(curr - 1);
     }
-  }, []);
+  }, [bpm, actions]);
 
   const incrementBpm = useCallback(() => {
-    SIG_BPM.value++;
-    const curr = SIG_BPM.value;
+    const curr = bpm;
     if (curr + 1 <= Config.MAX_BPM) {
-      SIG_BPM.value++;
+      actions.changeBpm(curr + 1);
     }
-  }, []);
+  }, [bpm, actions]);
 
   const deleteTrack = useCallback((id: string) => {
-    SIG_SEQUENCER.value?.deleteTrack(id);
+    sequencer?.deleteTrack(id);
   }, []);
 
   const reorderTracks = useCallback((tracks: Track[]) => {
     // send copy to sequencer for serialization on save
-    SIG_SEQUENCER.value?.updateTracks(tracks);
+    sequencer?.updateTracks(tracks);
   }, []);
 
   const value = {

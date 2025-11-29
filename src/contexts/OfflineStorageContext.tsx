@@ -1,3 +1,5 @@
+'use client';
+
 import {
   ReactNode,
   createContext,
@@ -9,7 +11,7 @@ import {
 import { del, get, set, values } from 'idb-keyval';
 import { Config } from '../config';
 import { SerializedSequencer } from '../types';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter } from 'next/navigation';
 
 const OfflineStorageContext = createContext<
   | {
@@ -25,7 +27,7 @@ const OfflineStorageContext = createContext<
 >(undefined);
 
 export function OfflineStorageProvider({ children }: { children: ReactNode }) {
-  const router = useRouter();
+  const pathname = usePathname();
 
   const [projects, setProjects] = useState<SerializedSequencer[]>([]);
 
@@ -62,7 +64,7 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     fetchIndexCache();
-  }, [fetchIndexCache, router.asPath]);
+  }, [fetchIndexCache, pathname]);
 
   return (
     <OfflineStorageContext.Provider

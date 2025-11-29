@@ -25,7 +25,6 @@ import {
   Volume2,
 } from 'lucide-react';
 import { Slider } from '../inputs/Slider';
-import { useSignals } from '@preact/signals-react/runtime';
 import {
   Select,
   SelectContent,
@@ -47,8 +46,6 @@ export function Edit({
   removeNote: (index: number) => void;
   setEditPitch: Dispatch<SetStateAction<boolean>>;
 }) {
-  useSignals();
-
   const {
     methods: { setTrackVal, deleteTrack },
   } = useAudioContext();

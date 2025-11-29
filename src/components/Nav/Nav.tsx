@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useSignals } from '@preact/signals-react/runtime';
 import {
   Save as SaveIcon,
   Plus as NewIcon,
@@ -12,9 +11,9 @@ import { useAudioContext } from '../../contexts/AudioContext';
 import { Config } from '../../config';
 import Link from 'next/link';
 import clsx from 'clsx';
-import { SIG_INITIALIZED, SIG_PLAY_STATE, SIG_TRACKS } from '../../state/track';
 import { SequencerPlayState } from '../../types';
 import { metaConfig } from '../../config/meta';
+import { useTrackStore } from '../../state';
 export function Nav({
   save,
   children,
@@ -22,12 +21,14 @@ export function Nav({
   save: () => Promise<void>;
   children: React.ReactNode;
 }) {
-  useSignals();
+  const playState = useTrackStore((state) => state.playState);
+  const initialized = useTrackStore((state) => state.initialized);
+  const tracks = useTrackStore((state) => state.tracks);
 
   const { methods } = useAudioContext();
 
   function play() {
-    if (SIG_PLAY_STATE.value !== SequencerPlayState.STARTED) {
+    if (playState !== SequencerPlayState.STARTED) {
       methods.stop();
     }
     methods.play();
@@ -65,11 +66,7 @@ export function Nav({
           <IconButton small onClick={play}>
             <PlayIcon strokeWidth={1} />
           </IconButton>
-          <IconButton
-            small
-            onClick={methods.stop}
-            disabled={!SIG_INITIALIZED.value}
-          >
+          <IconButton small onClick={methods.stop} disabled={!initialized}>
             <StopIcon strokeWidth={1} />
           </IconButton>
         </div>
@@ -79,10 +76,7 @@ export function Nav({
             title="Add Track"
             onClick={methods.createTrack}
             small
-            disabled={
-              SIG_TRACKS.value.length === Config.MAX_TRACKS ||
-              !SIG_INITIALIZED.value
-            }
+            disabled={tracks.length === Config.MAX_TRACKS || !initialized}
           >
             <NewIcon strokeWidth={1} />
           </IconButton>

@@ -6,19 +6,9 @@ import {
   SerializedTrack,
 } from '../types';
 import { Track } from './Track';
-import { effect } from '@preact/signals-react';
-import {
-  SIG_BPM,
-  SIG_INITIALIZED,
-  SIG_NAME,
-  SIG_PLAY_STATE,
-  SIG_REVERB,
-  SIG_SERIALIZED_TRACKS,
-  SIG_SWING,
-  SIG_TICK,
-  SIG_TRACKS,
-  SIG_VOLUME,
-} from '../state/track';
+import { store } from '../state';
+
+const { getState, setState } = store;
 
 export interface SequencerOpts {
   initialTracks?: SerializedTrack[];
@@ -44,7 +34,7 @@ export class Sequencer {
   private transport!: Transport;
 
   constructor(opts: SequencerOpts) {
-    this.bpm = SIG_BPM.value;
+    this.bpm = getState().bpm;
     this.context = null;
     this.id = opts.id;
     // set initial name to the track id
@@ -52,38 +42,39 @@ export class Sequencer {
     this.createdAt = new Date().toISOString();
     this.updatedAt = new Date().toISOString();
     this.reverbChain = new Tone.Reverb();
-    this.chain = new Tone.Volume(SIG_VOLUME.value);
-    this.swing = SIG_SWING.value / 100;
+    this.chain = new Tone.Volume(getState().volume);
+    this.swing = getState().swing / 100;
     this.reverb = 0;
 
-    SIG_TRACKS.value = (SIG_SERIALIZED_TRACKS.value || []).map((track) => {
-      return new Track({
-        ...track,
-        updateSelfInParent: this.updateChild,
-      });
-    });
+    store.getState().tracks = (getState().serializedTracks || []).map(
+      (track) => {
+        return new Track({
+          ...track,
+          updateSelfInParent: this.updateChild,
+        });
+      }
+    );
 
-    SIG_TICK.value = -1;
+    setState({ tick: -1 });
 
-    // listen fsor signal changes
-    effect(() => {
-      if (this.bpm !== SIG_BPM.value) {
-        this.setBpm(SIG_BPM.value);
+    const unsubscribe = store.subscribe((state, oldState) => {
+      if (this.bpm !== state.bpm) {
+        this.setBpm(state.bpm);
       }
 
-      this.chain.volume.value = SIG_VOLUME.value;
-      this.reverbChain.wet.value = SIG_REVERB.value / 100;
+      this.chain.volume.value = state.volume;
+      this.reverbChain.wet.value = state.reverb / 100;
     });
   }
 
   async init() {
-    this.reverbChain.wet.value = SIG_REVERB.value / 100;
+    this.reverbChain.wet.value = getState().reverb / 100;
     // this.reverb.decay = '1';
 
     this.chain.chain(this.reverbChain, Tone.Destination);
 
     // load all initial tracks
-    const trackPromises = SIG_TRACKS.value.map((t) => t.init());
+    const trackPromises = getState().tracks.map((t) => t.init());
     const resolvedTracks = await Promise.all(trackPromises);
 
     // loop through each resolved track and connect to chain
@@ -92,9 +83,9 @@ export class Sequencer {
         track.sampler.connect(this.chain);
       }
     });
-    SIG_TRACKS.value = resolvedTracks;
 
-    SIG_INITIALIZED.value = true;
+    setState({ tracks: resolvedTracks });
+    setState({ initialized: true });
 
     // for each track, create it
 
@@ -102,11 +93,11 @@ export class Sequencer {
   }
 
   async start() {
-    if (!SIG_INITIALIZED.value) {
+    if (!getState().initialized) {
       await this.init();
     }
 
-    if (SIG_PLAY_STATE.value === SequencerPlayState.STARTED) {
+    if (getState().playState === SequencerPlayState.STARTED) {
       return;
     }
 
@@ -118,7 +109,8 @@ export class Sequencer {
     }
 
     Tone.Transport.start();
-    SIG_PLAY_STATE.value = SequencerPlayState.STARTED;
+
+    setState({ playState: SequencerPlayState.STARTED });
 
     console.log('START');
   }
@@ -126,15 +118,15 @@ export class Sequencer {
   // stop the transport
   stop() {
     this.transport?.stop();
-    if (SIG_PLAY_STATE.value === SequencerPlayState.STARTED) {
-      SIG_PLAY_STATE.value = SequencerPlayState.STOPPED;
+    if (getState().playState === SequencerPlayState.STARTED) {
+      setState({ playState: SequencerPlayState.STOPPED });
       return;
     }
 
-    if (SIG_PLAY_STATE.value === SequencerPlayState.STOPPED) {
-      SIG_PLAY_STATE.value = SequencerPlayState.STOPPED_AND_RESET;
+    if (getState().playState === SequencerPlayState.STOPPED) {
+      setState({ playState: SequencerPlayState.STOPPED_AND_RESET });
       // rewind everything
-      SIG_TICK.value = -1;
+      setState({ tick: -1 });
 
       return;
     }
@@ -152,12 +144,11 @@ export class Sequencer {
     // on every 16th note...
     this.transport?.scheduleRepeat((time) => {
       // increment rhythm index
-      SIG_TICK.value += 1;
+      setState({ tick: getState().tick + 1 });
 
       Tone.Transport.swingSubdivision = '16t';
-      Tone.Transport.swing = SIG_SWING.value / 100;
-      Tone.Transport.bpm.value = SIG_BPM.value;
-
+      Tone.Transport.swing = getState().swing / 100;
+      Tone.Transport.bpm.value = getState().bpm;
       // TODO: check
       Tone.Draw.anticipation = 0.23;
 
@@ -170,9 +161,9 @@ export class Sequencer {
       }, time);
 
       // get the next index
-      let nextIndex = SIG_TICK.value + 1;
+      let nextIndex = getState().tick + 1;
 
-      SIG_TRACKS.value.forEach((track) => {
+      getState().tracks.forEach((track) => {
         const currentTick = nextIndex % track.pattern.length;
         if (track.pattern[currentTick] > 0) {
           // normal time
@@ -185,7 +176,7 @@ export class Sequencer {
   }
 
   public async addNewRhythm(rhythm: SerializedTrack): Promise<Track> {
-    if (!SIG_INITIALIZED.value) {
+    if (!getState().initialized) {
       await this.init();
     }
 
@@ -201,11 +192,13 @@ export class Sequencer {
     }
 
     // update in state
-    SIG_TRACKS.value = [...SIG_TRACKS.value, nextTrack];
-    SIG_SERIALIZED_TRACKS.value = [
-      ...SIG_SERIALIZED_TRACKS.value,
-      nextTrack.exportJSON(),
-    ];
+    setState({ tracks: [...getState().tracks, nextTrack] });
+    setState({
+      serializedTracks: [
+        ...getState().serializedTracks,
+        nextTrack.exportJSON(),
+      ],
+    });
 
     return nextTrack;
   }

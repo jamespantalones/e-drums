@@ -1,26 +1,27 @@
-import { useSignals } from '@preact/signals-react/runtime';
 import styles from './Footer.module.css';
 import { Slider } from '../inputs/Slider';
-import { SIG_BPM, SIG_REVERB, SIG_SWING, SIG_VOLUME } from '../../state/track';
 import { Config } from '../../config';
+import { useTrackStore } from '../../state';
 
 export function Footer() {
-  useSignals();
-
+  const actions = useTrackStore((state) => state.action);
+  const bpm = useTrackStore((state) => state.bpm);
+  const swing = useTrackStore((state) => state.swing);
+  const volume = useTrackStore((state) => state.volume);
   function handleBPMChange(bpm: number) {
-    SIG_BPM.value = bpm;
+    actions.changeBpm(bpm);
   }
 
   function handleSwingChange(swing: number) {
-    SIG_SWING.value = swing;
+    actions.changeSwing(swing);
   }
 
   function handleVolumeChange(vol: number) {
-    SIG_VOLUME.value = vol;
+    actions.changeVolume(vol);
   }
 
   function handleReverbChange(rev: number) {
-    SIG_REVERB.value = rev;
+    actions.changeReverb(rev);
   }
 
   return (
@@ -29,7 +30,7 @@ export function Footer() {
         <Slider
           onChange={handleBPMChange}
           label="Tempo"
-          value={SIG_BPM.value}
+          value={bpm}
           min={Config.MIN_BPM}
           max={Config.MAX_BPM}
         />
@@ -39,7 +40,7 @@ export function Footer() {
         <Slider
           onChange={handleVolumeChange}
           label="Vol."
-          value={SIG_VOLUME.value}
+          value={volume}
           min={Config.MIN_VOLUME}
           max={Config.MAX_VOLUME}
           step={0.1}

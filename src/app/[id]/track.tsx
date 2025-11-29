@@ -1,54 +1,58 @@
-import type { NextPage } from 'next';
-import * as React from 'react';
-import { useSignals } from '@preact/signals-react/runtime';
+'use client';
+
 import { Reorder, useDragControls } from 'framer-motion';
-import { Nav } from '../components/Nav/Nav';
-import { TrackItem } from '../components/Track/Track';
-import { useAudioContext } from '../contexts/AudioContext';
-import { useOfflineStorage } from '../contexts/OfflineStorageContext';
-import { useRouter } from 'next/router';
+import { Nav } from '../../components/Nav/Nav';
+import { TrackItem } from '../../components/Track/Track';
+import { useAudioContext } from '../../contexts/AudioContext';
+import { useOfflineStorage } from '../../contexts/OfflineStorageContext';
 import isMobile from 'is-mobile';
-import { useHotKeys } from '../hooks/useHotKeys';
-import { SIG_BPM, SIG_NAME, SIG_SEQUENCER, SIG_TRACKS } from '../state/track';
-import { Config } from '../config';
-import { Loader } from 'lucide-react';
-import { Footer } from '../components/Nav/Footer';
-import { Input } from '../components/inputs/input';
+import { useHotKeys } from '../../hooks/useHotKeys';
+
+import { Config } from '../../config';
+import { Loader } from '../../components/Loader';
+import { Footer } from '../../components/Nav/Footer';
+import { Input } from '../../components/inputs/input';
+import { handleExport } from '../../lib/offlineRenderer';
+import { useEffect, useState } from 'react';
+import { useTrackStore } from '../../state';
 
 /**
  *
  * @returns
  */
-const Track: NextPage = () => {
-  useSignals();
-  const [loaded, setLoaded] = React.useState(false);
-
-  const {
-    query: { id },
-  } = useRouter();
+export function Track({ id }: { id: string }) {
+  const actions = useTrackStore((state) => state.action);
+  const tracks = useTrackStore((state) => state.tracks);
+  const sequencer = useTrackStore((state) => state.sequencer);
+  const name = useTrackStore((state) => state.name);
+  const [loaded, setLoaded] = useState(false);
 
   const { initialize, methods } = useAudioContext();
 
-  const [mobile] = React.useState(isMobile());
+  const [mobile] = useState(isMobile());
 
   const _controls = useDragControls();
 
   const { loadProjectFromCache, saveProjectToCache } = useOfflineStorage();
 
   const save = async (_localName?: string) => {
-    if (!SIG_SEQUENCER.value) return;
+    if (!sequencer) return;
 
     await saveProjectToCache(id as string, {
-      ...SIG_SEQUENCER.value.exportJSON(),
-      name: SIG_NAME.value,
+      ...sequencer.exportJSON(),
+      name: name,
       updatedAt: new Date().toISOString(),
     });
+
+    // render offline
+    await handleExport();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function load() {
       const project = await loadProjectFromCache(id as string);
-      SIG_BPM.value = project?.bpm || Config.DEFAULT_BPM;
+
+      actions.changeBpm(project?.bpm || Config.DEFAULT_BPM);
       await initialize(project);
       setLoaded(true);
     }
@@ -59,7 +63,7 @@ const Track: NextPage = () => {
   }, [id, loadProjectFromCache, initialize]);
 
   async function updateName(ev: React.ChangeEvent<HTMLInputElement>) {
-    SIG_NAME.value = ev.target.value;
+    actions.changeName(ev.target.value);
   }
 
   // allow enter key to blur input
@@ -79,7 +83,7 @@ const Track: NextPage = () => {
   useHotKeys({ 'Meta+s': save, 'Ctrl+n': methods.createTrack });
 
   // unmount effect
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       methods.destroy();
     };
@@ -87,20 +91,14 @@ const Track: NextPage = () => {
   }, []);
 
   if (!loaded) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <div className="animate-spin">
-          <Loader />
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
   return (
     <>
       <Nav save={() => save()}>
         <Input
-          placeholder={(SIG_NAME.value || id) as string}
-          defaultValue={SIG_NAME.value || id}
+          placeholder={(name || id) as string}
+          defaultValue={name || id}
           onChange={updateName}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
@@ -111,11 +109,12 @@ const Track: NextPage = () => {
       <main>
         <Reorder.Group
           axis="y"
+          // @ts-expect-error
           className="edit__area"
           onReorder={methods.reorderTracks}
-          values={SIG_TRACKS.value}
+          values={tracks}
         >
-          {SIG_TRACKS.value.map((rhythm, index) => (
+          {tracks.map((rhythm, index) => (
             <TrackItem
               key={rhythm.id}
               rhythm={rhythm}
@@ -128,6 +127,4 @@ const Track: NextPage = () => {
       </main>
     </>
   );
-};
-
-export default Track;
+}

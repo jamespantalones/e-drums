@@ -1,11 +1,10 @@
 import clsx from 'clsx';
-import { useSignals } from '@preact/signals-react/runtime';
 import styles from './Slice.module.css';
 import { Plus as Add, Minus as Remove } from 'lucide-react';
 import { Track } from '../../lib/Track';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { useCallback, useId, useRef } from 'react';
-import { SIG_TICK } from '../../state/track';
+import { useTrackStore } from '../../state';
 
 export function Slice({
   index,
@@ -19,17 +18,15 @@ export function Slice({
   rhythm: Track;
   mobile: boolean;
 }) {
-  useSignals();
-
   const {
     methods: { toggleTick, repitchTick },
   } = useAudioContext();
 
-  const tick = SIG_TICK.value;
+  const tick = useTrackStore((state) => state.tick);
 
   const id = useId();
-  const x = useRef<number>();
-  const y = useRef<number>();
+  const x = useRef<number>(0);
+  const y = useRef<number>(0);
 
   const handleClick = useCallback(() => {
     toggleTick(rhythm.id, index);

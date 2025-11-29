@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: rgb(28, 28, 28);
-  --color-text: rgb(200, 200, 200);
+  --color-bg: hsl(0 0% 20%);
+  --color-text: hsl(0 0% 94%);
   --color-foreground: var(--color-text);
   --color-background: var(--color-bg);
   --color-alert: hsl(0, 50%, 50%);

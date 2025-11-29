@@ -1,8 +1,6 @@
 import { CSSProperties, useEffect, useState } from 'react';
 import styles from './slider.module.css';
 import { normalize, padNumber, scaleColor } from '../../utils';
-import { useSignals } from '@preact/signals-react/runtime';
-import { effect } from '@preact/signals-react';
 
 export type Props = {
   value?: number;
@@ -16,8 +14,6 @@ export type Props = {
 };
 
 export function Slider(props: Props) {
-  useSignals();
-
   const [val, setVal] = useState<number | undefined>(props.defaultValue);
 
   function handleChange(ev: React.ChangeEvent<HTMLInputElement>) {

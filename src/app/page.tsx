@@ -1,9 +1,9 @@
-import type { NextPage } from 'next';
-import * as React from 'react';
+'use client';
+
 import Link from 'next/link';
 import { generateId, noop } from '../utils';
 import { useOfflineStorage } from '../contexts/OfflineStorageContext';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { Sequencer } from '../lib/Sequencer';
 import { Config } from '../config';
 import { generateTrack } from '../lib/utils';
@@ -16,7 +16,7 @@ import {
 } from '../state/track';
 import { metaConfig } from '../config/meta';
 
-const Home: NextPage = () => {
+export default function IndexPage() {
   const router = useRouter();
 
   const { projects, removeFromCache, saveProjectToCache, fetchIndexCache } =
@@ -63,10 +63,10 @@ const Home: NextPage = () => {
       </nav>
 
       <section className="max-w-2xl mx-auto">
-        <h2 className="text-base text-neutral-400">
+        <h2 className="text-base ">
           An simple polyrhythm generator that works offline.
         </h2>
-        <p className="mt-4 text-neutral-500">
+        <p className="mt-4 ">
           <small>
             *If visiting on a mobile device in portrait orientation, note that
             not all features are present. For now.
@@ -74,17 +74,17 @@ const Home: NextPage = () => {
         </p>
       </section>
 
-      <ul className="text-xxs md:text-xs my-8 bg-neutral-900 max-w-2xl mx-auto p-4 rounded">
+      <ul className="text-xxs md:text-xs my-8  max-w-2xl mx-auto p-4 rounded">
         {projects.map((p) => (
           <Link
             href={`/${p.id}`}
-            className="block border-b border-1 border-neutral-800 last:border-none transition-transform hover:scale-y-150"
+            className="block border-b border-1  last:border-none transition-transform hover:scale-y-150"
             passHref
             key={p.id}
           >
             <li
               key={p.id}
-              className="my-1 flex items-center justify-between p-2 px-4 hover:bg-foreground hover:text-background"
+              className="my-1 flex items-center justify-between p-2 px-4 "
             >
               <div className="w-1/3 flex-shrink">{p.name}</div>
               <div className="w-1/3 flex-shrink">
@@ -95,7 +95,7 @@ const Home: NextPage = () => {
                 })}
               </div>
               <button
-                className="p-1 px-4 bg-neutral-600 hover:bg-neutral-800 hover:text-foreground cursor-pointer"
+                className="p-1 px-4  cursor-pointer"
                 onClick={async (ev) => {
                   ev.stopPropagation();
                   ev.preventDefault();
@@ -115,13 +115,11 @@ const Home: NextPage = () => {
         ))}
       </ul>
       <button
-        className="fixed bottom-8 right-6 border border-current py-3 text-sm px-12 cursor-pointer bg-foreground text-background hover:bg-neutral-200 bg:text-foreground active:bg-neutral-200 active:bg-background"
+        className="fixed bottom-8 right-6 border border-current py-3 text-sm px-12 cursor-pointe rounded-full"
         onClick={createNew}
       >
         + NEW
       </button>
     </section>
   );
-};
-
-export default Home;
+}

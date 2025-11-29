@@ -6,7 +6,7 @@ import {
   SidebarClose,
 } from 'lucide-react';
 import Link from 'next/link';
-import { metaConfig } from '../config/meta';
+import { metaConfig } from '../../config/meta';
 
 export default function About() {
   return (
