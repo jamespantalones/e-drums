@@ -33,6 +33,7 @@ export class Sequencer {
 
   private transport!: Transport;
 
+  // new
   constructor(opts: SequencerOpts) {
     this.bpm = getState().bpm;
     this.context = null;
@@ -208,37 +209,31 @@ export class Sequencer {
     index: number,
     type: 'INCREMENT' | 'DECREMENT'
   ) {
-    let rhythmTarget: Track | undefined = undefined;
-
-    SIG_TRACKS.value = SIG_TRACKS.value.map((rhythm) => {
-      // if we have a target
-      if (rhythm.id === id) {
-        const track = rhythm.repitchNote(index, type);
-        rhythmTarget = track;
-        return track;
-      }
-
-      return rhythm;
-    });
-
-    return [rhythmTarget, SIG_TRACKS.value];
+    // let rhythmTarget: Track | undefined = undefined;
+    // SIG_TRACKS.value = SIG_TRACKS.value.map((rhythm) => {
+    //   // if we have a target
+    //   if (rhythm.id === id) {
+    //     const track = rhythm.repitchNote(index, type);
+    //     rhythmTarget = track;
+    //     return track;
+    //   }
+    //   return rhythm;
+    // });
+    // return [rhythmTarget, SIG_TRACKS.value];
   }
 
   public toggleTick(id: string, index: number): [Track | undefined, Track[]] {
-    let rhythmTarget: Track | undefined = undefined;
-
-    SIG_TRACKS.value = SIG_TRACKS.value.map((rhythm) => {
-      // if we have a target
-      if (rhythm.id === id) {
-        const track = rhythm.toggleNote(index);
-        rhythmTarget = track;
-        return track;
-      }
-
-      return rhythm;
-    });
-
-    return [rhythmTarget, SIG_TRACKS.value];
+    // let rhythmTarget: Track | undefined = undefined;
+    // SIG_TRACKS.value = SIG_TRACKS.value.map((rhythm) => {
+    //   // if we have a target
+    //   if (rhythm.id === id) {
+    //     const track = rhythm.toggleNote(index);
+    //     rhythmTarget = track;
+    //     return track;
+    //   }
+    //   return rhythm;
+    // });
+    // return [rhythmTarget, SIG_TRACKS.value];
   }
 
   private setBpm(val: number) {
@@ -249,36 +244,45 @@ export class Sequencer {
   }
 
   public clearSolos() {
-    SIG_TRACKS.value = SIG_TRACKS.value.map((t) => t.clearSolo());
+    setState((s) => ({
+      ...s,
+      tracks: s.tracks.map((t) => t.clearSolo()),
+    }));
   }
 
   public clear() {
-    SIG_TRACKS.value = SIG_TRACKS.value.map((t) => t.noteOff());
+    setState((s) => ({
+      ...s,
+      tracks: s.tracks.map((t) => t.noteOff()),
+    }));
   }
 
   public updateTracks(tracks: Track[]) {
-    SIG_TRACKS.value = tracks;
-    SIG_SERIALIZED_TRACKS.value = tracks.map((t) => t.exportJSON());
+    setState((s) => ({
+      ...s,
+      tracks,
+      serializedTracks: tracks.map((t) => t.exportJSON()),
+    }));
   }
 
   updateChild = (
     child: Track,
     { needsReconnect }: { needsReconnect?: boolean }
   ) => {
-    SIG_TRACKS.value = SIG_TRACKS.value.map((track) => {
-      if (track.id === child.id) {
-        if (needsReconnect) {
-          child.sampler.connect(this.chain);
-        }
-        return child;
-      }
-      return track;
-    });
+    // SIG_TRACKS.value = SIG_TRACKS.value.map((track) => {
+    //   if (track.id === child.id) {
+    //     if (needsReconnect) {
+    //       child.sampler.connect(this.chain);
+    //     }
+    //     return child;
+    //   }
+    //   return track;
+    // });
   };
 
   public deleteTrack(id: string): [string, Track[]] {
-    SIG_TRACKS.value = SIG_TRACKS.value.filter((r) => r.id !== id);
-    return [id, SIG_TRACKS.value];
+    // SIG_TRACKS.value = SIG_TRACKS.value.filter((r) => r.id !== id);
+    // return [id, SIG_TRACKS.value];
   }
 
   public destroy() {
@@ -288,17 +292,19 @@ export class Sequencer {
   public exportJSON(): SerializedSequencer {
     // update timestamp for save
 
+    const { tick, tracks, bpm, volume, swing, reverb, name } = getState();
+
     return {
       id: this.id,
       state: {
-        rhythmIndex: SIG_TICK.value,
-        tracks: SIG_TRACKS.value.map((t) => t.exportJSON()),
+        rhythmIndex: tick,
+        tracks: tracks.map((t) => t.exportJSON()),
       },
-      bpm: SIG_BPM.value,
-      volume: SIG_VOLUME.value,
-      swing: SIG_SWING.value,
-      reverb: SIG_REVERB.value,
-      name: SIG_NAME.value || this.id,
+      bpm,
+      volume,
+      swing,
+      reverb,
+      name: name || this.id,
       createdAt: this.createdAt,
       updatedAt: new Date().toISOString(),
     };

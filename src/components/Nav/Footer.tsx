@@ -1,13 +1,11 @@
 import styles from './Footer.module.css';
 import { Slider } from '../inputs/Slider';
 import { Config } from '../../config';
-import { useTrackStore } from '../../state';
+import { useTrackActions, useTrackMetadata } from '../../state';
 
 export function Footer() {
-  const actions = useTrackStore((state) => state.action);
-  const bpm = useTrackStore((state) => state.bpm);
-  const swing = useTrackStore((state) => state.swing);
-  const volume = useTrackStore((state) => state.volume);
+  const actions = useTrackActions();
+  const { bpm, swing, volume } = useTrackMetadata();
   function handleBPMChange(bpm: number) {
     actions.changeBpm(bpm);
   }

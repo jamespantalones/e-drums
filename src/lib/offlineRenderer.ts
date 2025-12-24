@@ -1,29 +1,25 @@
 import * as Tone from 'tone';
-import { Sequencer } from './Sequencer';
-import {
-  SIG_TRACKS,
-  SIG_BPM,
-  SIG_SWING,
-  SIG_REVERB,
-  SIG_VOLUME,
-} from '../state/track';
+import { store } from '../state';
+
+const { getState, setState } = store;
 
 export async function renderSequencerOffline(
   duration: number
 ): Promise<Tone.ToneAudioBuffer> {
   // 1. Destructure 'context' here. This is the OfflineAudioContext.
   return Tone.Offline(async ({ transport, context }) => {
+    const { reverb, volume, tracks } = getState();
     // ------------------------------------------------------------
     // A. Recreate Master Chain
     // ------------------------------------------------------------
     // IMPORTANT: Pass { context } to ensure these nodes belong to the offline world
     const offlineReverb = new Tone.Reverb({ context });
-    offlineReverb.wet.value = SIG_REVERB.value / 100;
+    offlineReverb.wet.value = reverb / 100;
     await offlineReverb.generate();
 
     const offlineVolume = new Tone.Volume({
       context,
-      volume: SIG_VOLUME.value,
+      volume,
     });
 
     // Connect Chain: Volume -> Reverb -> Offline Context Destination
@@ -34,32 +30,34 @@ export async function renderSequencerOffline(
     // B. Recreate Tracks
     // ------------------------------------------------------------
     const offlineTracks = await Promise.all(
-      SIG_TRACKS.value.map(async (track) => {
+      tracks.map(async (track) => {
         // We need to create a new Sampler in the offline context.
         // We use the URL from the original track.
-        const sampler = new Tone.Sampler({
-          context: context, // <--- EXPLICIT CONTEXT IS CRITICAL
-          urls: {
-            C4: track.url, // Assuming 'url' exists on your Track object
-          },
-          // If you don't have track.url, see the note below
-        }).connect(offlineVolume);
+        // const sampler = new Tone.Sampler({
+        //   context: context, // <--- EXPLICIT CONTEXT IS CRITICAL
+        //   urls: {
+        //     C4: track.url, // Assuming 'url' exists on your Track object
+        //   },
+        //   // If you don't have track.url, see the note below
+        // }).connect(offlineVolume);
 
-        await sampler.loaded();
+        // await sampler.loaded();
 
-        return {
-          id: track.id,
-          sampler: sampler,
-          pattern: track.pattern,
-        };
+        // return {
+        //   id: track.id,
+        //   sampler: sampler,
+        //   pattern: track.pattern,
+        // };
+
+        return {};
       })
     );
 
     // ------------------------------------------------------------
     // C. Schedule Transport
     // ------------------------------------------------------------
-    transport.bpm.value = SIG_BPM.value;
-    transport.swing = SIG_SWING.value / 100;
+    transport.bpm.value = getState().bpm;
+    transport.swing = getState().swing / 100;
     transport.swingSubdivision = '16t';
 
     let offlineTick = -1;
@@ -69,11 +67,11 @@ export async function renderSequencerOffline(
       const nextIndex = offlineTick + 1;
 
       offlineTracks.forEach((t) => {
-        const currentTick = nextIndex % t.pattern.length;
-        if (t.pattern[currentTick] > 0) {
-          // Trigger the note in the offline sampler
-          t.sampler.triggerAttackRelease('C4', '16n', time, 1);
-        }
+        //const currentTick = nextIndex % t.pattern.length;
+        // if (t.pattern[currentTick] > 0) {
+        //   // Trigger the note in the offline sampler
+        //   t.sampler.triggerAttackRelease('C4', '16n', time, 1);
+        // }
       });
     }, '16n');
 

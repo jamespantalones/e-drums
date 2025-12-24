@@ -13,7 +13,7 @@ import Link from 'next/link';
 import clsx from 'clsx';
 import { SequencerPlayState } from '../../types';
 import { metaConfig } from '../../config/meta';
-import { useTrackStore } from '../../state';
+import { useTrackMetadata, useTracks } from '../../state';
 export function Nav({
   save,
   children,
@@ -21,9 +21,8 @@ export function Nav({
   save: () => Promise<void>;
   children: React.ReactNode;
 }) {
-  const playState = useTrackStore((state) => state.playState);
-  const initialized = useTrackStore((state) => state.initialized);
-  const tracks = useTrackStore((state) => state.tracks);
+  const { playState, initialized } = useTrackMetadata();
+  const tracks = useTracks();
 
   const { methods } = useAudioContext();
 

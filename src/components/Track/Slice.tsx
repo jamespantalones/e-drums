@@ -4,7 +4,7 @@ import { Plus as Add, Minus as Remove } from 'lucide-react';
 import { Track } from '../../lib/Track';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { useCallback, useId, useRef } from 'react';
-import { useTrackStore } from '../../state';
+import { useTick } from '../../state';
 
 export function Slice({
   index,
@@ -22,7 +22,7 @@ export function Slice({
     methods: { toggleTick, repitchTick },
   } = useAudioContext();
 
-  const tick = useTrackStore((state) => state.tick);
+  const tick = useTick();
 
   const id = useId();
   const x = useRef<number>(0);

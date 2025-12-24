@@ -5,16 +5,10 @@ import { generateId, noop } from '../utils';
 import { useOfflineStorage } from '../contexts/OfflineStorageContext';
 import { useRouter } from 'next/navigation';
 import { Sequencer } from '../lib/Sequencer';
-import { Config } from '../config';
 import { generateTrack } from '../lib/utils';
-import {
-  SIG_BPM,
-  SIG_REVERB,
-  SIG_SERIALIZED_TRACKS,
-  SIG_SWING,
-  SIG_VOLUME,
-} from '../state/track';
+
 import { metaConfig } from '../config/meta';
+import { useAudioContext } from '../contexts/AudioContext';
 
 export default function IndexPage() {
   const router = useRouter();
@@ -27,11 +21,6 @@ export default function IndexPage() {
    */
   async function createNew() {
     const id = generateId();
-    SIG_SERIALIZED_TRACKS.value = [generateTrack(0)];
-    SIG_VOLUME.value = Config.DEFAULT_VOLUME;
-    SIG_BPM.value = Config.DEFAULT_BPM;
-    SIG_SWING.value = 10;
-    SIG_REVERB.value = 13;
 
     const seq = new Sequencer({ id });
 

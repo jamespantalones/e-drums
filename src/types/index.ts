@@ -101,6 +101,7 @@ export type AudioContextReturnType = {
     ) => void;
     reorderTracks: (e: any) => void;
     toggleTick: (id: string, index: number) => void;
+    setTracks: (tracks: SerializedTrack[]) => void;
     setTrackVal: (track: Track, action: TrackAction) => Promise<Track>;
   };
 };

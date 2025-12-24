@@ -18,7 +18,12 @@ import {
 } from 'react';
 import { generateTrack } from '../lib/utils';
 import { Config } from '../config';
-import { useTrackStore } from '../state';
+import {
+  useSequencer,
+  useTrackActions,
+  useTrackMetadata,
+  useTracks,
+} from '../state';
 
 /**
  * Main goal of this AudioContext is
@@ -30,10 +35,10 @@ const AudioContext = createContext<AudioContextReturnType | undefined>(
 );
 
 export function AudioContextProvider({ children }: { children: ReactNode }) {
-  const actions = useTrackStore((state) => state.action);
-  const tracks = useTrackStore((state) => state.tracks);
-  const sequencer = useTrackStore((state) => state.sequencer);
-  const bpm = useTrackStore((state) => state.bpm);
+  const actions = useTrackActions();
+  const tracks = useTracks();
+  const sequencer = useSequencer();
+  const { bpm } = useTrackMetadata();
 
   function changeName(ev: React.ChangeEvent<HTMLInputElement>) {
     actions.changeName(ev.target.value);
@@ -147,6 +152,10 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     sequencer?.updateTracks(tracks);
   }, []);
 
+  function setTracks(serializedTracks: SerializedSequencer['state']['tracks']) {
+    actions.setSerializedTracks(serializedTracks);
+  }
+
   const value = {
     initialize,
     methods: {
@@ -162,6 +171,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       createTrack,
       repitchTick,
       toggleTick,
+      setTracks,
       setTrackVal,
     },
   };

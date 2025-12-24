@@ -14,24 +14,25 @@ import { Footer } from '../../components/Nav/Footer';
 import { Input } from '../../components/inputs/input';
 import { handleExport } from '../../lib/offlineRenderer';
 import { useEffect, useState } from 'react';
-import { useTrackStore } from '../../state';
+import {
+  useSequencer,
+  useTrackActions,
+  useTrackMetadata,
+  useTracks,
+} from '../../state';
 
-/**
- *
- * @returns
- */
 export function Track({ id }: { id: string }) {
-  const actions = useTrackStore((state) => state.action);
-  const tracks = useTrackStore((state) => state.tracks);
-  const sequencer = useTrackStore((state) => state.sequencer);
-  const name = useTrackStore((state) => state.name);
+  const actions = useTrackActions();
+  const tracks = useTracks();
+  const sequencer = useSequencer();
+  const { name } = useTrackMetadata();
   const [loaded, setLoaded] = useState(false);
 
   const { initialize, methods } = useAudioContext();
 
-  const [mobile] = useState(isMobile());
+  //const [mobile] = useState(isMobile());
 
-  const _controls = useDragControls();
+  // const _controls = useDragControls();
 
   const { loadProjectFromCache, saveProjectToCache } = useOfflineStorage();
 
@@ -52,6 +53,7 @@ export function Track({ id }: { id: string }) {
     async function load() {
       const project = await loadProjectFromCache(id as string);
 
+      console.log('Loaded project from cache:', project);
       actions.changeBpm(project?.bpm || Config.DEFAULT_BPM);
       await initialize(project);
       setLoaded(true);
@@ -80,22 +82,22 @@ export function Track({ id }: { id: string }) {
   }
 
   // all hot-keys require commande
-  useHotKeys({ 'Meta+s': save, 'Ctrl+n': methods.createTrack });
+  //useHotKeys({ 'Meta+s': save, 'Ctrl+n': methods.createTrack });
 
   // unmount effect
-  useEffect(() => {
-    return () => {
-      methods.destroy();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     methods.destroy();
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   if (!loaded) {
-    return <Loader />;
+    return <h1>Loading...</h1>;
   }
   return (
     <>
-      <Nav save={() => save()}>
+      {/* <Nav save={() => save()}>
         <Input
           placeholder={(name || id) as string}
           defaultValue={name || id}
@@ -105,7 +107,7 @@ export function Track({ id }: { id: string }) {
           type="text"
           title="Name"
         ></Input>
-      </Nav>
+      </Nav> */}
       <main>
         <Reorder.Group
           axis="y"
@@ -119,7 +121,7 @@ export function Track({ id }: { id: string }) {
               key={rhythm.id}
               rhythm={rhythm}
               index={index}
-              mobile={mobile}
+              mobile={false}
             />
           ))}
         </Reorder.Group>

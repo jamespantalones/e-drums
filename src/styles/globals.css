@@ -65,20 +65,6 @@ body[data-scroll-locked] {
   margin-right: 0px !important;
 }
 
-h1 {
-  font-style: italic;
-  transform: skewY(-10deg) skewX(10deg) scaleY(1);
-  transition: transform 0.1s ease;
-  &:hover {
-    transform: skewY(0deg) skewX(20deg) scaleY(4);
-  }
-  @media (min-width: 768px) {
-    transform: skewY(-10deg) skewX(10deg) scaleY(2.5);
-    &:hover {
-      transform: skewY(0deg) skewX(20deg) scaleY(3);
-    }
-  }
-}
 /* i don't remember why i have this in here */
 #__next {
   overflow: hidden;

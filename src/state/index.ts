@@ -1,4 +1,5 @@
 import { create, createStore, useStore } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 import { Config } from '../config';
 import { Sequence } from 'tone';
 import { SequencerPlayState, SerializedTrack } from '../types';
@@ -78,6 +79,33 @@ export const store = createStore<TrackState & { action: TrackAction }>(
   })
 );
 
-export const useTrackStore = (
-  selector: (state: TrackState & { action: TrackAction }) => any
-) => useStore(store, selector);
+export function useTrackActions() {
+  return useStore(store, (state) => state.action);
+}
+
+export function useTracks() {
+  return useStore(store, (state) => state.tracks);
+}
+
+export function useSequencer() {
+  return useStore(store, (state) => state.sequencer);
+}
+
+export function useTrackMetadata() {
+  return useStore(
+    store,
+    useShallow((state) => ({
+      name: state.name,
+      bpm: state.bpm,
+      reverb: state.reverb,
+      swing: state.swing,
+      volume: state.volume,
+      playState: state.playState,
+      initialized: state.initialized,
+    }))
+  );
+}
+
+export function useTick() {
+  return useStore(store, (state) => state.tick);
+}
