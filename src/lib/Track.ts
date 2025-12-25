@@ -86,6 +86,7 @@ export class Track {
   }
 
   public async init(): Promise<Track> {
+    console.log('TRACK INIT');
     if (this.instrument) {
       if (!this.instrument.sound?.files[0]) {
         return this;
@@ -95,6 +96,8 @@ export class Track {
       );
 
       this.isReady = true;
+
+      console.log('sampler ready', this.sampler);
     }
 
     // handle initial val
@@ -161,7 +164,11 @@ export class Track {
   }
 
   public play(time: number, tick: number) {
-    if (!this.sampler || !this.isReady) {
+    if (!this.sampler) {
+      console.warn('No sampler found for track...');
+      return;
+    }
+    if (!this.isReady) {
       console.warn('Audio file not yet ready...');
       return;
     }

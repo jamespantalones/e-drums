@@ -97,7 +97,7 @@ export function Track({ id }: { id: string }) {
   }
   return (
     <>
-      {/* <Nav save={() => save()}>
+      <Nav save={() => save()}>
         <Input
           placeholder={(name || id) as string}
           defaultValue={name || id}
@@ -107,7 +107,7 @@ export function Track({ id }: { id: string }) {
           type="text"
           title="Name"
         ></Input>
-      </Nav> */}
+      </Nav>
       <main>
         <Reorder.Group
           axis="y"

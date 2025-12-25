@@ -31,7 +31,7 @@ import {
  * which in turn, update the underlying audio sequencer
  */
 const AudioContext = createContext<AudioContextReturnType | undefined>(
-  undefined
+  undefined,
 );
 
 export function AudioContextProvider({ children }: { children: ReactNode }) {
@@ -45,37 +45,44 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   }
 
   // make sure the AudioContext is initialized
-  const initialize = useCallback(async (data?: SerializedSequencer) => {
-    try {
-      // if pulling from offline storage
-      if (data) {
-        // set all values here
-        actions.changeBpm(data.bpm);
-        actions.changeName(data.name);
-        actions.changeReverb(data.reverb);
-        actions.changeVolume(data.volume);
-        actions.changeSwing(data.swing);
-        actions.setSerializedTracks(data.state.tracks);
-        actions.setSequencer(
-          new Sequencer({
+  const initialize = useCallback(
+    async (data?: SerializedSequencer) => {
+      try {
+        let localSequencer: Sequencer | null = sequencer;
+        // if pulling from offline storage
+        if (data) {
+          // set all values here
+          actions.changeBpm(data.bpm);
+          actions.changeName(data.name);
+          actions.changeReverb(data.reverb);
+          actions.changeVolume(data.volume);
+          actions.changeSwing(data.swing);
+          actions.setSerializedTracks(data.state.tracks);
+
+          localSequencer = new Sequencer({
             ...data,
             // TODO Fix
             id: data.id,
-          })
-        );
-      }
-      // otherwise, create a new track
-      else {
-        throw new Error('No data passed');
-      }
+          });
 
-      await sequencer?.init();
-      actions.setInitialized(true);
-    } catch (err) {
-      console.log(err);
-      return null;
-    }
-  }, []);
+          // sequencer exists here...
+          console.log('set', localSequencer, actions);
+        }
+        // otherwise, create a new track
+        else {
+          throw new Error('No data passed');
+        }
+
+        await localSequencer?.init();
+        actions.setInitialized(true);
+        actions.setSequencer(localSequencer);
+      } catch (err) {
+        console.log(err);
+        return null;
+      }
+    },
+    [actions, sequencer],
+  );
 
   /**
    * Starts playback
@@ -83,7 +90,8 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   const play = useCallback(async () => {
     // start the AudioContext engine (on user interactive only)
     sequencer?.start();
-  }, []);
+    console.log('seq', sequencer);
+  }, [sequencer]);
 
   /**
    * Stops playback
@@ -91,28 +99,31 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   const stop = useCallback(async () => {
     // call stop on the sequencer
     sequencer?.stop();
-  }, []);
+  }, [sequencer]);
 
   const destroy = useCallback(() => {
     sequencer?.destroy();
     actions.setSequencer(null);
-  }, []);
+  }, [sequencer, actions]);
 
   const createTrack = useCallback(async () => {
     // add to Sequencer
     await sequencer?.addNewRhythm(generateTrack(tracks.length));
-  }, [tracks.length]);
+  }, [tracks.length, sequencer]);
 
   const repitchTick = useCallback(
     (id: string, index: number, type: 'INCREMENT' | 'DECREMENT') => {
       sequencer?.repitchTick(id, index, type);
     },
-    []
+    [sequencer],
   );
 
-  const toggleTick = useCallback((id: string, index: number) => {
-    sequencer?.toggleTick(id, index);
-  }, []);
+  const toggleTick = useCallback(
+    (id: string, index: number) => {
+      sequencer?.toggleTick(id, index);
+    },
+    [sequencer],
+  );
 
   const setTrackVal = useCallback(
     async (track: Track, action: TrackAction): Promise<Track> => {
@@ -122,12 +133,12 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       const v = await track[action.method](action.value as any);
       return v;
     },
-    []
+    [],
   );
 
   const clear = useCallback(() => {
     sequencer?.clear();
-  }, []);
+  }, [sequencer]);
 
   const decrementBpm = useCallback(() => {
     const curr = bpm;
@@ -143,14 +154,20 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     }
   }, [bpm, actions]);
 
-  const deleteTrack = useCallback((id: string) => {
-    sequencer?.deleteTrack(id);
-  }, []);
+  const deleteTrack = useCallback(
+    (id: string) => {
+      sequencer?.deleteTrack(id);
+    },
+    [sequencer],
+  );
 
-  const reorderTracks = useCallback((tracks: Track[]) => {
-    // send copy to sequencer for serialization on save
-    sequencer?.updateTracks(tracks);
-  }, []);
+  const reorderTracks = useCallback(
+    (tracks: Track[]) => {
+      // send copy to sequencer for serialization on save
+      sequencer?.updateTracks(tracks);
+    },
+    [sequencer],
+  );
 
   function setTracks(serializedTracks: SerializedSequencer['state']['tracks']) {
     actions.setSerializedTracks(serializedTracks);
@@ -197,7 +214,7 @@ export function useAudioContext() {
 
   if (context === undefined) {
     throw new Error(
-      `useAudioContext must be used within an AudioContextProvider`
+      `useAudioContext must be used within an AudioContextProvider`,
     );
   }
 

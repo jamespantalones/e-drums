@@ -74,9 +74,13 @@ export class Sequencer {
 
     this.chain.chain(this.reverbChain, Tone.Destination);
 
+    console.log('sequencer init');
+
     // load all initial tracks
     const trackPromises = getState().tracks.map((t) => t.init());
     const resolvedTracks = await Promise.all(trackPromises);
+
+    console.log('track promises resolved', resolvedTracks, trackPromises);
 
     // loop through each resolved track and connect to chain
     resolvedTracks.forEach((track) => {
@@ -94,6 +98,8 @@ export class Sequencer {
   }
 
   async start() {
+    console.log('sequencer start called', getState().initialized);
+
     if (!getState().initialized) {
       await this.init();
     }
@@ -111,9 +117,7 @@ export class Sequencer {
 
     Tone.Transport.start();
 
-    setState({ playState: SequencerPlayState.STARTED });
-
-    console.log('START');
+    setState((s) => ({ ...s, playState: SequencerPlayState.STARTED }));
   }
 
   // stop the transport
@@ -156,6 +160,7 @@ export class Sequencer {
       // IMPORTANT: any UI updates need to be called
       // here to not block main thread
       Tone.Draw.schedule(() => {
+        //setState({ tick: getState().tick });
         // call the current tick increment
         // SIG_TICK.value = this.state.rhythmIndex;
         // this.onTick(this.state.rhythmIndex);
@@ -209,31 +214,47 @@ export class Sequencer {
     index: number,
     type: 'INCREMENT' | 'DECREMENT'
   ) {
-    // let rhythmTarget: Track | undefined = undefined;
-    // SIG_TRACKS.value = SIG_TRACKS.value.map((rhythm) => {
-    //   // if we have a target
-    //   if (rhythm.id === id) {
-    //     const track = rhythm.repitchNote(index, type);
-    //     rhythmTarget = track;
-    //     return track;
-    //   }
-    //   return rhythm;
-    // });
-    // return [rhythmTarget, SIG_TRACKS.value];
+    setState((s) => {
+      let rhythmTarget: Track | undefined = undefined;
+      const updatedTracks = s.tracks.map((rhythm) => {
+        // if we have a target
+        if (rhythm.id === id) {
+          const track = rhythm.repitchNote(index, type);
+          rhythmTarget = track;
+          return track;
+        }
+        return rhythm;
+      });
+      return {
+        ...s,
+        tracks: updatedTracks,
+      };
+    });
+    const updatedTracks = getState().tracks;
+    const rhythmTarget = updatedTracks.find((t) => t.id === id);
+    return [rhythmTarget, updatedTracks];
   }
 
   public toggleTick(id: string, index: number): [Track | undefined, Track[]] {
-    // let rhythmTarget: Track | undefined = undefined;
-    // SIG_TRACKS.value = SIG_TRACKS.value.map((rhythm) => {
-    //   // if we have a target
-    //   if (rhythm.id === id) {
-    //     const track = rhythm.toggleNote(index);
-    //     rhythmTarget = track;
-    //     return track;
-    //   }
-    //   return rhythm;
-    // });
-    // return [rhythmTarget, SIG_TRACKS.value];
+    setState((s) => {
+      let rhythmTarget: Track | undefined = undefined;
+      const updatedTracks = s.tracks.map((rhythm) => {
+        // if we have a target
+        if (rhythm.id === id) {
+          const track = rhythm.toggleNote(index);
+          rhythmTarget = track;
+          return track;
+        }
+        return rhythm;
+      });
+      return {
+        ...s,
+        tracks: updatedTracks,
+      };
+    });
+    const updatedTracks = getState().tracks;
+    const rhythmTarget = updatedTracks.find((t) => t.id === id);
+    return [rhythmTarget, updatedTracks];
   }
 
   private setBpm(val: number) {
@@ -269,20 +290,29 @@ export class Sequencer {
     child: Track,
     { needsReconnect }: { needsReconnect?: boolean }
   ) => {
-    // SIG_TRACKS.value = SIG_TRACKS.value.map((track) => {
-    //   if (track.id === child.id) {
-    //     if (needsReconnect) {
-    //       child.sampler.connect(this.chain);
-    //     }
-    //     return child;
-    //   }
-    //   return track;
-    // });
+    setState((s) => {
+      return {
+        ...s,
+        tracks: s.tracks.map((track) => {
+          if (track.id === child.id) {
+            if (needsReconnect) {
+              child.sampler.connect(this.chain);
+            }
+            return child;
+          }
+          return track;
+        }),
+      };
+    });
   };
 
   public deleteTrack(id: string): [string, Track[]] {
-    // SIG_TRACKS.value = SIG_TRACKS.value.filter((r) => r.id !== id);
-    // return [id, SIG_TRACKS.value];
+    setState((s) => ({
+      ...s,
+      tracks: s.tracks.filter((r) => r.id !== id),
+      serializedTracks: s.serializedTracks.filter((r) => r.id !== id),
+    }));
+    return [id, getState().tracks];
   }
 
   public destroy() {
