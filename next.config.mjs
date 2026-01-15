@@ -4,6 +4,15 @@ import PWA from 'next-pwa';
 const config = {
   basePath: '/edrums',
   reactStrictMode: false,
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/edrums',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 const withPWA = PWA({
