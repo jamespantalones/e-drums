@@ -6,63 +6,88 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { del, get, set, values } from 'idb-keyval';
-import { Config } from '../config';
+import { del, get, set, entries } from 'idb-keyval';
 import { SerializedSequencer } from '../types';
-import { useRouter } from 'next/router';
+import { Config } from '../config';
+
+/**
+ * Storage keys MUST be app-scoped and path-agnostic.
+ * Rewrites virtualize paths; IndexedDB does not.
+ */
+const CACHE_PREFIX = Config.CACHE_PREFIX;
+
+type OfflineStorageContextType = {
+  removeFromCache: (id: string) => Promise<void>;
+  loadProjectFromCache: (
+    id: string
+  ) => Promise<SerializedSequencer | undefined>;
+  projects: SerializedSequencer[];
+  fetchIndexCache: () => Promise<void>;
+  saveProjectToCache: (id: string, data: SerializedSequencer) => Promise<void>;
+};
 
 const OfflineStorageContext = createContext<
-  | {
-      removeFromCache: (id: string) => Promise<void>;
-      loadProjectFromCache: (
-        id: string
-      ) => Promise<SerializedSequencer | undefined>;
-      projects: SerializedSequencer[];
-      fetchIndexCache: () => void;
-      saveProjectToCache: (id: string, data: any) => Promise<void>;
-    }
-  | undefined
+  OfflineStorageContextType | undefined
 >(undefined);
 
 export function OfflineStorageProvider({ children }: { children: ReactNode }) {
-  const router = useRouter();
-
   const [projects, setProjects] = useState<SerializedSequencer[]>([]);
 
-  async function loadProjectFromCache(
-    id: string
-  ): Promise<SerializedSequencer | undefined> {
-    const val = await get<SerializedSequencer>(`${Config.CACHE_PREFIX}/${id}`);
+  /**
+   * Load a single project by id
+   */
+  const loadProjectFromCache = useCallback(
+    async (id: string): Promise<SerializedSequencer | undefined> => {
+      return await get<SerializedSequencer>(`${CACHE_PREFIX}:${id}`);
+    },
+    []
+  );
 
-    return val;
-  }
+  /**
+   * Save or update a project
+   */
+  const saveProjectToCache = useCallback(
+    async (id: string, data: SerializedSequencer) => {
+      await set(`${CACHE_PREFIX}:${id}`, data);
+      await fetchIndexCache();
+    },
+    []
+  );
 
-  async function saveProjectToCache(id: string, data: SerializedSequencer) {
-    await set(`${Config.CACHE_PREFIX}/${id}`, data);
-  }
-
-  async function removeFromCache(id: string) {
-    // delete item
-    await del(`${Config.CACHE_PREFIX}/${id}`);
-  }
-
-  const retrieveIndexCache = useCallback(async (): Promise<
-    SerializedSequencer[]
-  > => {
-    return await values<SerializedSequencer>();
+  /**
+   * Remove a project
+   */
+  const removeFromCache = useCallback(async (id: string) => {
+    await del(`${CACHE_PREFIX}:${id}`);
+    await fetchIndexCache();
   }, []);
 
+  /**
+   * Fetch all projects belonging to this app only
+   */
   const fetchIndexCache = useCallback(async () => {
-    retrieveIndexCache().then((cache) => {
-      if (cache) {
-        setProjects(cache);
-      }
-    });
-  }, [retrieveIndexCache]);
+    const all = await entries<string, SerializedSequencer>();
 
+    const filtered = all
+      .filter(
+        ([key]) => typeof key === 'string' && key.startsWith(`${CACHE_PREFIX}:`)
+      )
+      .map(([, value]) => value)
+      .sort((a, b) => {
+        const at = new Date(a.updatedAt).getTime();
+        const bt = new Date(b.updatedAt).getTime();
+        return bt - at;
+      });
+
+    setProjects(filtered);
+  }, []);
+
+  /**
+   * Initial load only
+   */
   useEffect(() => {
     fetchIndexCache();
-  }, [fetchIndexCache, router.asPath]);
+  }, [fetchIndexCache]);
 
   return (
     <OfflineStorageContext.Provider
@@ -78,11 +103,13 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
     </OfflineStorageContext.Provider>
   );
 }
+
 export function useOfflineStorage() {
   const context = useContext(OfflineStorageContext);
-  if (context === undefined) {
+
+  if (!context) {
     throw new Error(
-      `useOfflineStorage must be used within an OfflineStorageProvider`
+      'useOfflineStorage must be used within an OfflineStorageProvider'
     );
   }
 
