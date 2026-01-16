@@ -31,7 +31,8 @@
   "description": "A simple, peasant Euclidean rhythm generator",
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
-  "start_url": "/",
+  "start_url": "/edrums",
+  "scope": "/edrums/",
   "display": "standalone",
   "orientation": "landscape"
 }
