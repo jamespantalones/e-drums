@@ -2,7 +2,6 @@ import PWA from 'next-pwa';
 
 /** @type {import('next').NextConfig} */
 const config = {
-  basePath: '/',
   reactStrictMode: false,
 };
 
