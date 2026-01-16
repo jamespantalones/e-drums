@@ -1,5 +1,5 @@
 import * as Tone from 'tone';
-import { Config } from '../config';
+import { Config, publicUrl } from '../config';
 import { Instrument, SoundFile, TrackOpts } from '../types';
 import { generateId } from '../utils';
 
@@ -91,7 +91,7 @@ export class Track {
         return this;
       }
       this.sampler = await createAsyncSampler(
-        `/sounds/${this.instrument.sound.files[0]}`
+        publicUrl(`/sounds/${this.instrument.sound.files[0]}`)
       );
 
       this.isReady = true;
@@ -234,7 +234,9 @@ export class Track {
     // get the selected instrument from the sound files
     this.isReady = false;
 
-    const file = `/sounds/${this._createSoundFile(value).sound.files[0]}`;
+    const file = publicUrl(
+      `/sounds/${this._createSoundFile(value).sound.files[0]}`
+    );
 
     // dispose of old audio file
     if (this.sampler) {
