@@ -23,6 +23,7 @@ type OfflineStorageContextType = {
   ) => Promise<SerializedSequencer | undefined>;
   projects: SerializedSequencer[];
   fetchIndexCache: () => Promise<void>;
+  migrateLegacyKeys: () => Promise<void>;
   saveProjectToCache: (id: string, data: SerializedSequencer) => Promise<void>;
 };
 
@@ -82,11 +83,28 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
     setProjects(filtered);
   }, []);
 
+  async function migrateLegacyKeys() {
+    const all = await entries<string, any>();
+
+    for (const [key, value] of all) {
+      if (typeof key !== 'string') continue;
+
+      if (key.startsWith('ER-1:')) {
+        const id = key.slice('ER-1:'.length);
+        const newKey = `edrums:project:${id}`;
+
+        await set(newKey, value);
+        await del(key);
+      }
+    }
+  }
+
   /**
    * Initial load only
    */
+
   useEffect(() => {
-    fetchIndexCache();
+    migrateLegacyKeys().then(fetchIndexCache);
   }, [fetchIndexCache]);
 
   return (
@@ -97,6 +115,7 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
         saveProjectToCache,
         removeFromCache,
         fetchIndexCache,
+        migrateLegacyKeys,
       }}
     >
       {children}

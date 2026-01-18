@@ -5,6 +5,7 @@ const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
 /** @type {import('next').NextConfig} */
 const config = {
   assetPrefix: BASE_PATH,
+  basePath: BASE_PATH,
   reactStrictMode: false,
 };
 

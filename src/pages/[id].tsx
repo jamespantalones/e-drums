@@ -14,6 +14,7 @@ import { Config } from '../config';
 import { Loader } from 'lucide-react';
 import { Footer } from '../components/Nav/Footer';
 import { Input } from '../components/inputs/input';
+import { del, entries, set } from 'idb-keyval';
 
 /**
  *
