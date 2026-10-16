@@ -3,8 +3,8 @@
  * The native range input stays for keyboard and screen reader support.
  */
 .slider {
-  --meter-height: 6px;
-  --segment: 6px;
+  --meter-height: 5px;
+  --segment: 4px;
   @apply w-full mt-2 block;
   touch-action: none;
 
@@ -49,7 +49,7 @@
   input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 4px;
+    width: 2px;
     height: calc(var(--meter-height) + 6px);
     background: #fff;
     border: none;
@@ -57,7 +57,7 @@
   }
 
   input[type='range']::-moz-range-thumb {
-    width: 4px;
+    width: 2px;
     height: calc(var(--meter-height) + 6px);
     background: #fff;
     border: none;
@@ -67,14 +67,14 @@
 }
 
 .footer {
-  --meter-height: 16px;
-  --segment: 10px;
+  --meter-height: 10px;
+  --segment: 5px;
   @apply mt-0 flex items-center gap-4;
 
   span {
     @apply order-first shrink-0 text-left;
     width: 7.5rem;
-    font-size: 22px;
+    font-size: 15px;
     line-height: 1;
   }
 
@@ -86,13 +86,13 @@
 /* phones, including landscape where the width passes md */
 @media (max-width: 767px), (max-height: 500px) {
   .footer {
-    --meter-height: 10px;
-    --segment: 7px;
+    --meter-height: 8px;
+    --segment: 4px;
     @apply gap-3;
 
     span {
       width: 5.5rem;
-      font-size: 17px;
+      font-size: 12px;
     }
   }
 }

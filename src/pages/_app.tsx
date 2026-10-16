@@ -5,7 +5,7 @@ import { AudioContextProvider } from '../contexts/AudioContext';
 import { OfflineStorageProvider } from '../contexts/OfflineStorageContext';
 import { metaConfig } from '../config/meta';
 import { publicUrl } from '../config';
-import { termFont } from '../config/fonts';
+import { monoFont } from '../config/fonts';
 
 export default function ERhythms({ Component, pageProps }: AppProps) {
   return (
@@ -32,14 +32,14 @@ export default function ERhythms({ Component, pageProps }: AppProps) {
 
         <link
           rel="apple-touch-icon"
-          href={publicUrl('icons/apple-touch-icon-180x180.png')}
+          href={publicUrl('icons/apple-touch-icon-180x180.png?v=3')}
         />
 
-        <link rel="icon" href={publicUrl('icons/favicon.ico')} sizes="any" />
+        <link rel="icon" href={publicUrl('icons/favicon.ico?v=3')} sizes="any" />
         <link
           rel="icon"
           type="image/svg+xml"
-          href={publicUrl('icons/logo.svg')}
+          href={publicUrl('icons/logo.svg?v=3')}
         />
 
         <meta name="twitter:url" content={metaConfig.canonicalURL} />
@@ -56,7 +56,7 @@ export default function ERhythms({ Component, pageProps }: AppProps) {
         {/* expose the font on :root so portals (selects, dialogs) get it too */}
         <style
           dangerouslySetInnerHTML={{
-            __html: `:root { --font-term: ${termFont.style.fontFamily}; }`,
+            __html: `:root { --font-mono: ${monoFont.style.fontFamily}; }`,
           }}
         />
       </Head>

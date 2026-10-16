@@ -10,7 +10,9 @@
   --color-text: #f4f4f5;
   --color-foreground: var(--color-text);
   --color-background: var(--color-bg);
-  --color-alert: hsl(0, 50%, 50%);
+  /* one bright red for every delete; not a muddy maroon */
+  --color-danger: #ff3b30;
+  --color-alert: var(--color-danger);
   --border-width: 1px;
   --box-shadow-sm: 0 0 2px rgb(80, 80, 80);
   --box-shadow-lg: 0 0 5px rgb(190, 190, 190);
@@ -49,7 +51,8 @@ body {
   min-height: -webkit-fill-available;
   background: var(--color-bg);
   padding-bottom: env(safe-area-inset-bottom);
-  font-family: var(--font-term), ui-monospace, monospace;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 300;
   letter-spacing: 0;
   /* get around notch*/
   @apply px-12 lg:px-3 portrait:px-1 portrait:pr-0;
@@ -118,4 +121,93 @@ body:has(.full-bleed) {
 .full-bleed {
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
+}
+
+/*
+ * Index step row: a playhead sweeps the visible steps (4 on phones, 12
+ * wider) and lit dots flare as it hits them. Keyframe offsets can't use
+ * vars, so each loop length has its own keyframes.
+ */
+.seq {
+  --step: 140ms;
+  --n: 4;
+  --loop: calc(var(--n) * var(--step));
+}
+
+.seq-step,
+.seq-dot {
+  animation-duration: var(--loop);
+  animation-delay: calc(var(--i) * var(--step));
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
+}
+
+.seq-step {
+  animation-name: seq-head-4;
+  animation-timing-function: steps(1, end);
+}
+
+.seq-dot {
+  animation-timing-function: ease-out;
+}
+
+.seq-lit {
+  animation-name: seq-hit-4;
+}
+
+.seq-step .seq-dot:not(.seq-lit) {
+  animation-name: seq-pass-4;
+  animation-timing-function: steps(1, end);
+}
+
+@media (min-width: 768px) {
+  .seq {
+    --n: 12;
+  }
+  .seq-step {
+    animation-name: seq-head-12;
+  }
+  .seq-lit {
+    animation-name: seq-hit-12;
+  }
+  .seq-step .seq-dot:not(.seq-lit) {
+    animation-name: seq-pass-12;
+  }
+}
+
+/* playhead: the cell lifts for one step */
+@keyframes seq-head-4 {
+  0% { background-color: var(--color-surface); }
+  25%, 100% { background-color: var(--color-bg); }
+}
+@keyframes seq-head-12 {
+  0% { background-color: var(--color-surface); }
+  8.333%, 100% { background-color: var(--color-bg); }
+}
+
+/* lit step: flare when hit, then decay over about two steps */
+@keyframes seq-hit-4 {
+  0% { scale: 2; box-shadow: 0 0 18px 2px rgb(255 255 255 / 0.55); }
+  50%, 100% { scale: 1; box-shadow: 0 0 0 0 rgb(255 255 255 / 0); }
+}
+@keyframes seq-hit-12 {
+  0% { scale: 2; box-shadow: 0 0 18px 2px rgb(255 255 255 / 0.55); }
+  16.666%, 100% { scale: 1; box-shadow: 0 0 0 0 rgb(255 255 255 / 0); }
+}
+
+/* empty step: outline brightens while the playhead passes */
+@keyframes seq-pass-4 {
+  0% { border-color: rgb(255 255 255 / 0.7); }
+  25%, 100% { border-color: rgb(64 64 64); }
+}
+@keyframes seq-pass-12 {
+  0% { border-color: rgb(255 255 255 / 0.7); }
+  8.333%, 100% { border-color: rgb(64 64 64); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seq-step,
+  .seq-dot {
+    animation: none;
+  }
 }

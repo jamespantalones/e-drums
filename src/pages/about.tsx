@@ -14,7 +14,7 @@ const FACTS = [
 
 export default function About() {
   return (
-    <main className="full-bleed min-h-screen bg-black text-white font-term tracking-normal">
+    <main className="full-bleed min-h-screen bg-black text-white font-mono tracking-normal">
       <header className="flex items-stretch border-b-4 border-white">
         <Link
           href="/"

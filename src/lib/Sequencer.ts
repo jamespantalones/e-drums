@@ -153,8 +153,8 @@ export class Sequencer {
     // ************************************************************
     // main loop
     // ************************************************************
-    // on every 16th note...
-    Tone.Transport.swingSubdivision = '16t';
+    // steps are 16ths, so swing delays every other 16th
+    Tone.Transport.swingSubdivision = '16n';
     // later tempo changes arrive through setBpm
     this.setBpm(SIG_BPM.value);
 

@@ -1,7 +1,7 @@
 import { useSignals } from '@preact/signals-react/runtime';
 import styles from './Footer.module.css';
 import { Slider } from '../inputs/Slider';
-import { SIG_BPM, SIG_REVERB, SIG_SWING, SIG_VOLUME } from '../../state/track';
+import { SIG_BPM, SIG_SWING } from '../../state/track';
 import { Config } from '../../config';
 
 export function Footer() {
@@ -13,14 +13,6 @@ export function Footer() {
 
   function handleSwingChange(swing: number) {
     SIG_SWING.value = swing;
-  }
-
-  function handleVolumeChange(vol: number) {
-    SIG_VOLUME.value = vol;
-  }
-
-  function handleReverbChange(rev: number) {
-    SIG_REVERB.value = rev;
   }
 
   return (
@@ -38,25 +30,15 @@ export function Footer() {
 
       <div className={styles.slidecontainer}>
         <Slider
-          onChange={handleVolumeChange}
+          onChange={handleSwingChange}
           variant="footer"
-          label="Vol."
-          value={SIG_VOLUME.value}
-          min={Config.MIN_VOLUME}
-          max={Config.MAX_VOLUME}
-          step={0.1}
+          label="Swing"
+          value={SIG_SWING.value}
+          min={0}
+          max={100}
+          step={1}
         />
       </div>
-      {/* <div className={styles.slidecontainer}>
-              <Slider
-                onChange={handleSwingChange}
-                label="Swing"
-                value={SIG_SWING.value}
-                min={0}
-                max={100}
-                step={1}
-              />
-            </div> */}
     </footer>
   );
 }

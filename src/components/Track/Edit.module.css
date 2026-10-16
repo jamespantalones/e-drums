@@ -44,26 +44,35 @@
 }
 
 .toggle {
-  /* solid pads with heavy icons so they read at 16px tall */
-  @apply bg-white text-black;
+  /* outlined when off, filled when on, so only state carries weight */
+  color: var(--color-text);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.45);
+  transition: background-color 80ms, color 80ms;
   &:hover {
-    @apply bg-neutral-300;
+    background: var(--color-surface);
   }
   &:active {
-    @apply bg-neutral-400;
+    @apply bg-white text-black;
   }
   &.muted {
-    @apply bg-red-500 text-black;
-    @apply hover:bg-red-400;
+    @apply bg-red-500 text-black hover:bg-red-400;
+    box-shadow: none;
   }
   &.active {
     @apply bg-green-400 text-black hover:bg-green-300;
+    box-shadow: none;
   }
   &.pitch {
     @apply bg-yellow-300 text-black hover:bg-yellow-200;
+    box-shadow: none;
   }
+  /* same pixel X and red hover as the index page's delete */
   &.destructive {
-    @apply bg-white text-black hover:bg-red-500;
+    @apply hover:bg-danger hover:text-white;
+    &:hover {
+      box-shadow: none;
+    }
   }
   &:focus-visible {
     @apply outline outline-2 outline-offset-1 outline-white;
@@ -99,19 +108,161 @@
     @apply my-0.5;
     @apply bg-black text-foreground;
     @apply border-background border;
-    box-shadow: inset 0 0 0 2px #fff;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.45);
+    transition: background-color 80ms, box-shadow 80ms;
 
-    &:hover {
+    &:hover:not(:disabled) {
       @apply bg-white text-black;
       &:active {
         @apply bg-neutral-400;
       }
+    }
+    &:disabled {
+      color: var(--color-muted);
+      box-shadow: inset 0 0 0 1px var(--color-muted);
     }
 
     @media (orientation: portrait) {
       @apply w-1/2 p-1;
       @apply flex-grow-0 flex-shrink-0;
       @apply my-1;
+    }
+  }
+}
+
+/*
+ * Native select. Browsers with customizable select (appearance: base-select)
+ * get a fully styled picker: a grid of sound cells split by white rules, like
+ * the index step grid. Everywhere else it's a plain select with a chevron.
+ */
+.sound {
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f4f4f5' stroke-width='1.5' stroke-linecap='square'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  @apply block h-6 w-full max-w-[var(--slice-size)] text-xxs lg:text-xs uppercase;
+  @apply pl-2 pr-6 py-1 landscape:ml-1 portrait:mb-2;
+  @apply landscape:border-b border-white cursor-pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+  color-scheme: dark;
+  color: var(--color-text);
+  background: var(--chevron) no-repeat right 4px center / 14px var(--color-bg);
+  text-overflow: ellipsis;
+  transition: background-color 100ms;
+
+  &:hover {
+    background-color: var(--color-surface);
+  }
+  &:focus-visible {
+    @apply outline outline-1 outline-white -outline-offset-1;
+  }
+
+  option {
+    color: var(--color-text);
+    background-color: var(--color-bg);
+  }
+}
+
+@supports (appearance: base-select) {
+  .sound,
+  .sound::picker(select) {
+    appearance: base-select;
+  }
+
+  .sound {
+    @apply flex items-center gap-1 pr-1;
+    background-image: none;
+    font: inherit;
+    @apply text-xxs lg:text-xs;
+
+    &:open {
+      @apply bg-white text-black;
+    }
+  }
+
+  /* chevron flips while the picker is open */
+  .sound::picker-icon {
+    content: '';
+    width: 14px;
+    height: 14px;
+    margin-left: auto;
+    background: currentColor;
+    mask: var(--chevron) center / contain no-repeat;
+    transition: rotate 150ms ease;
+  }
+  .sound:open::picker-icon {
+    rotate: 180deg;
+  }
+
+  /* display only while open: overriding it unconditionally keeps the closed
+     picker laid out (invisible) over the select, swallowing clicks */
+  .sound:open::picker(select) {
+    display: grid;
+  }
+
+  .sound::picker(select) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2px;
+    width: max(16rem, anchor-size(width));
+    max-height: min(70vh, 24rem);
+    margin-block: 4px;
+    padding: 0;
+    overflow-y: auto;
+    border: 2px solid var(--color-text);
+    border-radius: 0;
+    /* the gaps show this colour as rules between cells */
+    background: var(--color-text);
+    color: var(--color-text);
+    box-shadow: 0 12px 32px rgb(0 0 0 / 0.5);
+    position-try-fallbacks: flip-block;
+    opacity: 1;
+    translate: 0 0;
+    transition:
+      opacity 120ms ease,
+      translate 120ms ease,
+      overlay 120ms allow-discrete,
+      display 120ms allow-discrete;
+  }
+
+  .sound:not(:open)::picker(select) {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+
+  @starting-style {
+    .sound:open::picker(select) {
+      opacity: 0;
+      translate: 0 -4px;
+    }
+  }
+
+  .sound option {
+    @apply flex items-center gap-1.5 px-2 py-2 text-xxs lg:text-xs uppercase cursor-pointer;
+    background: var(--color-bg);
+    color: var(--color-text);
+    outline: none;
+    transition: background-color 80ms;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--color-surface);
+    }
+
+    &:checked {
+      @apply bg-white text-black;
+    }
+
+    /* a lit LED marks the current sound */
+    &::checkmark {
+      content: '';
+      order: -1;
+      width: 6px;
+      height: 6px;
+      background: currentColor;
+    }
+    &:not(:checked)::checkmark {
+      background: transparent;
+      outline: 1px solid var(--color-muted);
+      outline-offset: -1px;
     }
   }
 }

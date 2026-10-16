@@ -55,6 +55,14 @@ const GLYPHS: Record<string, string[]> = {
   '#': ['.#.#.', '.#.#.', '#####', '.#.#.', '#####', '.#.#.', '.#.#.'],
   '(': ['...#.', '..#..', '.#...', '.#...', '.#...', '..#..', '...#.'],
   ')': ['.#...', '..#..', '...#.', '...#.', '...#.', '..#..', '.#...'],
+  // transport icons
+  '▶': ['#....', '##...', '###..', '####.', '###..', '##...', '#....'],
+  '■': ['.....', '#####', '#####', '#####', '#####', '#####', '.....'],
+  '⠿': ['.....', '.....', '#.#.#', '.....', '#.#.#', '.....', '.....'],
+  '♪': ['..##.', '..#.#', '..#..', '..#..', '.##..', '###..', '.#...'],
+  // speaker on / muted, wider than a letter
+  '🔊': ['...#....', '..##.#..', '####..#.', '####..#.', '####..#.', '..##.#..', '...#....'],
+  '🔇': ['...#....', '..##....', '####.#.#', '####..#.', '####.#.#', '..##....', '...#....'],
 };
 
 // anything we can't draw becomes a blank cell
@@ -66,19 +74,22 @@ export const GLYPH_HEIGHT = 7;
 export type Pixel = { x: number; y: number };
 
 export function pixelsFor(text: string, spacing = 1) {
-  const chars = text.toUpperCase().split('');
+  // Array.from keeps emoji keys whole
+  const chars = Array.from(text.toUpperCase());
   const pixels: Pixel[] = [];
-  chars.forEach((char, i) => {
+  // letters are GLYPH_WIDTH wide; icons may be wider
+  let offset = 0;
+  chars.forEach((char) => {
     const glyph = GLYPHS[char] ?? FALLBACK;
-    const offset = i * (GLYPH_WIDTH + spacing);
     glyph.forEach((row, y) => {
       row.split('').forEach((cell, x) => {
         if (cell === '#') pixels.push({ x: offset + x, y });
       });
     });
+    offset += glyph[0].length + spacing;
   });
 
-  const width = Math.max(chars.length * (GLYPH_WIDTH + spacing) - spacing, 1);
+  const width = Math.max(offset - spacing, 1);
   return { pixels, width, height: GLYPH_HEIGHT };
 }
 

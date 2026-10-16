@@ -32,6 +32,11 @@
   }
 }
 
+/* single-glyph transport buttons sit in square cells */
+.icon {
+  @apply px-0 aspect-square;
+}
+
 .active {
   @apply bg-white text-black;
 }
@@ -46,7 +51,9 @@
 
   input {
     @apply hidden md:flex w-full h-full;
-    @apply border-0 bg-transparent px-4 md:px-6 text-lg;
+    @apply border-0 bg-transparent px-4 md:px-6;
+    font-size: 17px;
+    letter-spacing: 0.02em;
     @apply ring-0 ring-offset-0;
     &:hover {
       background: var(--color-surface);
@@ -69,11 +76,14 @@
   .nav {
     @apply h-12;
   }
-  .button {
+  .button:not(.icon) {
     @apply px-3;
-    svg {
-      @apply h-2.5;
-    }
+  }
+  .button:not(.icon) svg {
+    @apply h-2.5;
+  }
+  .icon svg {
+    @apply h-3.5;
   }
   .logo {
     h1 {
@@ -81,6 +91,7 @@
     }
   }
   .name input {
-    @apply px-3 text-base;
+    @apply px-3;
+    font-size: 15px;
   }
 }

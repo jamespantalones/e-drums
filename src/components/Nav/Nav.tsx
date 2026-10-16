@@ -34,9 +34,17 @@ function NavButton({
       aria-pressed={active}
       onClick={onClick}
       disabled={disabled}
-      className={clsx(styles.cell, styles.button, active && styles.active)}
+      className={clsx(
+        styles.cell,
+        styles.button,
+        text.length === 1 && styles.icon,
+        active && styles.active,
+      )}
     >
-      <PixelText text={text} className="h-3.5 md:h-4 w-auto" />
+      <PixelText
+        text={text}
+        className={text.length === 1 ? 'h-4 md:h-5 w-auto' : 'h-3.5 md:h-4 w-auto'}
+      />
     </button>
   );
 }
@@ -75,10 +83,10 @@ export function Nav({
 
       <div className={clsx(styles.cell, styles.name)}>{children}</div>
 
-      <NavButton label="Play" text="Play" onClick={play} active={playing} />
+      <NavButton label="Play" text="▶" onClick={play} active={playing} />
       <NavButton
         label="Stop"
-        text="Stop"
+        text="■"
         onClick={methods.stop}
         disabled={!SIG_INITIALIZED.value}
       />

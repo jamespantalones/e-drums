@@ -8,7 +8,8 @@
   padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
     max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
   background: var(--color-bg);
-  font-family: var(--font-term), monospace;
+  font-family: var(--font-mono), monospace;
+  font-weight: 300;
   cursor: pointer;
 }
 

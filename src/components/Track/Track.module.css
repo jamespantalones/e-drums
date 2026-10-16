@@ -6,12 +6,29 @@
   height: auto;
   min-height: calc(var(--slice-size) + 10px);
   width: auto;
-  @apply pb-0;
-  @apply pt-0;
+  @apply py-3 pl-3 portrait:py-0 portrait:px-1;
   @apply bg-background;
   @media (orientation: portrait) {
     height: 100vh;
     width: calc(var(--slice-size) + 10px);
+  }
+
+  /* hairline between tracks so their controls don't run together */
+  & + & {
+    border-top: 1px solid rgb(255 255 255 / 0.14);
+    @media (orientation: portrait) {
+      border-top: 0;
+      border-left: 1px solid rgb(255 255 255 / 0.14);
+    }
+  }
+
+  /* each track's own colour down the edge of its controls */
+  &::before {
+    content: '';
+    @apply absolute left-0 top-3 bottom-3 w-0.5 portrait:hidden;
+    background: hsl(
+      var(--color-track-h) var(--color-track-s) var(--color-track-l)
+    );
   }
 }
 
@@ -45,13 +62,13 @@
 }
 
 .delete-slice-button {
-  @apply w-8 h-4 p-1 border-2 border-red-300;
-  @apply text-red-300;
+  @apply w-8 h-4 p-1 border-2 border-danger;
+  @apply text-danger;
   @apply flex items-center justify-center;
   @apply opacity-30;
   &:hover,
   &:focus {
-    @apply opacity-100 scale-110 bg-red-100 text-red-700;
+    @apply opacity-100 scale-110 bg-danger text-white;
   }
   &:active {
     @apply scale-90;

@@ -15,25 +15,10 @@ import clsx from 'clsx';
 import { ReorderIcon } from './ReorderIcon';
 import { generateRandomColor } from '../../lib/utils';
 import { padNumber } from '../../utils';
-import {
-  Minus,
-  Music2,
-  Music3,
-  Plus,
-  Trash,
-  Volume2,
-  VolumeX,
-} from 'lucide-react';
 import { Slider } from '../inputs/Slider';
+import { PixelText } from '../Logo/Logo';
 import { useSignals } from '@preact/signals-react/runtime';
 import { markChanged } from '../../state/track';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../inputs/select';
 
 export function Edit({
   dragControls,
@@ -108,29 +93,19 @@ export function Edit({
         {/* left panel */}
         <div className="flex flex-row portrait:flex-col">
           <section className="w-24">
-            <Select
+            <select
+              className={styles.sound}
+              title="Sound"
+              aria-label="Sound"
               value={rhythm.instrument?.sound.name}
-              onValueChange={handleInstrumentChange}
+              onChange={(ev) => handleInstrumentChange(ev.target.value)}
             >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-
-              <SelectContent
-                position="item-aligned"
-                style={{ touchAction: 'none' }}
-              >
-                {SOUNDS.map((sound, index) => (
-                  <SelectItem
-                    key={sound.name}
-                    value={sound.name}
-                    className="text-sm"
-                  >
-                    {sound.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              {SOUNDS.map((sound) => (
+                <option key={sound.name} value={sound.name}>
+                  {sound.name}
+                </option>
+              ))}
+            </select>
 
             <div className="flex">
               <ReorderIcon dragControls={dragControls} />
@@ -151,8 +126,7 @@ export function Edit({
                   [styles.active]: !muted,
                 })}
               >
-                {muted && <VolumeX size={13} strokeWidth={2.75} />}
-                {!muted && <Volume2 size={13} strokeWidth={2.75} />}
+                <PixelText text={muted ? '🔇' : '🔊'} className="h-2.5 w-auto" />
               </button>
               <button
                 onClick={toggleEditPitch}
@@ -163,7 +137,7 @@ export function Edit({
                   [styles.pitch]: editPitch,
                 })}
               >
-                <Music2 size={13} strokeWidth={2.75} />
+                <PixelText text="♪" className="h-2.5 w-auto" />
               </button>
               <button
                 title="Delete Track"
@@ -173,7 +147,7 @@ export function Edit({
                   [styles.destructive]: true,
                 })}
               >
-                <Trash size={12} strokeWidth={2.75} />
+                <PixelText text="X" className="h-2 w-auto" />
               </button>
             </div>
           </section>
@@ -185,7 +159,7 @@ export function Edit({
               className={styles['add-button']}
               disabled={rhythm.totalNotes >= Config.MAX_SLICES}
             >
-              <Plus size={20} />
+              <PixelText text="+" className="h-2.5 w-auto" />
             </button>
             <button
               title="Remove Note"
@@ -198,7 +172,7 @@ export function Edit({
               }}
               className={styles['subtract-button']}
             >
-              <Minus size={20} />
+              <PixelText text="-" className="h-2.5 w-auto" />
             </button>
           </section>
         </div>

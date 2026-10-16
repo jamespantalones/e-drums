@@ -103,7 +103,7 @@ export function Intro({
   return (
     <div
       className={clsx(styles.intro, phase === 'leaving' && styles.leaving)}
-      onPointerDown={() => play()}
+      onPointerDown={() => finish()}
     >
       <h1 className="sr-only">e-drums</h1>
       <svg
@@ -130,7 +130,12 @@ export function Intro({
 
       <div className={styles.footer}>
         {phase === 'waiting' ? (
-          <button className={styles.prompt} onClick={play} autoFocus>
+          <button
+            className={styles.prompt}
+            onPointerDown={(ev) => ev.stopPropagation()}
+            onClick={play}
+            autoFocus
+          >
             Press any key to start<span className={styles.cursor}>_</span>
           </button>
         ) : (

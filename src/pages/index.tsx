@@ -85,7 +85,7 @@ const Home: NextPage = () => {
     <>
       {showIntro && <Intro onDone={introDone} target={wordmark} />}
 
-      <main className="full-bleed min-h-screen bg-black text-white font-term tracking-normal">
+      <main className="full-bleed min-h-screen bg-black text-white font-mono tracking-normal">
         <header className="border-b-4 border-white p-4 md:p-6">
           <h1 className="!transform-none not-italic">
             {/* hidden, not removed, while the intro word flies onto it */}
@@ -117,7 +117,7 @@ const Home: NextPage = () => {
         </div>
 
         {/* a step-sequencer row: New takes four cells, the rest are steps */}
-        <div className="grid grid-cols-8 md:grid-cols-16 gap-1 bg-white border-b-4 border-white">
+        <div className="seq grid grid-cols-8 md:grid-cols-16 gap-1 bg-white border-b-4 border-white">
           <button
             onClick={createNew}
             className={clsx(
@@ -136,14 +136,15 @@ const Home: NextPage = () => {
               key={i}
               aria-hidden
               className={clsx(
-                'aspect-square bg-black flex items-center justify-center',
+                'seq-step aspect-square bg-black flex items-center justify-center',
                 i >= 4 && 'hidden md:flex',
               )}
+              style={{ '--i': i } as React.CSSProperties}
             >
               <div
                 className={clsx(
-                  'w-1/4 h-1/4',
-                  lit ? 'bg-white' : 'border-2 border-neutral-700',
+                  'seq-dot w-1/4 h-1/4',
+                  lit ? 'seq-lit bg-white' : 'border-2 border-neutral-700',
                 )}
               />
             </div>
@@ -162,7 +163,7 @@ const Home: NextPage = () => {
 
           {projects.length === 0 ? (
             <p className="p-4 md:p-6 text-4xl md:text-5xl text-neutral-400">
-              Nothing saved yet. Hit New and it lands here.
+              Nothing saved yet.
             </p>
           ) : (
             <ul>
@@ -200,7 +201,7 @@ const Home: NextPage = () => {
                   </Link>
                   <button
                     className={clsx(
-                      'shrink-0 border-l-4 border-current px-5 md:px-8 hover:bg-black hover:text-white',
+                      'shrink-0 border-l-4 border-current px-5 md:px-8 hover:bg-danger hover:text-white focus-visible:bg-danger focus-visible:text-white',
                       FOCUS,
                     )}
                     aria-label={`Delete ${p.name}`}

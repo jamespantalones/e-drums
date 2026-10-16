@@ -1,6 +1,6 @@
 import { DragControls } from 'framer-motion';
 import styles from './ReorderIcon.module.css';
-import { GripHorizontal } from 'lucide-react';
+import { PixelText } from '../Logo/Logo';
 
 interface Props {
   dragControls: DragControls;
@@ -12,7 +12,7 @@ export function ReorderIcon({ dragControls }: Props) {
       className={styles.wrapper}
       onPointerDown={(ev) => dragControls.start(ev)}
     >
-      <GripHorizontal />
+      <PixelText text="⠿" className="h-full w-auto" />
     </div>
   );
 }

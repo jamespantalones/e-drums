@@ -18,7 +18,7 @@ export function markPixels(cell = 9) {
   }));
 }
 
-export function markSvg(ink = '#fff', paper = '#000') {
+export function markSvg(ink = '#fff', paper = '#17181b') {
   const rects = markPixels()
     .map((p) => `<rect x="${p.x}" y="${p.y}" width="${p.size}" height="${p.size}"/>`)
     .join('');
