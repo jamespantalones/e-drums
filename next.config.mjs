@@ -7,6 +7,22 @@ const config = {
   assetPrefix: BASE_PATH,
   basePath: BASE_PATH,
   reactStrictMode: false,
+  async redirects() {
+    if (!BASE_PATH) return [];
+
+    // Old root URLs (e.g. e-drums.biz/<id>) move to the main site.
+    // sw.js/workbox are left to 404 so old root-scoped service workers unregister.
+    const destination = `https://www.jamespants.com${BASE_PATH}`;
+    return [
+      { source: '/', destination, basePath: false, permanent: false },
+      {
+        source: `/:path((?!${BASE_PATH.slice(1)}(?:/|$)|sw\\.js$|workbox-).+)`,
+        destination: `${destination}/:path`,
+        basePath: false,
+        permanent: false,
+      },
+    ];
+  },
 };
 
 const withPWA = PWA({
