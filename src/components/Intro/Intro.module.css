@@ -12,14 +12,23 @@
   cursor: pointer;
 }
 
-.leaving {
-  animation: wipe 500ms steps(10, end) forwards;
-}
-
 .word {
   flex: 1;
   width: 100%;
   min-height: 0;
+  transform-origin: 0 0;
+  transition: transform 700ms cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+/* the word flies onto the page logo while the backdrop fades away */
+.leaving {
+  pointer-events: none;
+  cursor: default;
+  animation: fade 700ms cubic-bezier(0.7, 0, 0.2, 1) forwards;
+}
+
+.leaving .footer {
+  visibility: hidden;
 }
 
 .pixel {
@@ -50,7 +59,7 @@
 }
 
 .skip {
-  color: rgb(120, 120, 120);
+  color: rgb(128, 130, 136);
 }
 
 .skip:hover {
@@ -72,16 +81,18 @@
   }
 }
 
-@keyframes wipe {
+@keyframes fade {
   to {
-    clip-path: inset(0 0 100% 0);
+    background-color: transparent;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .pixel,
-  .cursor,
-  .leaving {
+  .cursor {
     animation: none;
+  }
+  .word {
+    transition: none;
   }
 }

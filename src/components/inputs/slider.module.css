@@ -1,9 +1,13 @@
+/*
+ * Segmented LED meter: white segments up to the value, dark ones after.
+ * The native range input stays for keyboard and screen reader support.
+ */
 .slider {
-  --radius: 8px;
-  --thumb: rgba(255, 255, 255, 0.25);
-  @apply w-full;
-  @apply mt-2 block;
+  --meter-height: 6px;
+  --segment: 6px;
+  @apply w-full mt-2 block;
   touch-action: none;
+
   span {
     @apply text-xxs;
     @apply block mt-1 p-0 text-right uppercase;
@@ -11,62 +15,84 @@
     line-height: 8px;
     @apply select-none;
   }
+
   input[type='range'] {
-    /* removing default appearance */
     -webkit-appearance: none;
     appearance: none;
-    /* creating a custom design */
-    @apply w-full;
-    @apply block;
-    @apply mb-1;
+    @apply w-full block mb-1;
     cursor: pointer;
-    outline: none;
-    height: 2px;
+    height: var(--meter-height);
     touch-action: none;
-    background: #fff;
-    /* border: 1px solid rgba(255, 255, 255, 0.2); */
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 calc(var(--segment) - 2px),
+        var(--color-bg) calc(var(--segment) - 2px) var(--segment)
+      ),
+      linear-gradient(
+        90deg,
+        #fff 0 var(--fill),
+        rgb(64, 64, 64) var(--fill) 100%
+      );
   }
 
-  /* Thumb: webkit */
+  input[type='range']:focus {
+    outline: none;
+  }
+
+  input[type='range']:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+
+  /* thumb: a tall white bar marking the value */
   input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    @apply w-4 h-2;
-    border: none;
+    width: 4px;
+    height: calc(var(--meter-height) + 6px);
     background: #fff;
-    transition: 0.2s ease-in-out;
+    border: none;
+    box-shadow: 0 0 0 2px var(--color-bg);
   }
 
-  /* Thumb: Firefox */
   input[type='range']::-moz-range-thumb {
-    height: 15px;
-    width: 15px;
-    border: none;
-    transition: 0.2s ease-in-out;
+    width: 4px;
+    height: calc(var(--meter-height) + 6px);
     background: #fff;
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 0 0 2px var(--color-bg);
+  }
+}
+
+.footer {
+  --meter-height: 16px;
+  --segment: 10px;
+  @apply mt-0 flex items-center gap-4;
+
+  span {
+    @apply order-first shrink-0 text-left;
+    width: 7.5rem;
+    font-size: 22px;
+    line-height: 1;
   }
 
-  /* Hover, active & focus Thumb: Webkit */
+  input[type='range'] {
+    @apply mb-0 flex-1;
+  }
+}
 
-  input[type='range']::-webkit-slider-thumb:hover {
-    box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.15);
-  }
-  input[type='range']:active::-webkit-slider-thumb {
-    box-shadow: 0 0 0 var(--radius) var(--thumb);
-  }
-  input[type='range']:focus::-webkit-slider-thumb {
-    box-shadow: 0 0 0 var(--radius) var(--thumb);
-  }
+/* phones, including landscape where the width passes md */
+@media (max-width: 767px), (max-height: 500px) {
+  .footer {
+    --meter-height: 10px;
+    --segment: 7px;
+    @apply gap-3;
 
-  /* Hover, active & focus Thumb: Firfox */
-
-  input[type='range']::-moz-range-thumb:hover {
-    box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.15);
-  }
-  input[type='range']:active::-moz-range-thumb {
-    box-shadow: 0 0 0 var(--radius) var(--thumb);
-  }
-  input[type='range']:focus::-moz-range-thumb {
-    box-shadow: 0 0 0 var(--radius) var(--thumb);
+    span {
+      width: 5.5rem;
+      font-size: 17px;
+    }
   }
 }

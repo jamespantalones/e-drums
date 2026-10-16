@@ -9,6 +9,7 @@ import { useOfflineStorage } from '../contexts/OfflineStorageContext';
 import { useRouter } from 'next/router';
 import isMobile from 'is-mobile';
 import { useHotKeys } from '../hooks/useHotKeys';
+import { useAutosave } from '../hooks/useAutosave';
 import { SIG_BPM, SIG_NAME, SIG_SEQUENCER, SIG_TRACKS } from '../state/track';
 import { Config } from '../config';
 import { Loader } from 'lucide-react';
@@ -84,6 +85,10 @@ const Track: NextPage = () => {
 
   // all hot-keys require commande
   useHotKeys({ 'Meta+s': save, 'Ctrl+n': methods.createTrack });
+
+  // declared before the unmount effect so its final save runs first,
+  // while the sequencer state still exists
+  useAutosave(save, loaded);
 
   // unmount effect
   React.useEffect(() => {

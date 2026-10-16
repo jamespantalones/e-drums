@@ -44,6 +44,8 @@ const Home: NextPage = () => {
     } catch {}
   }, []);
 
+  const wordmark = React.useRef<HTMLAnchorElement>(null);
+
   const introDone = React.useCallback(() => {
     try {
       sessionStorage.setItem(INTRO_KEY, '1');
@@ -66,8 +68,9 @@ const Home: NextPage = () => {
     SIG_REVERB.value = 13;
 
     const seq = new Sequencer({ id });
-
-    const json = await seq.exportJSON();
+    const json = seq.exportJSON();
+    // only needed to build the initial project; free its audio nodes
+    seq.destroy();
 
     await saveProjectToCache(id, {
       ...json,
@@ -80,12 +83,17 @@ const Home: NextPage = () => {
 
   return (
     <>
-      {showIntro && <Intro onDone={introDone} />}
+      {showIntro && <Intro onDone={introDone} target={wordmark} />}
 
       <main className="full-bleed min-h-screen bg-black text-white font-term tracking-normal">
         <header className="border-b-4 border-white p-4 md:p-6">
           <h1 className="!transform-none not-italic">
-            <Link href="/" className="block">
+            {/* hidden, not removed, while the intro word flies onto it */}
+            <Link
+              href="/"
+              ref={wordmark}
+              className={clsx('block', showIntro && 'invisible')}
+            >
               <Wordmark className="block h-auto w-full" />
               <span className="sr-only">e-drums</span>
             </Link>

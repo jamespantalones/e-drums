@@ -20,6 +20,13 @@ export const state = {
   SIG_TICK: signal<number>(-1),
   SIG_SERIALIZED_TRACKS: signal<SerializedTrack[]>([]),
   SIG_TRACKS: signal<Track[]>([]),
+  // bumped by edits that mutate a track in place (volume, pitch, mute),
+  // which don't reassign SIG_TRACKS; autosave listens to it
+  SIG_REVISION: signal<number>(0),
+};
+
+export const markChanged = () => {
+  state.SIG_REVISION.value += 1;
 };
 
 export const destroy = () => {
@@ -33,6 +40,7 @@ export const destroy = () => {
   state.SIG_SERIALIZED_TRACKS.value = [];
   state.SIG_TRACKS.value = [];
   state.SIG_REVERB.value = Config.MIN_REVERB;
+  state.SIG_REVISION.value = 0;
 };
 
 export const {
@@ -47,4 +55,5 @@ export const {
   SIG_SERIALIZED_TRACKS,
   SIG_TICK,
   SIG_TRACKS,
+  SIG_REVISION,
 } = state;

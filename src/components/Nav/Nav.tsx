@@ -1,20 +1,46 @@
 import * as React from 'react';
 import { useSignals } from '@preact/signals-react/runtime';
-import {
-  Save as SaveIcon,
-  Plus as NewIcon,
-  Play as PlayIcon,
-  Square as StopIcon,
-} from 'lucide-react';
-import { IconButton } from '../IconButton/IconButton';
 import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Config } from '../../config';
 import Link from 'next/link';
 import clsx from 'clsx';
-import { SIG_INITIALIZED, SIG_PLAY_STATE, SIG_TRACKS } from '../../state/track';
+import {
+  SIG_INITIALIZED,
+  SIG_PLAY_STATE,
+  SIG_TRACKS,
+} from '../../state/track';
 import { SequencerPlayState } from '../../types';
-import { Logo } from '../Logo/Logo';
+import { Logo, PixelText } from '../Logo/Logo';
+
+function NavButton({
+  label,
+  text,
+  onClick,
+  disabled,
+  active,
+}: {
+  label: string;
+  text: string;
+  onClick: () => void;
+  disabled?: boolean;
+  active?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      title={label}
+      aria-label={label}
+      aria-pressed={active}
+      onClick={onClick}
+      disabled={disabled}
+      className={clsx(styles.cell, styles.button, active && styles.active)}
+    >
+      <PixelText text={text} className="h-3.5 md:h-4 w-auto" />
+    </button>
+  );
+}
+
 export function Nav({
   save,
   children,
@@ -26,8 +52,10 @@ export function Nav({
 
   const { methods } = useAudioContext();
 
+  const playing = SIG_PLAY_STATE.value === SequencerPlayState.STARTED;
+
   function play() {
-    if (SIG_PLAY_STATE.value !== SequencerPlayState.STARTED) {
+    if (!playing) {
       methods.stop();
     }
     methods.play();
@@ -35,61 +63,35 @@ export function Nav({
 
   return (
     <nav className={styles.nav}>
-      <section className={styles.section}>
-        <div className="flex items-center justify-between ml-4 mt-0.5">
-          <Link
-            href="/"
-            className={clsx(styles.link, 'block text-sm mr-6')}
-            passHref
-            onClick={(ev) => {
-              if (
-                window.confirm(
-                  'Are you sure you want to go back to index page?'
-                )
-              ) {
-                methods.stop();
-              } else {
-                ev.preventDefault();
-              }
-            }}
-          >
-            <h1 className="!transform-none not-italic text-[22px]">
-              <Logo />
-            </h1>
-          </Link>
+      <Link
+        href="/"
+        className={clsx(styles.cell, styles.button, styles.logo)}
+        onClick={() => methods.stop()}
+      >
+        <h1 className="!transform-none not-italic text-[22px] leading-none flex">
+          <Logo />
+        </h1>
+      </Link>
 
-          {children}
+      <div className={clsx(styles.cell, styles.name)}>{children}</div>
 
-          <IconButton small onClick={play}>
-            <PlayIcon strokeWidth={1} />
-          </IconButton>
-          <IconButton
-            small
-            onClick={methods.stop}
-            disabled={!SIG_INITIALIZED.value}
-          >
-            <StopIcon strokeWidth={1} />
-          </IconButton>
-        </div>
-
-        <div className="flex">
-          <IconButton
-            title="Add Track"
-            onClick={methods.createTrack}
-            small
-            disabled={
-              SIG_TRACKS.value.length === Config.MAX_TRACKS ||
-              !SIG_INITIALIZED.value
-            }
-          >
-            <NewIcon strokeWidth={1} />
-          </IconButton>
-
-          <IconButton onClick={save} small title="Save">
-            <SaveIcon strokeWidth={1} />
-          </IconButton>
-        </div>
-      </section>
+      <NavButton label="Play" text="Play" onClick={play} active={playing} />
+      <NavButton
+        label="Stop"
+        text="Stop"
+        onClick={methods.stop}
+        disabled={!SIG_INITIALIZED.value}
+      />
+      <NavButton
+        label="Add track"
+        text="+ Trk"
+        onClick={methods.createTrack}
+        disabled={
+          SIG_TRACKS.value.length === Config.MAX_TRACKS ||
+          !SIG_INITIALIZED.value
+        }
+      />
+      <NavButton label="Save" text="Save" onClick={save} />
     </nav>
   );
 }

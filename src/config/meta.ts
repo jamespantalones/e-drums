@@ -4,5 +4,5 @@ export const metaConfig = {
   emoji: '𓀔',
   description: 'A simple polyrhythm generator',
   canonicalURL: 'https://e-drums.biz',
-  themeColor: '#ffffff',
+  themeColor: '#17181b',
 };

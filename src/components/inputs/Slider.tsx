@@ -1,8 +1,8 @@
-import { CSSProperties, useEffect, useState } from 'react';
+import { CSSProperties, useState } from 'react';
+import clsx from 'clsx';
 import styles from './slider.module.css';
-import { normalize, padNumber, scaleColor } from '../../utils';
+import { normalize, padNumber } from '../../utils';
 import { useSignals } from '@preact/signals-react/runtime';
-import { effect } from '@preact/signals-react';
 
 export type Props = {
   value?: number;
@@ -13,11 +13,14 @@ export type Props = {
   min?: number;
   max?: number;
   step?: number;
+  /** footer: label beside a tall meter; track: slim meter, label below */
+  variant?: 'footer' | 'track';
 };
 
 export function Slider(props: Props) {
   useSignals();
 
+  const { variant = 'track' } = props;
   const [val, setVal] = useState<number | undefined>(props.defaultValue);
 
   function handleChange(ev: React.ChangeEvent<HTMLInputElement>) {
@@ -37,35 +40,27 @@ export function Slider(props: Props) {
     }),
   };
 
-  const n = normalize(
-    props.mockValue || props.value || 0,
-    props.min || 0,
-    props.max || 100
-  );
+  const current = props.mockValue ?? props.value ?? val ?? 0;
+  const fill = normalize(current, props.min || 0, props.max || 100);
 
   return (
     <label
-      className={styles.slider}
-      style={
-        {
-          '--grayscale': Math.round(150 - n) / 100,
-          '--track': scaleColor(n),
-        } as CSSProperties
-      }
+      className={clsx(styles.slider, styles[variant])}
+      style={{ '--fill': `${fill}%` } as CSSProperties}
     >
       <input
         type="range"
         onChange={handleChange}
-        {...(props.value && {
+        {...(props.value !== undefined && {
           value: props.value,
         })}
-        {...(props.defaultValue && {
+        {...(props.defaultValue !== undefined && {
           defaultValue: val,
         })}
         {...attrs}
       />
       <span>
-        {props.label} {padNumber(props.value || val)}
+        {props.label} {padNumber(current)}
       </span>
     </label>
   );

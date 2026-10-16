@@ -1,47 +1,86 @@
 .nav {
-  @apply px-1.5 fixed top-0 left-0 w-full;
-  @apply mb-2;
-  /* get around notch*/
-  @apply pl-12 lg:pl-2 portrait:pl-2;
-  @apply flex items-center;
+  @apply fixed top-0 left-0 w-full h-16;
+  @apply flex items-stretch;
+  @apply border-b-4 border-white;
   background: var(--color-bg);
   z-index: 999;
   max-width: 100vw;
-  flex-shrink: 0;
-  flex-grow: 0;
-  @apply border-b-4 border-white;
 }
 
-.link {
-  &:hover {
-    @apply opacity-70;
-    span {
-      display: inline-block;
-      tranform: rotateY(180deg);
-    }
+/* one cell of the row; cells are divided like the index page grid */
+.cell {
+  @apply flex items-center shrink-0;
+  & + & {
+    @apply border-l-4 border-white;
   }
 }
 
-.section {
-  @apply my-2 mr-3;
-  @apply flex;
-  @apply w-full;
-  @apply items-center;
-  @apply justify-between;
-  @apply text-xs;
+.button {
+  @apply justify-center px-4 md:px-6;
+  @apply transition-colors duration-100;
+  @apply focus-visible:outline focus-visible:outline-4 focus-visible:-outline-offset-8 focus-visible:outline-current;
+
+  &:not(:disabled):hover {
+    @apply bg-white text-black;
+  }
+  &:not(:disabled):active {
+    @apply bg-neutral-300 text-black;
+  }
+  &:disabled {
+    @apply cursor-not-allowed;
+    color: var(--color-muted);
+  }
+}
+
+.active {
+  @apply bg-white text-black;
+}
+
+/* get around the notch in landscape */
+.logo {
+  @apply pl-12 lg:pl-6 portrait:pl-4;
+}
+
+.name {
+  @apply flex-1 min-w-0;
 
   input {
-    @apply hidden md:flex;
+    @apply hidden md:flex w-full h-full;
+    @apply border-0 bg-transparent px-4 md:px-6 text-lg;
+    @apply ring-0 ring-offset-0;
+    &:hover {
+      background: var(--color-surface);
+    }
+    &:focus,
+    &:focus-visible {
+      @apply ring-0 ring-offset-0 outline-none;
+      background: var(--color-surface);
+    }
   }
-}
-
-.tempo-button {
-  @apply ml-4 block border-2 border-current px-2 w-12 py-1;
-  overscroll-behavior: none;
-  touch-action: none;
 }
 
 .slidecontainer {
   width: 80%;
   @apply mr-2;
+}
+
+/* phones, including landscape where the width passes md */
+@media (max-width: 767px), (max-height: 500px) {
+  .nav {
+    @apply h-12;
+  }
+  .button {
+    @apply px-3;
+    svg {
+      @apply h-2.5;
+    }
+  }
+  .logo {
+    h1 {
+      font-size: 16px;
+    }
+  }
+  .name input {
+    @apply px-3 text-base;
+  }
 }

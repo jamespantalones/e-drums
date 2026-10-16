@@ -3,8 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: #000;
-  --color-text: #fff;
+  /* off-black charcoal with a slight cool cast, not pure #000 */
+  --color-bg: #17181b;
+  --color-surface: #222327;
+  --color-muted: #3a3c42;
+  --color-text: #f4f4f5;
   --color-foreground: var(--color-text);
   --color-background: var(--color-bg);
   --color-alert: hsl(0, 50%, 50%);
@@ -97,6 +100,13 @@ button {
   @apply py-4 pb-32;
   @apply min-h-screen;
   @apply portrait:flex-row portrait:mt-12 portrait:md:mt-16;
+}
+
+/* clears the shorter phone nav */
+@media (max-width: 767px), (max-height: 500px) {
+  .edit__area {
+    @apply mt-12 pb-20;
+  }
 }
 
 /* full-bleed pages drop the body gutter and handle the notch themselves */

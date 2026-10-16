@@ -23,6 +23,7 @@ import {
 export interface SequencerOpts {
   initialTracks?: SerializedTrack[];
   id: string;
+  createdAt?: string;
 }
 
 // ------------------------------------------------------------
@@ -43,13 +44,17 @@ export class Sequencer {
 
   private transport!: Transport;
 
+  // the step being scheduled; SIG_TICK follows it on the draw clock
+  private step = -1;
+  private disposeEffect: () => void;
+
   constructor(opts: SequencerOpts) {
     this.bpm = SIG_BPM.value;
     this.context = null;
     this.id = opts.id;
     // set initial name to the track id
     this.name = this.id;
-    this.createdAt = new Date().toISOString();
+    this.createdAt = opts.createdAt || new Date().toISOString();
     this.updatedAt = new Date().toISOString();
     this.reverbChain = new Tone.Reverb();
     this.chain = new Tone.Volume(SIG_VOLUME.value);
@@ -65,8 +70,8 @@ export class Sequencer {
 
     SIG_TICK.value = -1;
 
-    // listen fsor signal changes
-    effect(() => {
+    // listen for signal changes
+    this.disposeEffect = effect(() => {
       if (this.bpm !== SIG_BPM.value) {
         this.setBpm(SIG_BPM.value);
       }
@@ -119,8 +124,6 @@ export class Sequencer {
 
     Tone.Transport.start();
     SIG_PLAY_STATE.value = SequencerPlayState.STARTED;
-
-    console.log('START');
   }
 
   // stop the transport
@@ -134,6 +137,7 @@ export class Sequencer {
     if (SIG_PLAY_STATE.value === SequencerPlayState.STOPPED) {
       SIG_PLAY_STATE.value = SequencerPlayState.STOPPED_AND_RESET;
       // rewind everything
+      this.step = -1;
       SIG_TICK.value = -1;
 
       return;
@@ -150,37 +154,27 @@ export class Sequencer {
     // main loop
     // ************************************************************
     // on every 16th note...
+    Tone.Transport.swingSubdivision = '16t';
+    // later tempo changes arrive through setBpm
+    this.setBpm(SIG_BPM.value);
+
     this.transport?.scheduleRepeat((time) => {
-      // increment rhythm index
-      SIG_TICK.value += 1;
+      const step = (this.step += 1);
 
-      Tone.Transport.swingSubdivision = '16t';
       Tone.Transport.swing = SIG_SWING.value / 100;
-      Tone.Transport.bpm.value = SIG_BPM.value;
 
-      // TODO: check
-      Tone.Draw.anticipation = 0.23;
-
-      // IMPORTANT: any UI updates need to be called
-      // here to not block main thread
+      // this callback runs ahead of the audio; move the playhead
+      // when the step is actually heard
       Tone.Draw.schedule(() => {
-        // call the current tick increment
-        // SIG_TICK.value = this.state.rhythmIndex;
-        // this.onTick(this.state.rhythmIndex);
+        SIG_TICK.value = step;
       }, time);
 
-      // get the next index
-      let nextIndex = SIG_TICK.value + 1;
-
       SIG_TRACKS.value.forEach((track) => {
-        const currentTick = nextIndex % track.pattern.length;
+        const currentTick = step % track.pattern.length;
         if (track.pattern[currentTick] > 0) {
-          // normal time
           track.play(time, currentTick);
         }
       });
-
-      // use the callback time to schedule events
     }, '16n');
   }
 
@@ -290,6 +284,11 @@ export class Sequencer {
 
   public destroy() {
     this.transport?.stop();
+    this.transport?.cancel();
+    this.disposeEffect();
+    SIG_TRACKS.value.forEach((track) => track.sampler?.dispose());
+    this.chain.dispose();
+    this.reverbChain.dispose();
   }
 
   public exportJSON(): SerializedSequencer {

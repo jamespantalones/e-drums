@@ -21,11 +21,12 @@ import {
   Music3,
   Plus,
   Trash,
-  Volume,
   Volume2,
+  VolumeX,
 } from 'lucide-react';
 import { Slider } from '../inputs/Slider';
 import { useSignals } from '@preact/signals-react/runtime';
+import { markChanged } from '../../state/track';
 import {
   Select,
   SelectContent,
@@ -65,6 +66,7 @@ export function Edit({
 
   const toggleMute = useCallback(() => {
     rhythm.toggleMute();
+    markChanged();
     setMuted((m) => !m);
   }, [rhythm]);
 
@@ -99,8 +101,6 @@ export function Edit({
       value: val,
     });
   }
-
-  console.log(rhythm.pitch);
 
   return (
     <>
@@ -143,25 +143,27 @@ export function Edit({
             <div className={styles['poly-button-group']}>
               <button
                 onClick={toggleMute}
-                title="Toggle Mute"
+                title={muted ? 'Unmute' : 'Mute'}
+                aria-pressed={muted}
                 className={clsx(styles.toggle, styles.mutebutton, {
                   // [styles['no-portrait']]: true,
                   [styles.muted]: muted,
                   [styles.active]: !muted,
                 })}
               >
-                {muted && <Volume size={12} />}
-                {!muted && <Volume2 size={12} />}
+                {muted && <VolumeX size={13} strokeWidth={2.75} />}
+                {!muted && <Volume2 size={13} strokeWidth={2.75} />}
               </button>
               <button
                 onClick={toggleEditPitch}
-                title="Pitch Notes"
+                title="Edit note pitches"
+                aria-pressed={editPitch}
                 className={clsx(styles.toggle, {
                   [styles['no-portrait']]: true,
                   [styles.pitch]: editPitch,
                 })}
               >
-                <Music2 size={12} />
+                <Music2 size={13} strokeWidth={2.75} />
               </button>
               <button
                 title="Delete Track"
@@ -171,7 +173,7 @@ export function Edit({
                   [styles.destructive]: true,
                 })}
               >
-                <Trash size={10} />
+                <Trash size={12} strokeWidth={2.75} />
               </button>
             </div>
           </section>

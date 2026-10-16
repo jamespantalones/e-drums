@@ -28,6 +28,7 @@ export function Footer() {
       <div className={styles.slidecontainer}>
         <Slider
           onChange={handleBPMChange}
+          variant="footer"
           label="Tempo"
           value={SIG_BPM.value}
           min={Config.MIN_BPM}
@@ -38,6 +39,7 @@ export function Footer() {
       <div className={styles.slidecontainer}>
         <Slider
           onChange={handleVolumeChange}
+          variant="footer"
           label="Vol."
           value={SIG_VOLUME.value}
           min={Config.MIN_VOLUME}

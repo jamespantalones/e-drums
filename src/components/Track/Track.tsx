@@ -60,10 +60,9 @@ export function TrackItem({
           dragControls={dragControls}
         />
 
-        {rhythm.pattern.map((slice, index) => (
-          <div key={`${rhythm.id}-${slice}-${index}`}>
+        {rhythm.pattern.map((_, index) => (
+          <div key={`${rhythm.id}-${index}`}>
             <Slice
-              key={`${rhythm.id}-${slice}-${index}`}
               index={index}
               rhythm={rhythm}
               length={length}

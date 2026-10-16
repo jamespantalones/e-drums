@@ -8,9 +8,8 @@ import {
   euclideanRhythm,
   generateRandomColor,
 } from './utils';
-import { scaleLinear } from 'd3-scale';
-
-export const volumeScale = scaleLinear([0, 100], [0, 4]);
+// maps the 0-100 volume control to sampler velocity 0-4
+export const volumeScale = (volume: number) => (volume / 100) * 4;
 
 export class Track {
   public color: [number, number, number];

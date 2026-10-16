@@ -5,6 +5,7 @@ import {
   SIG_SWING,
   SIG_VOLUME,
   destroy as destroySignals,
+  markChanged,
 } from '../state/track';
 import { batch } from '@preact/signals-react';
 import { useSignals } from '@preact/signals-react/runtime';
@@ -133,6 +134,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
         throw new Error(`${action.method} not implemented on Track`);
       }
       const v = await track[action.method](action.value as any);
+      markChanged();
       return v;
     },
     []
@@ -184,17 +186,6 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       setTrackVal,
     },
   };
-
-  const start = useCallback(async () => {
-    await Tone.start();
-    document.querySelector('button')?.removeEventListener('click', start);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      document.querySelector('button')?.removeEventListener('click', start);
-    };
-  }, [start]);
 
   return (
     <AudioContext.Provider value={value}>{children}</AudioContext.Provider>

@@ -6,6 +6,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // bg-black / text-black follow the theme's near-black
+        black: 'var(--color-bg)',
+        surface: 'var(--color-surface)',
+        muted: 'var(--color-muted)',
         background: 'var(--color-background)',
         foreground: 'var(--color-foreground)',
         alert: 'var(--color-alert)',

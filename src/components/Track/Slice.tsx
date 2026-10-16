@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useSignals } from '@preact/signals-react/runtime';
+import { useComputed, useSignals } from '@preact/signals-react/runtime';
 import styles from './Slice.module.css';
 import { Plus as Add, Minus as Remove } from 'lucide-react';
 import { Track } from '../../lib/Track';
@@ -25,7 +25,10 @@ export function Slice({
     methods: { toggleTick, repitchTick },
   } = useAudioContext();
 
-  const tick = SIG_TICK.value;
+  const active = useComputed(() => {
+    const tick = SIG_TICK.value;
+    return tick % length === index || (index === 0 && tick === -1);
+  }).value;
 
   const id = useId();
   const x = useRef<number>();
@@ -54,8 +57,7 @@ export function Slice({
         <button
           key={index}
           className={clsx(styles.slice, {
-            [styles.active]:
-              tick % length === index || (index === 0 && tick === -1),
+            [styles.active]: active,
             [styles.enabled]: rhythm.pattern[index],
           })}
           type="button"
@@ -65,7 +67,7 @@ export function Slice({
       {editPitch && (
         <div
           className={clsx(styles.slice, {
-            [styles.active]: tick % length === index,
+            [styles.active]: active,
             [styles.enabled]: rhythm.pattern[index],
           })}
         >
