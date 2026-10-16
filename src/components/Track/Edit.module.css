@@ -9,7 +9,6 @@
 .total {
   @apply ml-2 text-xs;
   @apply text-center flex portrait:hidden items-center justify-center;
-  @apply rounded-full;
 }
 
 .button-group {
@@ -45,23 +44,29 @@
 }
 
 .toggle {
-  @apply bg-neutral-800;
+  @apply bg-black;
+  box-shadow: inset 0 0 0 2px #fff;
+  &:hover {
+    @apply bg-white text-black;
+  }
   &:active {
-    @apply bg-neutral-600;
+    @apply bg-neutral-400;
   }
   &.muted {
     @apply bg-red-400;
     @apply border-transparent;
+    box-shadow: none;
     @apply hover:bg-red-500 text-background;
   }
   &.pitch {
-    @apply bg-neutral-300 text-background;
+    @apply bg-white text-background;
   }
   &.active {
     @apply bg-green-400 text-background;
+    box-shadow: none;
   }
   &.destructive {
-    @apply bg-neutral-800 hover:bg-red-400 text-foreground hover:text-background;
+    @apply bg-black hover:bg-red-400 text-foreground hover:text-background;
   }
 }
 
@@ -92,14 +97,14 @@
   button {
     @apply w-full h-1/2 relative flex items-center justify-center;
     @apply my-0.5;
-    @apply bg-neutral-800 text-foreground;
+    @apply bg-black text-foreground;
     @apply border-background border;
+    box-shadow: inset 0 0 0 2px #fff;
 
     &:hover {
-      @apply bg-foreground text-background;
-      @apply opacity-80;
+      @apply bg-white text-black;
       &:active {
-        @apply opacity-100;
+        @apply bg-neutral-400;
       }
     }
 

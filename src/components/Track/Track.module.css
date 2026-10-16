@@ -37,15 +37,15 @@
 }
 
 .edit-name {
-  @apply border-b;
+  @apply border-b-2 border-white;
   background: var(--color-bg);
   width: 90%;
   @apply text-current text-xxs;
-  @apply rounded-sm px-2 py-2;
+  @apply px-2 py-2;
 }
 
 .delete-slice-button {
-  @apply w-8 h-4 p-1 border rounded border-red-300;
+  @apply w-8 h-4 p-1 border-2 border-red-300;
   @apply text-red-300;
   @apply flex items-center justify-center;
   @apply opacity-30;
@@ -64,7 +64,7 @@
 }
 
 .edit-pitch-button {
-  @apply text-xxs border p-1 rounded opacity-50 hover:opacity-100 transition-opacity;
+  @apply text-xxs border-2 p-1 opacity-50 hover:opacity-100 transition-opacity;
   &.active {
     @apply bg-yellow-300 text-background border-background;
   }

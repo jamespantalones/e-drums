@@ -19,7 +19,8 @@ export const Config = {
   SEED_SLICES_MIN_DESKTOP: 1,
   SEED_SLICES_MAX_MOBILE: 5,
   SEED_SLICES_MIN_MOBILE: 1,
-  CACHE_PREFIX: 'ER-1',
+  CACHE_PREFIX: 'edrums:project',
+  LEGACY_CACHE_PREFIX: 'ER-1',
   CACHE_MASTER: 'CACHE_MASTER',
 } as const;
 

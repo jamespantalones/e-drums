@@ -1,6 +1,6 @@
 .button {
   @apply flex items-center justify-center;
-  @apply rounded-sm cursor-pointer;
+  @apply cursor-pointer;
   @apply m-0.5 mx-2 p-0;
   @apply disabled:opacity-20 transition-opacity duration-100;
   width: calc(var(--slice-size));
@@ -10,15 +10,15 @@
     height: calc(var(--slice-size) / 2);
   }
   &.useBorder {
-    @apply border border-current;
+    @apply border-2 border-current;
   }
 
   &:not(:disabled) {
     &:hover {
-      @apply bg-neutral-800;
+      @apply bg-white text-black;
     }
     &:active {
-      @apply bg-neutral-700;
+      @apply bg-neutral-400 text-black;
     }
   }
 

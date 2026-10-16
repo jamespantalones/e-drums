@@ -14,6 +14,8 @@ import { Config } from '../config';
 import { Loader } from 'lucide-react';
 import { Footer } from '../components/Nav/Footer';
 import { Input } from '../components/inputs/input';
+import Link from 'next/link';
+import { PixelText } from '../components/Logo/Logo';
 
 /**
  *
@@ -22,6 +24,7 @@ import { Input } from '../components/inputs/input';
 const Track: NextPage = () => {
   useSignals();
   const [loaded, setLoaded] = React.useState(false);
+  const [missing, setMissing] = React.useState(false);
 
   const {
     query: { id },
@@ -48,6 +51,10 @@ const Track: NextPage = () => {
   React.useEffect(() => {
     async function load() {
       const project = await loadProjectFromCache(id as string);
+      if (!project) {
+        setMissing(true);
+        return;
+      }
       SIG_BPM.value = project?.bpm || Config.DEFAULT_BPM;
       await initialize(project);
       setLoaded(true);
@@ -85,6 +92,23 @@ const Track: NextPage = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (missing) {
+    return (
+      <main className="full-bleed min-h-screen bg-black text-white">
+        <p className="border-b-4 border-white p-4 md:p-6 text-3xl md:text-5xl leading-none">
+          No saved sequence called {id}. It may have been deleted, or saved
+          in another browser.
+        </p>
+        <Link
+          href="/"
+          className="inline-block p-4 md:p-6 hover:bg-white hover:text-black"
+        >
+          <PixelText text="Back" label="Back" className="h-5 md:h-7 w-auto" />
+        </Link>
+      </main>
+    );
+  }
 
   if (!loaded) {
     return (

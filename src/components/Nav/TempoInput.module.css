@@ -1,19 +1,16 @@
 .label {
   @apply block mt-5 ml-6;
   color: var(--color-text);
-  @apply font-mono text-xxs;
+  @apply text-xxs;
 }
 
 .input {
   @apply block mt-1;
   @apply text-xs;
   color: var(--color-bg);
-  @apply px-2 py-1 rounded;
+  @apply px-2 py-1;
   background: transparent;
   color: currentColor;
-  @apply rounded;
-  font-size: 14px;
-  @apply font-sans;
-  font-weight: lighter;
-  border: 1px solid currentColor;
+  font-size: 18px;
+  border: 2px solid currentColor;
 }

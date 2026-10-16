@@ -5,6 +5,7 @@ import { AudioContextProvider } from '../contexts/AudioContext';
 import { OfflineStorageProvider } from '../contexts/OfflineStorageContext';
 import { metaConfig } from '../config/meta';
 import { publicUrl } from '../config';
+import { termFont } from '../config/fonts';
 
 export default function ERhythms({ Component, pageProps }: AppProps) {
   return (
@@ -31,25 +32,32 @@ export default function ERhythms({ Component, pageProps }: AppProps) {
 
         <link
           rel="apple-touch-icon"
-          href="/icons/apple-touch-icon-180x180.png"
+          href={publicUrl('icons/apple-touch-icon-180x180.png')}
         />
 
-        <link rel="shortcut icon" href="/icons/favicon.ico" />
+        <link rel="icon" href={publicUrl('icons/favicon.ico')} sizes="any" />
+        <link
+          rel="icon"
+          type="image/svg+xml"
+          href={publicUrl('icons/logo.svg')}
+        />
 
         <meta name="twitter:url" content={metaConfig.canonicalURL} />
         <meta name="twitter:title" content={metaConfig.title} />
         <meta name="twitter:description" content={metaConfig.description} />
-        <meta name="twitter:image" content="/icons/pwa-192x192.png" />
+        <meta name="twitter:image" content={publicUrl('icons/pwa-192x192.png')} />
         <meta name="twitter:creator" content="@sirjamespants" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content={metaConfig.title} />
         <meta property="og:description" content={metaConfig.description} />
         <meta property="og:site_name" content={metaConfig.title} />
         <meta property="og:url" content={metaConfig.canonicalURL} />
-        <meta property="og:image" content="/icons/apple-touch-icon.png" />
-        <link
-          rel="icon"
-          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>𓀔</text></svg>"
+        <meta property="og:image" content={publicUrl('icons/pwa-512x512.png')} />
+        {/* expose the font on :root so portals (selects, dialogs) get it too */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `:root { --font-term: ${termFont.style.fontFamily}; }`,
+          }}
         />
       </Head>
 

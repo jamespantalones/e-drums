@@ -13,7 +13,7 @@
     "lint": "next lint",
     "test": "vitest run --coverage",
     "gen:sound-config": "node ./bin/gen-sound-config.mjs",
-    "gen:icons": "pwa-assets-generator --preset minimal-2023 public/icons/source.png"
+    "gen:icons": "pwa-assets-generator"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

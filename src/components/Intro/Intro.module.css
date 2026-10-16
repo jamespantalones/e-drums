@@ -1,0 +1,87 @@
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  background: var(--color-bg);
+  font-family: var(--font-term), monospace;
+  cursor: pointer;
+}
+
+.leaving {
+  animation: wipe 500ms steps(10, end) forwards;
+}
+
+.word {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}
+
+.pixel {
+  animation: boot 1ms step-end both;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.prompt {
+  text-align: left;
+}
+
+.prompt:focus-visible,
+.skip:focus-visible {
+  outline: 2px solid var(--color-foreground);
+  outline-offset: 4px;
+}
+
+.cursor {
+  animation: cursor 1s step-end infinite;
+}
+
+.skip {
+  color: rgb(120, 120, 120);
+}
+
+.skip:hover {
+  color: var(--color-foreground);
+}
+
+@keyframes boot {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cursor {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes wipe {
+  to {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pixel,
+  .cursor,
+  .leaving {
+    animation: none;
+  }
+}

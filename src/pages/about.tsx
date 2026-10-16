@@ -1,53 +1,55 @@
-import {
-  ArrowLeft,
-  ArrowLeftIcon,
-  ChevronLeft,
-  Home,
-  SidebarClose,
-} from 'lucide-react';
 import Link from 'next/link';
-import { metaConfig } from '../config/meta';
+import { PixelText, Wordmark } from '../components/Logo/Logo';
+
+const LINK =
+  'underline decoration-2 underline-offset-4 hover:bg-white hover:text-black';
+
+const FACTS = [
+  'Works offline',
+  'Saves to your browser',
+  'No tracking',
+  'No third parties',
+  'No analytics',
+];
 
 export default function About() {
   return (
-    <main className="p-4 flex items-center justify-center h-screen w-full flex-col">
-      <div className="absolute top-4 left-4">
+    <main className="full-bleed min-h-screen bg-black text-white font-term tracking-normal">
+      <header className="flex items-stretch border-b-4 border-white">
         <Link
           href="/"
-          passHref
-          className="text-neutral-500 hover:text-neutral-100 transition-transform hover:scale-y-75 hover:scale-x-150 block"
+          className="flex items-center border-r-4 border-white px-4 md:px-8 hover:bg-white hover:text-black"
         >
-          <ChevronLeft strokeWidth={1} size={100} />
+          <PixelText text="Back" label="Back" className="h-5 md:h-7 w-auto" />
         </Link>
-      </div>
-      <p className="text-8xl mb-8">{metaConfig.emoji}</p>
-      <p className="max-w-sm mx-auto text-sm">
-        <Link
-          href="https://tttbbbzzz.com/"
-          target="_blank"
-          className="underline"
-        >
+        <Link href="/" className="block flex-1 p-4 md:p-6">
+          <Wordmark className="block h-auto w-full" />
+          <span className="sr-only">e-drums home</span>
+        </Link>
+      </header>
+
+      <p className="p-4 md:p-6 max-w-5xl text-3xl md:text-5xl leading-[1.05]">
+        <Link href="https://tttbbbzzz.com/" target="_blank" className={LINK}>
           TBZ
         </Link>{' '}
         and{' '}
-        <Link
-          target="_blank"
-          href="https://jamespants.com/"
-          className="underline"
-        >
+        <Link href="https://jamespants.com/" target="_blank" className={LINK}>
           James Pants
         </Link>{' '}
         started this Euclidean polyrhythm generator a long time ago and finally
         put it out.
-        <br />
-        <br />
-        It works offline and saves locally to your browser storage.
-        <br />
-        <br />
-        No tracking, no third parties, no analytics.
-        <br />
-        <br />
-        <time>April 2, 2024</time>
+      </p>
+
+      <ul className="border-t-4 border-white">
+        {FACTS.map((fact) => (
+          <li key={fact} className="border-b-4 border-white p-4 md:px-6">
+            <PixelText text={fact} label={fact} className="h-5 md:h-7 w-auto" />
+          </li>
+        ))}
+      </ul>
+
+      <p className="p-4 md:p-6 text-2xl md:text-3xl text-neutral-400">
+        <time dateTime="2024-04-02">April 2, 2024</time>
       </p>
     </main>
   );

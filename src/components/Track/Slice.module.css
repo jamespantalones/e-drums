@@ -1,5 +1,5 @@
 .slice-outer {
-  @apply block rounded-md;
+  @apply block;
   flex-shrink: 0;
   flex-grow: 0;
   touch-action: none;
@@ -19,7 +19,6 @@
   @apply w-full h-full;
   @apply select-none;
   @apply relative;
-  @apply rounded-sm;
   background: hsl(
     var(--color-track-h) calc(var(--color-track-s) - 40%)
       calc(var(--color-track-l) - 40%)
@@ -105,7 +104,6 @@
   @apply bottom-0 left-0 right-0 top-0;
   @apply flex justify-center items-center;
   @apply text-sm;
-  @apply font-sans;
   color: var(--color-bg);
   @apply pointer-events-none;
 }

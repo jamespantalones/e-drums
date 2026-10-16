@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: rgb(28, 28, 28);
-  --color-text: rgb(200, 200, 200);
+  --color-bg: #000;
+  --color-text: #fff;
   --color-foreground: var(--color-text);
   --color-background: var(--color-bg);
   --color-alert: hsl(0, 50%, 50%);
@@ -46,10 +46,8 @@ body {
   min-height: -webkit-fill-available;
   background: var(--color-bg);
   padding-bottom: env(safe-area-inset-bottom);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-  @apply font-light;
-  letter-spacing: 0.05rem;
+  font-family: var(--font-term), ui-monospace, monospace;
+  letter-spacing: 0;
   /* get around notch*/
   @apply px-12 lg:px-3 portrait:px-1 portrait:pr-0;
 }
@@ -99,4 +97,15 @@ button {
   @apply py-4 pb-32;
   @apply min-h-screen;
   @apply portrait:flex-row portrait:mt-12 portrait:md:mt-16;
+}
+
+/* full-bleed pages drop the body gutter and handle the notch themselves */
+body:has(.full-bleed) {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.full-bleed {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }

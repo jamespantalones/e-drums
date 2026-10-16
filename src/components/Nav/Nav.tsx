@@ -14,7 +14,7 @@ import Link from 'next/link';
 import clsx from 'clsx';
 import { SIG_INITIALIZED, SIG_PLAY_STATE, SIG_TRACKS } from '../../state/track';
 import { SequencerPlayState } from '../../types';
-import { metaConfig } from '../../config/meta';
+import { Logo } from '../Logo/Logo';
 export function Nav({
   save,
   children,
@@ -53,10 +53,8 @@ export function Nav({
               }
             }}
           >
-            <h1>
-              <span className="transition-translate inline-block text-lg">
-                {metaConfig.emoji} e-drums
-              </span>
+            <h1 className="!transform-none not-italic text-[22px]">
+              <Logo />
             </h1>
           </Link>
 

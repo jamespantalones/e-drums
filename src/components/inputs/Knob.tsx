@@ -176,7 +176,7 @@ export function Knob(props: KnobProps) {
         </div>
       </div>
       <label className={styles.label}>
-        <p className="uppercase text-center mt-1" style={{ fontSize: '7px' }}>
+        <p className="uppercase text-center mt-1" style={{ fontSize: '11px' }}>
           {label}
         </p>
 
