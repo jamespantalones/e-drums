@@ -100,7 +100,7 @@ const Home: NextPage = () => {
                   ev.stopPropagation();
                   ev.preventDefault();
                   const confirm = window.confirm(
-                    `Are you sure you want to delete ${p.name}? This cannot be undone.`
+                    `Are you sure you want to delete ${p.name}? This cannot be undone.`,
                   );
                   if (confirm) {
                     await removeFromCache(p.id);

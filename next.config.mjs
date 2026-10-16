@@ -11,7 +11,7 @@ const config = {
 
 const withPWA = PWA({
   dest: 'public',
-  scope: '/edrums/',
+  scope: `${BASE_PATH}/`,
   disable: process.env.NODE_ENV === 'development',
 });
 

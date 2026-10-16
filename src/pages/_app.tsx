@@ -4,6 +4,7 @@ import type { AppProps } from 'next/app';
 import { AudioContextProvider } from '../contexts/AudioContext';
 import { OfflineStorageProvider } from '../contexts/OfflineStorageContext';
 import { metaConfig } from '../config/meta';
+import { publicUrl } from '../config';
 
 export default function ERhythms({ Component, pageProps }: AppProps) {
   return (
@@ -17,7 +18,7 @@ export default function ERhythms({ Component, pageProps }: AppProps) {
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
         />
 
-        <link href="/edrums/manifest.json" rel="manifest" />
+        <link href={publicUrl('manifest.json')} rel="manifest" />
 
         <meta name="application-name" content={metaConfig.title} />
         <meta name="apple-mobile-web-app-capable" content="yes" />
