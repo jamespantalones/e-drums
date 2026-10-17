@@ -1,6 +1,7 @@
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
 import {
+  SIG_DELAY,
   SIG_REVERB,
   SIG_SWING,
   SIG_VOLUME,
@@ -63,6 +64,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
           SIG_BPM.value = data.bpm;
           SIG_NAME.value = data.name;
           SIG_REVERB.value = data.reverb;
+          SIG_DELAY.value = data.delay ?? 0;
           SIG_VOLUME.value = data.volume;
           SIG_SWING.value = data.swing;
           SIG_SERIALIZED_TRACKS.value = data.state.tracks;
@@ -113,7 +115,10 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   const createTrack = useCallback(async () => {
     // add to Sequencer
     await SIG_SEQUENCER.value?.addNewRhythm(
-      generateTrack(SIG_TRACKS.value.length)
+      generateTrack(
+        SIG_TRACKS.value.length,
+        SIG_TRACKS.value.flatMap((t) => t.instrument?.sound.name ?? [])
+      )
     );
   }, []);
 

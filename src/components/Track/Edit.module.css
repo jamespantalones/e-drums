@@ -266,3 +266,27 @@
     }
   }
 }
+
+/* collapsed controls: one thin column of toggles sized like the full ones */
+.mini {
+  @apply flex flex-col gap-1 w-9 mr-2;
+  @media (orientation: portrait) {
+    width: var(--slice-size);
+    @apply flex-row flex-wrap mr-0 mb-2;
+  }
+}
+
+.mini-name {
+  @apply block w-full truncate text-xxs uppercase leading-4;
+}
+
+.mini-button {
+  @apply flex items-center justify-center w-full h-4;
+  @media (orientation: portrait) {
+    @apply flex-1 w-auto;
+  }
+  &:disabled {
+    color: var(--color-muted);
+    box-shadow: inset 0 0 0 1px var(--color-muted);
+  }
+}

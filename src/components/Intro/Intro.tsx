@@ -14,7 +14,7 @@ import styles from './Intro.module.css';
 const WORD = pixelsFor('EDRUMS');
 const LIT = 'var(--color-foreground)';
 const OFF = 'var(--color-muted)';
-const MORPH_MS = 700;
+const MORPH_MS = 500;
 
 type Phase = 'booting' | 'waiting' | 'playing' | 'leaving';
 
@@ -65,7 +65,10 @@ export function Intro({
       '(prefers-reduced-motion: reduce)',
     ).matches;
 
-    const BLINKS = 6;
+    // say it straight away and blink while it talks
+    const voice = speak('E drums');
+
+    const BLINKS = 3;
     for (let i = 0; i < BLINKS; i++) {
       if (cancelled.current) return;
       setColor(LIT);
@@ -77,8 +80,8 @@ export function Intro({
 
     if (cancelled.current) return;
     setColor(LIT);
-    await speak('E drums');
-    await sleep(250);
+    await voice;
+    await sleep(100);
     finish();
   }, [finish]);
 
@@ -87,7 +90,7 @@ export function Intro({
     const t = window.setTimeout(() => {
       if (canAutoplay()) play();
       else setPhase('waiting');
-    }, 900);
+    }, 450);
     return () => window.clearTimeout(t);
   }, [play]);
 

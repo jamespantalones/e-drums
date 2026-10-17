@@ -1,5 +1,6 @@
 .nav {
-  @apply fixed top-0 left-0 w-full h-16;
+  @apply fixed top-0 left-0 w-full;
+  height: calc(var(--bar-row) + var(--bar-rule));
   @apply flex items-stretch;
   @apply border-b-4 border-white;
   background: var(--color-bg);
@@ -16,7 +17,7 @@
 }
 
 .button {
-  @apply justify-center px-4 md:px-6;
+  @apply justify-center px-3 md:px-5;
   @apply transition-colors duration-100;
   @apply focus-visible:outline focus-visible:outline-4 focus-visible:-outline-offset-8 focus-visible:outline-current;
 
@@ -51,8 +52,9 @@
 
   input {
     @apply hidden md:flex w-full h-full;
-    @apply border-0 bg-transparent px-4 md:px-6;
-    font-size: 17px;
+    @apply border-0 bg-transparent px-3 md:px-5;
+    /* same sizes as the footer's slider labels */
+    font-size: 15px;
     letter-spacing: 0.02em;
     @apply ring-0 ring-offset-0;
     &:hover {
@@ -73,25 +75,75 @@
 
 /* phones, including landscape where the width passes md */
 @media (max-width: 767px), (max-height: 500px) {
-  .nav {
-    @apply h-12;
-  }
   .button:not(.icon) {
     @apply px-3;
   }
   .button:not(.icon) svg {
-    @apply h-2.5;
+    @apply h-2;
   }
   .icon svg {
-    @apply h-3.5;
+    @apply h-2.5;
   }
   .logo {
     h1 {
-      font-size: 16px;
+      font-size: 11px;
     }
   }
   .name input {
     @apply px-3;
-    font-size: 15px;
+    font-size: 11px;
+  }
+}
+
+/* Save plus a caret that opens the save menu */
+.split {
+  @apply relative;
+  align-self: stretch;
+
+  /* thinner rule between Save and its caret than between cells */
+  & > .cell + .cell {
+    @apply border-l-2;
+  }
+}
+
+.caret {
+  @apply px-3 md:px-4 self-stretch;
+}
+
+.menu {
+  @apply absolute right-0 top-full flex flex-col min-w-full;
+  /* hangs from the nav's bottom rule */
+  margin-top: 4px;
+  @apply border-4 border-t-0 border-white;
+  background: var(--color-bg);
+  animation: menu-in 120ms ease-out;
+
+  button {
+    @apply flex items-center whitespace-nowrap px-3 md:px-5;
+    height: var(--bar-row);
+    @apply transition-colors duration-100;
+    & + button {
+      @apply border-t-2 border-white;
+    }
+    &:not(:disabled):hover,
+    &:focus-visible {
+      @apply bg-white text-black outline-none;
+    }
+    &:disabled {
+      color: var(--color-muted);
+    }
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu {
+    animation: none;
   }
 }

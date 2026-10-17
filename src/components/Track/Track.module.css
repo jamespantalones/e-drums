@@ -48,6 +48,13 @@
   }
 }
 
+.slices {
+  @apply flex items-start justify-start;
+  @media (orientation: portrait) {
+    @apply flex-col;
+  }
+}
+
 .edit-name-wrapper {
   @apply block;
   background: var(--color-bg);

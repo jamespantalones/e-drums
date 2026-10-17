@@ -19,18 +19,35 @@ export function generateRandomColor(): [number, number, number] {
   return [hue, saturation, lightness];
 }
 
-export function generateTrack(index = 0) {
+// a fresh project opens on the 808, then a backbeat and a hat so the
+// first few tracks make a groove; after that anything goes
+const STARTER_SOUNDS = [
+  ['808'],
+  ['SNR', 'SNR2', 'CLAP', 'SNAP', 'RIM'],
+  ['HH', 'OH', 'SHAKER', 'TAMB', 'RIDE'],
+];
+
+function pick<T>(items: T[]): T {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+export function pickSound(index: number, used: string[] = []) {
+  const unused = SOUNDS.filter((s) => !used.includes(s.name));
+  const starters = STARTER_SOUNDS[index];
+  const pool = starters
+    ? unused.filter((s) => starters.includes(s.name))
+    : unused;
+
+  // fall back when a starter is taken or every sound is in use
+  return pick(pool.length ? pool : unused.length ? unused : SOUNDS);
+}
+
+export function generateTrack(index = 0, used: string[] = []) {
   let random =
     Math.floor(Math.random() * Config.SEED_SLICES_MAX_DESKTOP) +
     Config.SEED_SLICES_MIN_DESKTOP;
 
-  const soundIndex = Math.floor(Math.random() * (SOUNDS.length - 1));
-
-  const sound = SOUNDS[index];
-
-  if (!sound) {
-    throw new Error(`Missing sound ${soundIndex}`);
-  }
+  const sound = pickSound(index, used);
 
   const track: SerializedTrack & { instrument: Instrument } = {
     id: generateId(),

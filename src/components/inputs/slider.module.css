@@ -88,11 +88,12 @@
   .footer {
     --meter-height: 8px;
     --segment: 4px;
-    @apply gap-3;
+    @apply gap-2;
 
+    /* half-width quadrants, so the label gives up room to the meter */
     span {
-      width: 5.5rem;
-      font-size: 12px;
+      width: 4.5rem;
+      font-size: 11px;
     }
   }
 }

@@ -65,6 +65,9 @@ type OfflineStorageContextType = {
   fetchIndexCache: () => Promise<void>;
   migrateLegacyKeys: () => Promise<void>;
   saveProjectToCache: (id: string, data: SerializedSequencer) => Promise<void>;
+  importProjects: (
+    projects: SerializedSequencer[]
+  ) => Promise<{ imported: number; skipped: number }>;
 };
 
 const OfflineStorageContext = createContext<
@@ -93,6 +96,30 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
       await ensureMigrated();
       await set(`${CACHE_PREFIX}:${id}`, data);
       await fetchIndexCache();
+    },
+    []
+  );
+
+  /**
+   * Store projects from a backup file. A project already saved here is
+   * only replaced when the file's copy is newer.
+   */
+  const importProjects = useCallback(
+    async (incoming: SerializedSequencer[]) => {
+      await ensureMigrated();
+      let imported = 0;
+
+      for (const project of incoming) {
+        const key = `${CACHE_PREFIX}:${project.id}`;
+        const current = await get<SerializedSequencer>(key);
+        if (updatedTime(project) >= updatedTime(current)) {
+          await set(key, project);
+          imported += 1;
+        }
+      }
+
+      await fetchIndexCache();
+      return { imported, skipped: incoming.length - imported };
     },
     []
   );
@@ -143,6 +170,7 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
         saveProjectToCache,
         removeFromCache,
         fetchIndexCache,
+        importProjects,
         migrateLegacyKeys: ensureMigrated,
       }}
     >

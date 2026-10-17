@@ -17,16 +17,21 @@ import {
 } from '../state/track';
 import { PixelText, Wordmark } from '../components/Logo/Logo';
 import { Intro } from '../components/Intro/Intro';
+import { downloadJSON, parseBackup, slug, toBackup } from '../lib/backup';
 
 const INTRO_KEY = 'edrums:intro-seen';
 
 const useIsomorphicLayoutEffect =
   typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
 
-// empty step cells after the New button; lit ones spell out E(5,12)
-const STEPS = [1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0];
+// step cells between New and the file buttons; lit ones spell out E(5,8)
+const STEPS = [1, 0, 1, 1, 0, 1, 1, 0];
 
 const INVERT = 'hover:bg-white hover:text-black';
+
+// Import / Export: two step cells wide on desktop, half a row on phones
+const FILE_CELL =
+  'col-span-4 md:col-span-2 flex items-center justify-center bg-black text-white py-5 md:py-0';
 
 const FOCUS =
   'focus-visible:outline focus-visible:outline-4 focus-visible:-outline-offset-8 focus-visible:outline-current';
@@ -53,8 +58,40 @@ const Home: NextPage = () => {
     setShowIntro(false);
   }, []);
 
-  const { projects, removeFromCache, saveProjectToCache, fetchIndexCache } =
-    useOfflineStorage();
+  const {
+    projects,
+    removeFromCache,
+    saveProjectToCache,
+    fetchIndexCache,
+    importProjects,
+  } = useOfflineStorage();
+
+  const fileInput = React.useRef<HTMLInputElement>(null);
+
+  function exportAll() {
+    const day = new Date().toISOString().slice(0, 10);
+    downloadJSON(`edrums-${day}.json`, toBackup(projects));
+  }
+
+  async function importFiles(ev: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(ev.target.files || []);
+    // let the same file be picked again later
+    ev.target.value = '';
+    if (!files.length) return;
+
+    try {
+      const found = (
+        await Promise.all(files.map(async (f) => parseBackup(await f.text())))
+      ).flat();
+      const { imported, skipped } = await importProjects(found);
+      window.alert(
+        `Imported ${imported} sequence${imported === 1 ? '' : 's'}.` +
+          (skipped ? ` Kept ${skipped} newer cop${skipped === 1 ? 'y' : 'ies'} already saved here.` : ''),
+      );
+    } catch (err) {
+      window.alert(err instanceof Error ? err.message : 'Import failed.');
+    }
+  }
 
   /**
    * Create a new sequencer
@@ -116,7 +153,8 @@ const Home: NextPage = () => {
           </Link>
         </div>
 
-        {/* a step-sequencer row: New takes four cells, the rest are steps */}
+        {/* a step-sequencer row: New takes four cells, then steps, then the
+            file buttons (their own row on phones) */}
         <div className="seq grid grid-cols-8 md:grid-cols-16 gap-1 bg-white border-b-4 border-white">
           <button
             onClick={createNew}
@@ -149,15 +187,45 @@ const Home: NextPage = () => {
               />
             </div>
           ))}
+
+          {/* a file backup outlives cleared browser storage */}
+          <button
+            className={clsx(FILE_CELL, INVERT, FOCUS)}
+            title="Import sequences from a backup file"
+            onClick={() => fileInput.current?.click()}
+          >
+            <PixelText text="Import" label="Import" className="h-3 md:h-4 w-auto" />
+          </button>
+          <input
+            ref={fileInput}
+            type="file"
+            accept=".json,application/json"
+            multiple
+            hidden
+            onChange={importFiles}
+          />
+          <button
+            className={clsx(
+              FILE_CELL,
+              'disabled:text-neutral-600 disabled:hover:bg-black',
+              INVERT,
+              FOCUS,
+            )}
+            title="Download every sequence as a backup file"
+            onClick={exportAll}
+            disabled={!projects.length}
+          >
+            <PixelText text="Export" label="Export all" className="h-3 md:h-4 w-auto" />
+          </button>
         </div>
 
         <section>
-          <h2 className="flex items-center justify-between border-b-4 border-white p-4 md:px-6">
+          <h2 className="flex items-center gap-4 md:gap-6 border-b-4 border-white p-4 md:px-6">
             <PixelText text="Saved" label="Saved" className="h-5 md:h-7 w-auto" />
             <PixelText
               text={String(projects.length).padStart(2, '0')}
               label={`${projects.length} sequences`}
-              className="h-5 md:h-7 w-auto"
+              className="h-5 md:h-7 w-auto text-neutral-500"
             />
           </h2>
 
@@ -199,6 +267,19 @@ const Home: NextPage = () => {
                       })}
                     </span>
                   </Link>
+                  <button
+                    className={clsx(
+                      'shrink-0 border-l-4 border-current px-5 md:px-8 hover:bg-black hover:text-white focus-visible:bg-black focus-visible:text-white',
+                      FOCUS,
+                    )}
+                    aria-label={`Download ${p.name}`}
+                    title="Download"
+                    onClick={() =>
+                      downloadJSON(`edrums-${slug(p.name || p.id)}.json`, toBackup([p]))
+                    }
+                  >
+                    <PixelText text="↓" className="h-5 md:h-7 w-auto" />
+                  </button>
                   <button
                     className={clsx(
                       'shrink-0 border-l-4 border-current px-5 md:px-8 hover:bg-danger hover:text-white focus-visible:bg-danger focus-visible:text-white',

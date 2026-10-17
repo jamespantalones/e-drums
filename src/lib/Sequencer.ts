@@ -9,6 +9,7 @@ import { Track } from './Track';
 import { effect } from '@preact/signals-react';
 import {
   SIG_BPM,
+  SIG_DELAY,
   SIG_INITIALIZED,
   SIG_NAME,
   SIG_PLAY_STATE,
@@ -19,6 +20,14 @@ import {
   SIG_TRACKS,
   SIG_VOLUME,
 } from '../state/track';
+import { Config } from '../config';
+
+// a dotted 8th echo, the classic syncopated repeat
+const delayTime = (bpm: number) => (60 / bpm) * 0.75;
+
+// 0-100 controls to send gains; echoes at full send sit a bit under the dry hit
+const reverbLevel = (value: number) => value / 100;
+const delayLevel = (value: number) => (value / 100) * 0.7;
 
 export interface SequencerOpts {
   initialTracks?: SerializedTrack[];
@@ -40,6 +49,10 @@ export class Sequencer {
   public reverb: number;
 
   private reverbChain: Tone.Reverb;
+  private delayChain: Tone.FeedbackDelay;
+  // effect send levels; the dry signal always plays at full level
+  private reverbSend: Tone.Gain;
+  private delaySend: Tone.Gain;
   private chain!: Tone.Volume;
 
   private transport!: Transport;
@@ -56,7 +69,15 @@ export class Sequencer {
     this.name = this.id;
     this.createdAt = opts.createdAt || new Date().toISOString();
     this.updatedAt = new Date().toISOString();
-    this.reverbChain = new Tone.Reverb();
+    this.reverbChain = new Tone.Reverb({ wet: 1 });
+    this.delayChain = new Tone.FeedbackDelay({
+      delayTime: delayTime(SIG_BPM.value),
+      maxDelay: delayTime(Config.MIN_BPM),
+      feedback: 0.35,
+      wet: 1,
+    });
+    this.reverbSend = new Tone.Gain(reverbLevel(SIG_REVERB.value));
+    this.delaySend = new Tone.Gain(delayLevel(SIG_DELAY.value));
     this.chain = new Tone.Volume(SIG_VOLUME.value);
     this.swing = SIG_SWING.value / 100;
     this.reverb = 0;
@@ -77,15 +98,18 @@ export class Sequencer {
       }
 
       this.chain.volume.value = SIG_VOLUME.value;
-      this.reverbChain.wet.value = SIG_REVERB.value / 100;
+      this.reverbSend.gain.rampTo(reverbLevel(SIG_REVERB.value), 0.05);
+      this.delaySend.gain.rampTo(delayLevel(SIG_DELAY.value), 0.05);
     });
   }
 
   async init() {
-    this.reverbChain.wet.value = SIG_REVERB.value / 100;
-    // this.reverb.decay = '1';
-
-    this.chain.chain(this.reverbChain, Tone.Destination);
+    // dry straight out, with reverb and delay added on top as sends;
+    // echoes also feed the reverb so they sit in the same room
+    this.chain.connect(Tone.Destination);
+    this.chain.chain(this.reverbSend, this.reverbChain, Tone.Destination);
+    this.chain.chain(this.delaySend, this.delayChain, Tone.Destination);
+    this.delayChain.connect(this.reverbSend);
 
     // load all initial tracks
     const trackPromises = SIG_TRACKS.value.map((t) => t.init());
@@ -244,6 +268,7 @@ export class Sequencer {
 
   private setBpm(val: number) {
     this.bpm = val;
+    this.delayChain.delayTime.rampTo(delayTime(val), 0.05);
     if (this.transport) {
       this.transport.bpm.value = val;
     }
@@ -289,6 +314,9 @@ export class Sequencer {
     SIG_TRACKS.value.forEach((track) => track.sampler?.dispose());
     this.chain.dispose();
     this.reverbChain.dispose();
+    this.delayChain.dispose();
+    this.reverbSend.dispose();
+    this.delaySend.dispose();
   }
 
   public exportJSON(): SerializedSequencer {
@@ -304,6 +332,7 @@ export class Sequencer {
       volume: SIG_VOLUME.value,
       swing: SIG_SWING.value,
       reverb: SIG_REVERB.value,
+      delay: SIG_DELAY.value,
       name: SIG_NAME.value || this.id,
       createdAt: this.createdAt,
       updatedAt: new Date().toISOString(),

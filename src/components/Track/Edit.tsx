@@ -1,4 +1,4 @@
-import { DragControls } from 'framer-motion';
+import { AnimatePresence, DragControls, motion } from 'framer-motion';
 
 import styles from './Edit.module.css';
 import {
@@ -19,14 +19,27 @@ import { Slider } from '../inputs/Slider';
 import { PixelText } from '../Logo/Logo';
 import { useSignals } from '@preact/signals-react/runtime';
 import { markChanged } from '../../state/track';
+import { CONTROLS_EASE } from '../../state/ui';
+
+// the outgoing panel is popped out of layout and fades while the steps
+// slide over; only opacity and transforms animate
+const SWAP = {
+  initial: { opacity: 0, x: -8 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -8 },
+  transition: CONTROLS_EASE,
+};
 
 export function Edit({
+  open,
   dragControls,
   editPitch,
   rhythm,
   removeNote,
   setEditPitch,
 }: {
+  /** full controls, or the collapsed strip */
+  open: boolean;
   dragControls: DragControls;
   editPitch: boolean;
   rhythm: Track;
@@ -44,6 +57,17 @@ export function Edit({
   const addNote = useCallback(() => {
     setTrackVal(rhythm, { method: 'addNote' });
   }, [rhythm, setTrackVal]);
+
+  // the last step going takes the track with it
+  const removeLastNote = useCallback(() => {
+    if (rhythm.pattern.length - 1 === 0) {
+      deleteTrack(rhythm.id);
+      return;
+    }
+    removeNote(rhythm.pattern.length - 1);
+  }, [rhythm, deleteTrack, removeNote]);
+
+  const soundName = rhythm.instrument?.sound.name ?? '';
 
   const toggleEditPitch = useCallback(() => {
     setEditPitch((p) => !p);
@@ -65,7 +89,7 @@ export function Edit({
         });
       }
     },
-    [setTrackVal, rhythm]
+    [setTrackVal, rhythm],
   );
 
   const handlePitchChange = useCallback(
@@ -77,7 +101,7 @@ export function Edit({
         });
       }
     },
-    [setTrackVal, rhythm]
+    [setTrackVal, rhythm],
   );
 
   async function handleVolumeChange(val: number) {
@@ -88,114 +112,146 @@ export function Edit({
   }
 
   return (
-    <>
-      <div className="mr-2">
-        {/* left panel */}
-        <div className="flex flex-row portrait:flex-col">
-          <section className="w-24">
-            <select
-              className={styles.sound}
-              title="Sound"
-              aria-label="Sound"
-              value={rhythm.instrument?.sound.name}
-              onChange={(ev) => handleInstrumentChange(ev.target.value)}
-            >
-              {SOUNDS.map((sound) => (
-                <option key={sound.name} value={sound.name}>
-                  {sound.name}
-                </option>
-              ))}
-            </select>
-
-            <div className="flex">
-              <ReorderIcon dragControls={dragControls} />
-              <section className={styles.total}>
-                {padNumber(rhythm.totalNotes)}
-              </section>
-            </div>
-
-            {/* mute/solo */}
-            <div className={styles['poly-button-group']}>
-              <button
-                onClick={toggleMute}
-                title={muted ? 'Unmute' : 'Mute'}
-                aria-pressed={muted}
-                className={clsx(styles.toggle, styles.mutebutton, {
-                  // [styles['no-portrait']]: true,
-                  [styles.muted]: muted,
-                  [styles.active]: !muted,
-                })}
+    <AnimatePresence mode="popLayout" initial={false}>
+      {open ? (
+        <motion.div key="full" className="mr-2" {...SWAP}>
+          {/* left panel */}
+          <div className="flex flex-row portrait:flex-col">
+            <section className="w-24">
+              <select
+                className={styles.sound}
+                title="Sound"
+                aria-label="Sound"
+                value={rhythm.instrument?.sound.name}
+                onChange={(ev) => handleInstrumentChange(ev.target.value)}
               >
-                <PixelText text={muted ? '🔇' : '🔊'} className="h-2.5 w-auto" />
+                {SOUNDS.map((sound) => (
+                  <option key={sound.name} value={sound.name}>
+                    {sound.name}
+                  </option>
+                ))}
+              </select>
+
+              <div className="flex">
+                <ReorderIcon dragControls={dragControls} />
+                <section className={styles.total}>
+                  {padNumber(rhythm.totalNotes)}
+                </section>
+              </div>
+
+              {/* mute/solo */}
+              <div className={styles['poly-button-group']}>
+                <button
+                  onClick={toggleMute}
+                  title={muted ? 'Unmute' : 'Mute'}
+                  aria-pressed={muted}
+                  className={clsx(styles.toggle, styles.mutebutton, {
+                    // [styles['no-portrait']]: true,
+                    [styles.muted]: muted,
+                    [styles.active]: !muted,
+                  })}
+                >
+                  <PixelText
+                    text={muted ? '🔇' : '🔊'}
+                    className="h-2.5 w-auto"
+                  />
+                </button>
+                <button
+                  onClick={toggleEditPitch}
+                  title="Edit note pitches"
+                  aria-pressed={editPitch}
+                  className={clsx(styles.toggle, {
+                    [styles['no-portrait']]: true,
+                    [styles.pitch]: editPitch,
+                  })}
+                >
+                  <PixelText text="♪" className="h-2.5 w-auto" />
+                </button>
+                <button
+                  title="Delete Track"
+                  onClick={() => deleteTrack(rhythm.id)}
+                  className={clsx(styles.toggle, {
+                    [styles['no-portrait']]: true,
+                    [styles.destructive]: true,
+                  })}
+                >
+                  <PixelText text="X" className="h-2 w-auto" />
+                </button>
+              </div>
+            </section>
+
+            <section className={styles['length-panel']}>
+              <button
+                onClick={addNote}
+                title="Add Note"
+                className={styles['add-button']}
+                disabled={rhythm.totalNotes >= Config.MAX_SLICES}
+              >
+                <PixelText text="+" className="h-2.5 w-auto" />
               </button>
               <button
-                onClick={toggleEditPitch}
-                title="Edit note pitches"
-                aria-pressed={editPitch}
-                className={clsx(styles.toggle, {
-                  [styles['no-portrait']]: true,
-                  [styles.pitch]: editPitch,
-                })}
+                title="Remove Note"
+                onClick={removeLastNote}
+                className={styles['subtract-button']}
               >
-                <PixelText text="♪" className="h-2.5 w-auto" />
+                <PixelText text="-" className="h-2.5 w-auto" />
               </button>
-              <button
-                title="Delete Track"
-                onClick={() => deleteTrack(rhythm.id)}
-                className={clsx(styles.toggle, {
-                  [styles['no-portrait']]: true,
-                  [styles.destructive]: true,
-                })}
-              >
-                <PixelText text="X" className="h-2 w-auto" />
-              </button>
-            </div>
-          </section>
-
-          <section className={styles['length-panel']}>
-            <button
-              onClick={addNote}
-              title="Add Note"
-              className={styles['add-button']}
-              disabled={rhythm.totalNotes >= Config.MAX_SLICES}
-            >
-              <PixelText text="+" className="h-2.5 w-auto" />
-            </button>
-            <button
-              title="Remove Note"
-              onClick={() => {
-                if (rhythm.pattern.length - 1 === 0) {
-                  deleteTrack(rhythm.id);
-                  return;
-                }
-                removeNote(rhythm.pattern.length - 1);
-              }}
-              className={styles['subtract-button']}
-            >
-              <PixelText text="-" className="h-2.5 w-auto" />
-            </button>
-          </section>
-        </div>
-        <section className="block portrait:hidden">
-          <div className={styles['knob-group']}>
-            <Slider
-              label="Pitch"
-              min={30}
-              max={100}
-              defaultValue={rhythm.pitch}
-              onChange={handlePitchChange}
-            />
-            <Slider
-              label="Vol"
-              defaultValue={rhythm.prevVolume}
-              onChange={handleVolumeChange}
-              min={0}
-              max={100}
-              step={1}
-            />
+            </section>
           </div>
-        </section>
-      </div>
-    </>
+          <section className="block portrait:hidden">
+            <div className={styles['knob-group']}>
+              <Slider
+                label="Pitch"
+                min={30}
+                max={100}
+                defaultValue={rhythm.pitch}
+                onChange={handlePitchChange}
+              />
+              <Slider
+                label="Vol"
+                defaultValue={rhythm.prevVolume}
+                onChange={handleVolumeChange}
+                min={0}
+                max={100}
+                step={1}
+              />
+            </div>
+          </section>
+        </motion.div>
+      ) : (
+        // collapsed: just the sound, mute and length in one thin column
+        <motion.div key="mini" className={styles.mini} {...SWAP}>
+          <span className={styles['mini-name']} title={soundName}>
+            {soundName}
+          </span>
+          <button
+            onClick={toggleMute}
+            title={muted ? 'Unmute' : 'Mute'}
+            aria-pressed={muted}
+            className={clsx(styles.toggle, styles['mini-button'], {
+              [styles.muted]: muted,
+              [styles.active]: !muted,
+            })}
+          >
+            <PixelText text={muted ? '🔇' : '🔊'} className="h-2.5 w-auto" />
+          </button>
+          <button
+            onClick={addNote}
+            title="Add Note"
+            className={clsx(styles.toggle, styles['mini-button'])}
+            disabled={rhythm.totalNotes >= Config.MAX_SLICES}
+          >
+            <PixelText text="+" className="h-2.5 w-auto" />
+          </button>
+          <button
+            onClick={removeLastNote}
+            title="Remove Note"
+            className={clsx(styles.toggle, styles['mini-button'])}
+          >
+            <PixelText text="-" className="h-2.5 w-auto" />
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

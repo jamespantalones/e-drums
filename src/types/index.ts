@@ -120,6 +120,8 @@ export type SerializedSequencer = {
   bpm: number;
   swing: number;
   reverb: number;
+  // missing from projects saved before delay existed
+  delay?: number;
   volume: number;
   id: string;
   name: string;

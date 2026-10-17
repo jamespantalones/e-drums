@@ -52,7 +52,7 @@ export function preloadVoices() {
   window.speechSynthesis.getVoices();
 }
 
-export function speak(text: string, maxWait = 3000): Promise<void> {
+export function speak(text: string, maxWait = 2000): Promise<void> {
   return new Promise((resolve) => {
     const synth = typeof window !== 'undefined' && window.speechSynthesis;
     if (!synth) return resolve();
@@ -62,7 +62,7 @@ export function speak(text: string, maxWait = 3000): Promise<void> {
     if (voice) utterance.voice = voice;
     // without a novelty voice, fake it with a low, slow delivery
     utterance.pitch = robotic ? 1 : 0.1;
-    utterance.rate = robotic ? 0.9 : 0.7;
+    utterance.rate = robotic ? 1.1 : 0.85;
 
     const timeout = window.setTimeout(resolve, maxWait);
     const done = () => {

@@ -16,6 +16,7 @@ export const state = {
     SequencerPlayState.STOPPED_AND_RESET
   ),
   SIG_REVERB: signal<number>(Config.MIN_REVERB),
+  SIG_DELAY: signal<number>(0),
   SIG_SEQUENCER: signal<Sequencer | null>(null),
   SIG_TICK: signal<number>(-1),
   SIG_SERIALIZED_TRACKS: signal<SerializedTrack[]>([]),
@@ -40,6 +41,7 @@ export const destroy = () => {
   state.SIG_SERIALIZED_TRACKS.value = [];
   state.SIG_TRACKS.value = [];
   state.SIG_REVERB.value = Config.MIN_REVERB;
+  state.SIG_DELAY.value = 0;
   state.SIG_REVISION.value = 0;
 };
 
@@ -48,6 +50,7 @@ export const {
   SIG_SWING,
   SIG_VOLUME,
   SIG_REVERB,
+  SIG_DELAY,
   SIG_INITIALIZED,
   SIG_NAME,
   SIG_PLAY_STATE,

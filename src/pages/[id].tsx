@@ -17,6 +17,7 @@ import { Footer } from '../components/Nav/Footer';
 import { Input } from '../components/inputs/input';
 import Link from 'next/link';
 import { PixelText } from '../components/Logo/Logo';
+import { loadUiPrefs } from '../state/ui';
 
 /**
  *
@@ -48,6 +49,8 @@ const Track: NextPage = () => {
       updatedAt: new Date().toISOString(),
     });
   };
+
+  React.useEffect(loadUiPrefs, []);
 
   React.useEffect(() => {
     async function load() {

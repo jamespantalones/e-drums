@@ -3,6 +3,7 @@ import { effect } from '@preact/signals-react';
 import {
   SIG_BPM,
   SIG_NAME,
+  SIG_DELAY,
   SIG_REVERB,
   SIG_REVISION,
   SIG_SWING,
@@ -42,6 +43,7 @@ export function useAutosave(
       void SIG_VOLUME.value;
       void SIG_SWING.value;
       void SIG_REVERB.value;
+      void SIG_DELAY.value;
       void SIG_NAME.value;
       void SIG_REVISION.value;
 

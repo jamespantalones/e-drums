@@ -14,6 +14,9 @@
   --color-danger: #ff3b30;
   --color-alert: var(--color-danger);
   --border-width: 1px;
+  /* one row of the mix footer; the nav is exactly one row tall */
+  --bar-row: 37px;
+  --bar-rule: 4px;
   --box-shadow-sm: 0 0 2px rgb(80, 80, 80);
   --box-shadow-lg: 0 0 5px rgb(190, 190, 190);
 
@@ -96,19 +99,26 @@ button {
   }
 }
 
+/* phones, including landscape where the width passes md */
+@media (max-width: 767px), (max-height: 500px) {
+  :root {
+    --bar-row: 29px;
+  }
+}
+
 .edit__area {
-  @apply mt-16;
+  /* clears the nav */
+  margin-top: calc(var(--bar-row) + var(--bar-rule));
   display: flex;
   flex-direction: column;
   @apply py-4 pb-32;
   @apply min-h-screen;
-  @apply portrait:flex-row portrait:mt-12 portrait:md:mt-16;
+  @apply portrait:flex-row;
 }
 
-/* clears the shorter phone nav */
 @media (max-width: 767px), (max-height: 500px) {
   .edit__area {
-    @apply mt-12 pb-20;
+    @apply pb-20;
   }
 }
 
@@ -124,7 +134,7 @@ body:has(.full-bleed) {
 }
 
 /*
- * Index step row: a playhead sweeps the visible steps (4 on phones, 12
+ * Index step row: a playhead sweeps the visible steps (4 on phones, 8
  * wider) and lit dots flare as it hits them. Keyframe offsets can't use
  * vars, so each loop length has its own keyframes.
  */
@@ -162,16 +172,16 @@ body:has(.full-bleed) {
 
 @media (min-width: 768px) {
   .seq {
-    --n: 12;
+    --n: 8;
   }
   .seq-step {
-    animation-name: seq-head-12;
+    animation-name: seq-head-8;
   }
   .seq-lit {
-    animation-name: seq-hit-12;
+    animation-name: seq-hit-8;
   }
   .seq-step .seq-dot:not(.seq-lit) {
-    animation-name: seq-pass-12;
+    animation-name: seq-pass-8;
   }
 }
 
@@ -180,9 +190,9 @@ body:has(.full-bleed) {
   0% { background-color: var(--color-surface); }
   25%, 100% { background-color: var(--color-bg); }
 }
-@keyframes seq-head-12 {
+@keyframes seq-head-8 {
   0% { background-color: var(--color-surface); }
-  8.333%, 100% { background-color: var(--color-bg); }
+  12.5%, 100% { background-color: var(--color-bg); }
 }
 
 /* lit step: flare when hit, then decay over about two steps */
@@ -190,9 +200,9 @@ body:has(.full-bleed) {
   0% { scale: 2; box-shadow: 0 0 18px 2px rgb(255 255 255 / 0.55); }
   50%, 100% { scale: 1; box-shadow: 0 0 0 0 rgb(255 255 255 / 0); }
 }
-@keyframes seq-hit-12 {
+@keyframes seq-hit-8 {
   0% { scale: 2; box-shadow: 0 0 18px 2px rgb(255 255 255 / 0.55); }
-  16.666%, 100% { scale: 1; box-shadow: 0 0 0 0 rgb(255 255 255 / 0); }
+  25%, 100% { scale: 1; box-shadow: 0 0 0 0 rgb(255 255 255 / 0); }
 }
 
 /* empty step: outline brightens while the playhead passes */
@@ -200,9 +210,9 @@ body:has(.full-bleed) {
   0% { border-color: rgb(255 255 255 / 0.7); }
   25%, 100% { border-color: rgb(64 64 64); }
 }
-@keyframes seq-pass-12 {
+@keyframes seq-pass-8 {
   0% { border-color: rgb(255 255 255 / 0.7); }
-  8.333%, 100% { border-color: rgb(64 64 64); }
+  12.5%, 100% { border-color: rgb(64 64 64); }
 }
 
 @media (prefers-reduced-motion: reduce) {
