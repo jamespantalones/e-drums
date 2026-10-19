@@ -99,7 +99,12 @@ export function Slice({
 
           {rhythm.pattern[index] > 0 && (
             <div className={styles['pitch-overlay']}>
-              <span>{rhythm.pitchOffset[index]}</span>
+              <span>
+                {rhythm.pitchOffset[index] < 0 && (
+                  <span className={styles.sign}>−</span>
+                )}
+                {Math.abs(rhythm.pitchOffset[index])}
+              </span>
             </div>
           )}
         </div>

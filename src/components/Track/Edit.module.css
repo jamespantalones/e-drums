@@ -35,7 +35,7 @@
     @apply mr-1;
     @apply cursor-pointer;
     @media (orientation: portrait) {
-      @apply w-full mx-auto ml-1.5;
+      @apply w-full mx-0;
     }
     &.no-portrait {
       @apply portrait:hidden;
@@ -100,8 +100,7 @@
   touch-action: none;
   @media (orientation: portrait) {
     width: var(--slice-size);
-    @apply -translate-x-0.5;
-    @apply mt-0.5;
+    @apply ml-0 mt-0.5;
   }
   button {
     @apply w-full h-1/2 relative flex items-center justify-center;

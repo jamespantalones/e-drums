@@ -9,8 +9,9 @@
   &.muted {
     @apply opacity-20;
   }
+  /* the lane is only a slice wide plus its padding, so no side margin */
   @media (orientation: portrait) {
-    @apply my-1;
+    @apply mx-0 my-1;
   }
 }
 
@@ -103,7 +104,15 @@
   @apply absolute w-full h-full;
   @apply bottom-0 left-0 right-0 top-0;
   @apply flex justify-center items-center;
-  @apply text-sm;
+  @apply text-sm leading-none tabular-nums;
   color: var(--color-bg);
   @apply pointer-events-none;
+
+  /* the number stays centred; the sign hangs off to its left */
+  > span {
+    @apply relative;
+  }
+  .sign {
+    @apply absolute right-full;
+  }
 }
