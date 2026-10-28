@@ -21,8 +21,12 @@
   @apply transition-colors duration-100;
   @apply focus-visible:outline focus-visible:outline-4 focus-visible:-outline-offset-8 focus-visible:outline-current;
 
-  &:not(:disabled):hover {
-    @apply bg-white text-black;
+  /* touch screens keep :hover on the last tapped button, which would leave
+     a toggle looking on after it's switched off */
+  @media (hover: hover) {
+    &:not(:disabled):hover {
+      @apply bg-white text-black;
+    }
   }
   &:not(:disabled):active {
     @apply bg-neutral-300 text-black;
@@ -144,7 +148,11 @@
     & + button {
       @apply border-t-2 border-white;
     }
-    &:not(:disabled):hover,
+    @media (hover: hover) {
+      &:not(:disabled):hover {
+        @apply bg-white text-black;
+      }
+    }
     &:focus-visible {
       @apply bg-white text-black outline-none;
     }
