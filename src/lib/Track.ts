@@ -1,5 +1,5 @@
 import * as Tone from 'tone';
-import { Config, publicUrl } from '../config';
+import { Config, SOUNDS, publicUrl } from '../config';
 import { Instrument, SoundFile, TrackOpts } from '../types';
 import { generateId } from '../utils';
 
@@ -89,11 +89,18 @@ export class Track {
       if (!this.instrument.sound?.files[0]) {
         return this;
       }
-      this.sampler = await createAsyncSampler(
-        publicUrl(`/sounds/${this.instrument.sound.files[0]}`)
-      );
-
-      this.isReady = true;
+      // saves keep the whole sound entry, and the sample files have since
+      // been renamed, so look the sound up again in the current catalogue
+      this.instrument.sound = currentSound(this.instrument.sound);
+      try {
+        this.sampler = await createAsyncSampler(
+          publicUrl(`/sounds/${this.instrument.sound.files[0]}`)
+        );
+        this.isReady = true;
+      } catch {
+        // a missing sample shouldn't silence the rest of the project
+        return this;
+      }
     }
 
     this.handleMuteChange();
@@ -283,4 +290,22 @@ export class Track {
 
     return rest;
   }
+}
+
+const bare = (s: string) =>
+  s
+    .toUpperCase()
+    .replace(/\.WAV$/, '')
+    .replace(/^\d+_/, '')
+    .replace(/^FM[ _]/, '')
+    .replace(/[^A-Z0-9]/g, '');
+
+function currentSound(saved: SoundFile): SoundFile {
+  return (
+    SOUNDS.find((s) => s.files[0] === saved.files[0]) ||
+    SOUNDS.find((s) => s.name === saved.name) ||
+    SOUNDS.find((s) => bare(s.files[0]) === bare(saved.files[0])) ||
+    SOUNDS.find((s) => bare(s.name) === bare(saved.name)) ||
+    SOUNDS[0]
+  );
 }
