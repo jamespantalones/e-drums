@@ -59,16 +59,18 @@
     @apply bg-white text-black;
   }
   &.muted {
-    @apply bg-red-500 text-black hover:bg-red-400;
-    box-shadow: none;
+    color: var(--color-muted);
   }
+  /* a playing track's toggle wears the track's own colour */
   &.active {
-    @apply bg-green-400 text-black hover:bg-green-300;
+    background: var(--track);
+    color: oklch(0.2 0.02 var(--track-h));
     box-shadow: none;
-  }
-  &.pitch {
-    @apply bg-yellow-300 text-black hover:bg-yellow-200;
-    box-shadow: none;
+    @media (hover: hover) {
+      &:hover {
+        background: oklch(from var(--track) calc(l + 0.06) c h);
+      }
+    }
   }
   /* same pixel X and red hover as the index page's delete */
   &.destructive {
