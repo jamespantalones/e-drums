@@ -58,9 +58,17 @@ export class DubEcho {
     this.depth = d;
 
     this.input.gain.rampTo(Math.min(1, d * 2), 0.05);
-    this.feedback.gain.rampTo(0.7 + 0.22 * tail, fall);
     this.highpass.frequency.rampTo(40 + 260 * tail, fall);
     this.lowpass.frequency.rampTo(8000 - 5000 * tail, fall);
+
+    // fully off means off, as on the DJM: the tail is faded out and the
+    // loop emptied rather than left ringing
+    if (d === 0) {
+      this.output.gain.rampTo(0, 0.25);
+      this.feedback.gain.rampTo(0, 0.25);
+      return;
+    }
+    this.feedback.gain.rampTo(0.7 + 0.22 * tail, fall);
     // makes up what the heavier filtering takes from the first repeats
     this.output.gain.rampTo(1 + 0.6 * tail, fall);
   }

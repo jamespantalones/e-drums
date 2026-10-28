@@ -68,6 +68,22 @@ const Home: NextPage = () => {
 
   const fileInput = React.useRef<HTMLInputElement>(null);
 
+  const [doomed, setDoomed] = React.useState<(typeof projects)[number] | null>(
+    null,
+  );
+  const dialog = React.useRef<HTMLDialogElement>(null);
+
+  React.useEffect(() => {
+    if (doomed) dialog.current?.showModal();
+  }, [doomed]);
+
+  async function confirmDelete() {
+    if (!doomed) return;
+    dialog.current?.close();
+    await removeFromCache(doomed.id);
+    await fetchIndexCache();
+  }
+
   function exportAll() {
     const day = new Date().toISOString().slice(0, 10);
     downloadJSON(`edrums-${day}.json`, toBackup(projects));
@@ -238,7 +254,7 @@ const Home: NextPage = () => {
                   className={clsx(
                     'flex items-stretch border-b border-white',
                     INVERT,
-                    'focus-within:bg-white focus-within:text-black',
+                    '[&:has(:focus-visible)]:bg-white [&:has(:focus-visible)]:text-black',
                   )}
                 >
                   <Link
@@ -284,15 +300,7 @@ const Home: NextPage = () => {
                     )}
                     aria-label={`Delete ${p.name}`}
                     title="Delete"
-                    onClick={async () => {
-                      const confirm = window.confirm(
-                        `Delete ${p.name}? This can't be undone.`,
-                      );
-                      if (confirm) {
-                        await removeFromCache(p.id);
-                        await fetchIndexCache();
-                      }
-                    }}
+                    onClick={() => setDoomed(p)}
                   >
                     <PixelText text="X" className="h-3 md:h-4 w-auto" />
                   </button>
@@ -307,6 +315,50 @@ const Home: NextPage = () => {
           the full editor.
         </p>
       </main>
+
+      <dialog
+        ref={dialog}
+        onClose={() => setDoomed(null)}
+        onClick={(ev) => {
+          if (ev.target === ev.currentTarget) dialog.current?.close();
+        }}
+        aria-labelledby="delete-title"
+        className="w-[min(24rem,calc(100vw-2rem))] p-0 border border-white bg-black text-white backdrop:bg-[rgb(0_0_0/0.7)]"
+      >
+        <div className="p-5 md:p-6">
+          <h2 id="delete-title">
+            <PixelText
+              text={`Delete ${doomed?.name || 'Untitled'}?`}
+              label={`Delete ${doomed?.name || 'Untitled'}?`}
+              className="h-3 md:h-4 w-auto max-w-full"
+            />
+          </h2>
+          <p className="mt-3 text-sm text-neutral-400">
+            This can&apos;t be undone.
+          </p>
+        </div>
+        <form method="dialog" className="flex border-t border-white">
+          <button
+            autoFocus
+            className={clsx(
+              'flex-1 py-4 hover:bg-white hover:text-black active:bg-white active:text-black',
+              'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-current',
+            )}
+          >
+            <PixelText text="Cancel" className="h-3 w-auto mx-auto" />
+          </button>
+          <button
+            type="button"
+            onClick={confirmDelete}
+            className={clsx(
+              'flex-1 py-4 border-l border-white bg-danger text-white hover:brightness-110 active:brightness-90',
+              'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-current',
+            )}
+          >
+            <PixelText text="Delete" className="h-3 w-auto mx-auto" />
+          </button>
+        </form>
+      </dialog>
     </>
   );
 };

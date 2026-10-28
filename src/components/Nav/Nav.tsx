@@ -71,7 +71,70 @@ function NavButton({
   );
 }
 
-/** Save, with a menu for renaming and downloading the project */
+/** Phones show the name as text; tapping it renames in a dialog */
+function TitleButton({ save }: { save: () => void }) {
+  const dialog = React.useRef<HTMLDialogElement>(null);
+  const [draft, setDraft] = React.useState('');
+  const name = SIG_NAME.value || SIG_SEQUENCER.value?.id || '';
+
+  function open() {
+    setDraft(SIG_NAME.value);
+    dialog.current?.showModal();
+  }
+
+  function commit(ev: React.FormEvent) {
+    ev.preventDefault();
+    const next = draft.trim();
+    if (next) SIG_NAME.value = next;
+    dialog.current?.close();
+    save();
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        className={styles.title}
+        onClick={open}
+        aria-label={`Rename ${name}`}
+      >
+        {name}
+      </button>
+      <dialog
+        ref={dialog}
+        aria-label="Rename"
+        onClick={(ev) => {
+          if (ev.target === ev.currentTarget) dialog.current?.close();
+        }}
+        className={styles.dialog}
+      >
+        <form onSubmit={commit}>
+          <label className={styles.field}>
+            <PixelText text="Name" className="h-2.5 w-auto" />
+            <input
+              autoFocus
+              type="text"
+              value={draft}
+              placeholder={SIG_SEQUENCER.value?.id}
+              onChange={(ev) => setDraft(ev.target.value)}
+              enterKeyHint="done"
+            />
+          </label>
+          <div className={styles.actions}>
+            <button type="button" onClick={() => dialog.current?.close()}>
+              <PixelText text="Cancel" className="h-2.5 w-auto" />
+            </button>
+            <button type="submit" className={styles.primary}>
+              <PixelText text="Rename" className="h-2.5 w-auto" />
+            </button>
+          </div>
+        </form>
+      </dialog>
+    </>
+  );
+}
+
+/** Save, with a menu for downloading the project */
 function SaveMenu({
   save,
   download,
@@ -82,7 +145,6 @@ function SaveMenu({
   disabled: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
-  const [renaming, setRenaming] = React.useState(false);
   const root = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -105,10 +167,6 @@ function SaveMenu({
     setOpen(false);
     action();
   }
-
-  React.useEffect(() => {
-    if (!open) setRenaming(false);
-  }, [open]);
 
 
   return (
@@ -138,33 +196,6 @@ function SaveMenu({
 
       {open && (
         <div role="menu" className={styles.menu}>
-          {/* phones have no room for the name field in the bar */}
-          {renaming ? (
-            <input
-              autoFocus
-              type="text"
-              aria-label="Name"
-              value={SIG_NAME.value}
-              placeholder={SIG_SEQUENCER.value?.id}
-              onChange={(ev) => {
-                SIG_NAME.value = ev.target.value;
-              }}
-              onBlur={() => choose(save)}
-              onKeyDown={(ev) => {
-                if (ev.key === 'Enter') ev.currentTarget.blur();
-              }}
-              className={styles.rename}
-            />
-          ) : (
-            <button
-              role="menuitem"
-              type="button"
-              onClick={() => setRenaming(true)}
-              className="md:hidden"
-            >
-              <PixelText text="Rename" label="Rename" className="h-2 md:h-2.5 w-auto" />
-            </button>
-          )}
           <button role="menuitem" type="button" onClick={() => choose(save)}>
             <PixelText text="Save" label="Save" className="h-2 md:h-2.5 w-auto" />
           </button>
@@ -234,9 +265,7 @@ export function Nav({
 
       <div className={clsx(styles.cell, styles.name)}>
         {children}
-        <span className={styles.title}>
-          {SIG_NAME.value || SIG_SEQUENCER.value?.id}
-        </span>
+        <TitleButton save={save} />
       </div>
 
       <NavButton

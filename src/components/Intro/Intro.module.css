@@ -63,8 +63,10 @@
   color: rgb(128, 130, 136);
 }
 
-.skip:hover {
-  color: var(--color-foreground);
+@media (hover: hover) {
+  .skip:hover {
+    color: var(--color-foreground);
+  }
 }
 
 @keyframes boot {

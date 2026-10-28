@@ -70,7 +70,7 @@
 .name {
   @apply flex-1 min-w-0;
 
-  input {
+  & > input {
     @apply hidden md:flex w-full h-full;
     @apply border-0 bg-transparent px-3 md:px-5;
     /* same sizes as the footer's slider labels */
@@ -90,9 +90,58 @@
 
 /* phones show the name as text; renaming lives in the Save menu */
 .title {
-  @apply md:hidden block min-w-0 px-3 truncate;
+  @apply md:hidden block w-full h-full min-w-0 px-3 truncate text-left;
   font-size: 11px;
   letter-spacing: 0.02em;
+  &:active {
+    background: var(--color-surface);
+  }
+}
+
+.dialog {
+  @apply p-0 border border-white;
+  width: min(24rem, calc(100vw - 2rem));
+  background: var(--color-bg);
+  color: var(--color-text);
+  &::backdrop {
+    background: rgb(0 0 0 / 0.7);
+  }
+}
+
+.field {
+  @apply flex flex-col gap-3 p-5;
+  input {
+    @apply w-full px-3 border border-white bg-transparent outline-none;
+    height: var(--bar-row);
+    /* 16px keeps iOS from zooming in on focus */
+    font-size: 16px;
+    &:focus-visible {
+      background: var(--color-surface);
+    }
+  }
+}
+
+.actions {
+  @apply flex border-t border-white;
+  button {
+    @apply flex-1 flex items-center justify-center;
+    height: var(--bar-row);
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-current;
+    @media (hover: hover) {
+      &:hover {
+        @apply bg-white text-black;
+      }
+    }
+    &:active {
+      @apply bg-white text-black;
+    }
+  }
+  button + button {
+    @apply border-l border-white;
+  }
+  .primary {
+    @apply bg-white text-black;
+  }
 }
 
 .slidecontainer {
@@ -119,7 +168,7 @@
       font-size: 11px;
     }
   }
-  .name input {
+  .name > input {
     @apply px-3;
     font-size: 11px;
   }
@@ -167,15 +216,6 @@
       color: var(--color-muted);
     }
   }
-}
-
-.rename {
-  @apply w-full px-3 border-0 border-b border-white bg-transparent;
-  height: var(--bar-row);
-  min-width: 14rem;
-  font-size: 16px;
-  @apply outline-none;
-  background: var(--color-surface);
 }
 
 @keyframes menu-in {
