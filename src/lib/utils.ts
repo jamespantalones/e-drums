@@ -7,10 +7,6 @@ export function randomRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-/**
- * Random color
- * @returns
- */
 export function generateRandomColor(): [number, number, number] {
   const hue = randomRange(0, 360);
   const saturation = randomRange(45, 97);
@@ -75,17 +71,9 @@ export function euclideanRhythm(opts: {
 }): { pattern: number[]; pitchOffset: number[] } {
   const { totalNotes, onNotes } = opts;
 
-  // groups and slots are initially empty arrays.
-  // groups will store the final rhythmic pattern and
-  // slots will store the 'on' beats from
-  // the previous pattern (if one was given)
   let groups: number[][] = [];
   let slots: number[] = [];
 
-  // A loop creates the initial pattern in the groups array.
-  // If the current iteration index is less than the maximum
-  // number of 'on' beats (stableOnNotes), it adds an array
-  // containing 1, else an array containing 0.
   const stableOnNotes = Math.max(onNotes, slots.length);
 
   for (let i = 0; i < totalNotes; i += 1) {
@@ -94,11 +82,8 @@ export function euclideanRhythm(opts: {
 
   let l: number;
 
-  // The main part of the rhythm generation occurs here.
-  // It works by repeatedly splitting the pattern into two halves
-  // and merging them together, creating a sort of 'rotational symmetry'.
-  // This process continues until no further changes can be made, resulting in
-  // the final rhythm.
+  // Bjorklund: fold the trailing groups onto the leading ones until
+  // the remainder can't be spread any further
   while ((l = groups.length - 1)) {
     let start = 0;
     let [first] = groups;

@@ -3,7 +3,6 @@ import { Track } from '../lib/Track';
 
 declare module 'react' {
   interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
-    // extends React's HTMLAttributes
     orient?: string;
   }
 }
@@ -70,9 +69,6 @@ export type TrackOpts = {
   ) => void;
 };
 
-/**
- * Main State
- */
 export type AudioContextType = {
   initialized: boolean;
   playing: boolean;

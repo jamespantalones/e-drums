@@ -34,7 +34,6 @@ const EXT = '.wav';
 
   console.log({ 'Wrote config file:': config });
 
-  // now write it
   await fs.writeFile(
     `${SRC_DIR}/config.json`,
     JSON.stringify(config, null, 2),

@@ -1,11 +1,9 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-// Define the output range [0, 3]
 const outputMin = 0;
 const outputMax = 3;
 
-// Define the angle range [0, 360]
 const angleMin = 0;
 const angleMax = 360;
 
@@ -42,10 +40,8 @@ export const convertRange = (
 };
 
 export function scaleVolume(val: number) {
-  // Ensure output is within the range [0, 3]
   val = Math.min(outputMax, Math.max(outputMin, val));
 
-  // Calculate the mapped angle
   const mappedAngle =
     ((val - outputMin) / (outputMax - outputMin)) * (angleMax - angleMin) +
     angleMin;
@@ -54,13 +50,11 @@ export function scaleVolume(val: number) {
 }
 
 export function scaleDegrees(degrees: number) {
-  // Ensure degrees is within the range [0, 360]
   degrees = degrees % 360;
   if (degrees < 0) {
     degrees += 360;
   }
 
-  // Calculate the mapped value
   const mappedValue = (degrees / 360) * (outputMax - outputMin) + outputMin;
 
   return mappedValue;

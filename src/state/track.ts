@@ -1,4 +1,3 @@
-// Track specific state
 
 import { signal } from '@preact/signals-react';
 import { Config } from '../config';

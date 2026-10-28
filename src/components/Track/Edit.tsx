@@ -101,7 +101,6 @@ export function Edit({
     <AnimatePresence mode="popLayout" initial={false}>
       {open ? (
         <motion.div key="full" className="mr-2" {...SWAP}>
-          {/* left panel */}
           <div className="flex flex-row portrait:flex-col">
             <section className="w-24">
               <select
@@ -125,14 +124,12 @@ export function Edit({
                 </section>
               </div>
 
-              {/* mute/solo */}
               <div className={styles['poly-button-group']}>
                 <button
                   onClick={toggleMute}
                   title={muted ? 'Unmute' : 'Mute'}
                   aria-pressed={muted}
                   className={clsx(styles.toggle, styles.mutebutton, {
-                    // [styles['no-portrait']]: true,
                     [styles.muted]: muted,
                     [styles.active]: !muted,
                   })}

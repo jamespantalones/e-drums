@@ -35,9 +35,6 @@ export interface SequencerOpts {
   createdAt?: string;
 }
 
-// ------------------------------------------------------------
-// Sequencer Class
-// ------------------------------------------------------------
 export class Sequencer {
   public context: Tone.BaseContext | null;
   public name: string | null;
@@ -65,7 +62,6 @@ export class Sequencer {
     this.bpm = SIG_BPM.value;
     this.context = null;
     this.id = opts.id;
-    // set initial name to the track id
     this.name = this.id;
     this.createdAt = opts.createdAt || new Date().toISOString();
     this.updatedAt = new Date().toISOString();
@@ -91,7 +87,6 @@ export class Sequencer {
 
     SIG_TICK.value = -1;
 
-    // listen for signal changes
     this.disposeEffect = effect(() => {
       if (this.bpm !== SIG_BPM.value) {
         this.setBpm(SIG_BPM.value);
@@ -111,11 +106,9 @@ export class Sequencer {
     this.chain.chain(this.delaySend, this.delayChain, Tone.Destination);
     this.delayChain.connect(this.reverbSend);
 
-    // load all initial tracks
     const trackPromises = SIG_TRACKS.value.map((t) => t.init());
     const resolvedTracks = await Promise.all(trackPromises);
 
-    // loop through each resolved track and connect to chain
     resolvedTracks.forEach((track) => {
       if (track.isReady) {
         track.sampler.connect(this.chain);
@@ -124,8 +117,6 @@ export class Sequencer {
     SIG_TRACKS.value = resolvedTracks;
 
     SIG_INITIALIZED.value = true;
-
-    // for each track, create it
 
     return this;
   }
@@ -139,7 +130,6 @@ export class Sequencer {
       return;
     }
 
-    // if transport hasn't been set up.. set it up
     this._setupTransport();
 
     if (this.context?.state === 'suspended') {
@@ -150,7 +140,6 @@ export class Sequencer {
     SIG_PLAY_STATE.value = SequencerPlayState.STARTED;
   }
 
-  // stop the transport
   stop() {
     this.transport?.stop();
     if (SIG_PLAY_STATE.value === SequencerPlayState.STARTED) {
@@ -160,7 +149,6 @@ export class Sequencer {
 
     if (SIG_PLAY_STATE.value === SequencerPlayState.STOPPED) {
       SIG_PLAY_STATE.value = SequencerPlayState.STOPPED_AND_RESET;
-      // rewind everything
       this.step = -1;
       SIG_TICK.value = -1;
 
@@ -174,9 +162,6 @@ export class Sequencer {
 
     this.context = Tone.getContext();
 
-    // ************************************************************
-    // main loop
-    // ************************************************************
     // steps are 16ths, so swing delays every other 16th
     Tone.Transport.swingSubdivision = '16n';
     // later tempo changes arrive through setBpm
@@ -218,7 +203,6 @@ export class Sequencer {
       nextTrack.sampler.connect(this.chain);
     }
 
-    // update in state
     SIG_TRACKS.value = [...SIG_TRACKS.value, nextTrack];
     SIG_SERIALIZED_TRACKS.value = [
       ...SIG_SERIALIZED_TRACKS.value,
@@ -236,7 +220,6 @@ export class Sequencer {
     let rhythmTarget: Track | undefined = undefined;
 
     SIG_TRACKS.value = SIG_TRACKS.value.map((rhythm) => {
-      // if we have a target
       if (rhythm.id === id) {
         const track = rhythm.repitchNote(index, type);
         rhythmTarget = track;
@@ -253,7 +236,6 @@ export class Sequencer {
     let rhythmTarget: Track | undefined = undefined;
 
     SIG_TRACKS.value = SIG_TRACKS.value.map((rhythm) => {
-      // if we have a target
       if (rhythm.id === id) {
         const track = rhythm.toggleNote(index);
         rhythmTarget = track;
@@ -320,8 +302,6 @@ export class Sequencer {
   }
 
   public exportJSON(): SerializedSequencer {
-    // update timestamp for save
-
     return {
       id: this.id,
       state: {

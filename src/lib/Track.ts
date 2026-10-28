@@ -96,14 +96,12 @@ export class Track {
       this.isReady = true;
     }
 
-    // handle initial val
     this.handleMuteChange();
 
     return this;
   }
 
   private _createSoundFile(value?: SoundFile): Instrument {
-    // placeholder for final sound
     let sound = value;
 
     this.instrument = {
@@ -122,12 +120,9 @@ export class Track {
   public toggleSolo(): Track {
     // TODO: Toggle solo for all tracks to false
 
-    // flip muted
     this.soloed = !this.soloed;
 
     if (this.soloed) {
-      // clear all other solo tracks
-
       this.muted = false;
       this.handleMuteChange();
     }
@@ -135,23 +130,17 @@ export class Track {
     this.updateSelfInParent(this, {});
 
     return this;
-
-    // return this;
   }
 
   public toggleMute(): Track {
-    // flip muted
     this.muted = !this.muted;
 
     this.handleMuteChange();
     return this;
-    // return this;
   }
 
   private handleMuteChange() {
-    // if now muted
     if (this.muted) {
-      // store the most previous volume
       this.prevVolume = this.volume;
       this.volume = 0;
     } else {
@@ -166,9 +155,6 @@ export class Track {
     }
 
     const freq = Tone.Frequency(
-      // use user specified pitch, falling back
-      // to initial pitch
-      // calc offset here
       this.pitch + (this.pitchOffset[tick] || 0),
       'midi'
     ).toFrequency();
@@ -230,23 +216,19 @@ export class Track {
   }
 
   public async changeInstrument(value: SoundFile): Promise<Track> {
-    // get the selected instrument from the sound files
     this.isReady = false;
 
     const file = publicUrl(
       `/sounds/${this._createSoundFile(value).sound.files[0]}`
     );
 
-    // dispose of old audio file
     if (this.sampler) {
       this.sampler.dispose();
     }
 
-    // load the new one
     this.sampler = await createAsyncSampler(file);
     this.isReady = true;
 
-    // update the parent
     this.updateSelfInParent(this, { needsReconnect: true });
     return this;
   }
@@ -284,7 +266,6 @@ export class Track {
   }
 
   public repitchNote(index: number, type: 'INCREMENT' | 'DECREMENT'): Track {
-    // loop through
     this.pitchOffset = this.pitchOffset.map((p, i) => {
       if (index !== i) return p;
       const next = p + (type === 'INCREMENT' ? 1 : -1);

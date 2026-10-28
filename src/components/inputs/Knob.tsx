@@ -46,17 +46,13 @@ export function Knob(props: KnobProps) {
   const controller = useRef<AbortController | null>(null);
 
   function handleChange(ev: React.ChangeEvent<HTMLInputElement>) {
-    // convert to a number
     const nextVal = parseInt(ev.target.value, 10);
 
     setLocalValue(nextVal);
-    // set degrees if we can
     setDeg(convertRange(min, max, startAngle, endAngle, nextVal));
   }
 
   function handleBlur() {
-    // send local value upstream
-
     let nextVal = localValue;
 
     if (localValue > max) {
@@ -69,7 +65,6 @@ export function Knob(props: KnobProps) {
     onChange(nextVal);
     setDeg(convertRange(min, max, startAngle, endAngle, nextVal));
 
-    //reset local val within bounds
     setLocalValue(nextVal);
   }
 
@@ -89,7 +84,6 @@ export function Knob(props: KnobProps) {
         currentDeg--;
       }
 
-      // send value back upstream here...
       let newVal = convertRange(startAngle, endAngle, min, max, currentDeg);
 
       setDeg((d) => {
@@ -114,7 +108,6 @@ export function Knob(props: KnobProps) {
     pointerDown.current = false;
     center.current = { x: 0, y: 0 };
 
-    // clear listeners
     if (controller.current) {
       controller.current.abort();
     }
@@ -122,9 +115,6 @@ export function Knob(props: KnobProps) {
     controller.current = null;
   }, []);
 
-  /**
-   * Pointer down
-   */
   const handlePointerDown = useCallback(
     (ev: React.PointerEvent<HTMLDivElement>) => {
       document.removeEventListener('pointerup', handlePointerUp);

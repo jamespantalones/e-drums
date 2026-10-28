@@ -23,10 +23,8 @@ export function useHotKeys(handlers: Handlers) {
       }
 
       for (let k in handlers) {
-        // split by +
         const [h_or_key, key_or_empty] = k.split('+');
 
-        // if both
         if (key_or_empty) {
           if (h_or_key === 'Meta') {
             if (metaDown.current && key_or_empty === ev.key) {

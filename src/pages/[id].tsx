@@ -19,10 +19,6 @@ import Link from 'next/link';
 import { PixelText } from '../components/Logo/Logo';
 import { loadUiPrefs } from '../state/ui';
 
-/**
- *
- * @returns
- */
 const Track: NextPage = () => {
   useSignals();
   const [loaded, setLoaded] = React.useState(false);
@@ -73,7 +69,6 @@ const Track: NextPage = () => {
     SIG_NAME.value = ev.target.value;
   }
 
-  // allow enter key to blur input
   function handleKeyDown(ev: React.KeyboardEvent<HTMLInputElement>) {
     if (ev.key === 'Enter') {
       if (ev.target) {
@@ -86,14 +81,12 @@ const Track: NextPage = () => {
     save();
   }
 
-  // all hot-keys require commande
   useHotKeys({ 'Meta+s': save, 'Ctrl+n': methods.createTrack });
 
   // declared before the unmount effect so its final save runs first,
   // while the sequencer state still exists
   useAutosave(save, loaded);
 
-  // unmount effect
   React.useEffect(() => {
     return () => {
       methods.destroy();

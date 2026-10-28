@@ -36,31 +36,21 @@ import {
   SIG_TRACKS,
 } from '../state/track';
 
-/**
- * Main goal of this AudioContext is
- * to provide singular set of UI operation
- * which in turn, update the underlying audio sequencer
- */
 const AudioContext = createContext<AudioContextReturnType | undefined>(
   undefined
 );
 
 export function AudioContextProvider({ children }: { children: ReactNode }) {
-  // make sure signals runtime is present
   useSignals();
 
   function changeName(ev: React.ChangeEvent<HTMLInputElement>) {
     SIG_NAME.value = ev.target.value;
   }
 
-  // make sure the AudioContext is initialized
   const initialize = useCallback(async (data?: SerializedSequencer) => {
     try {
-      // if pulling from offline storage
       if (data) {
-        // set all values here
         batch(() => {
-          // set signals here!
           SIG_BPM.value = data.bpm;
           SIG_NAME.value = data.name;
           SIG_REVERB.value = data.reverb;
@@ -70,12 +60,10 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
           SIG_SERIALIZED_TRACKS.value = data.state.tracks;
           SIG_SEQUENCER.value = new Sequencer({
             ...data,
-            // TODO Fix
             id: data.id,
           });
         });
       }
-      // otherwise, create a new track
       else {
         throw new Error('No data passed');
       }
@@ -89,31 +77,22 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  /**
-   * Starts playback
-   */
   const play = useCallback(async () => {
     // start the AudioContext engine (on user interactive only)
     SIG_SEQUENCER.value?.start();
   }, []);
 
-  /**
-   * Stops playback
-   */
   const stop = useCallback(async () => {
-    // call stop on the sequencer
     SIG_SEQUENCER.value?.stop();
   }, []);
 
   const destroy = useCallback(() => {
     SIG_SEQUENCER.value?.destroy();
     SIG_SEQUENCER.value = null;
-    // destroy all signals
     destroySignals();
   }, []);
 
   const createTrack = useCallback(async () => {
-    // add to Sequencer
     await SIG_SEQUENCER.value?.addNewRhythm(
       generateTrack(
         SIG_TRACKS.value.length,

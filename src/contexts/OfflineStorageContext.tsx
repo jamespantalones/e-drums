@@ -77,9 +77,6 @@ const OfflineStorageContext = createContext<
 export function OfflineStorageProvider({ children }: { children: ReactNode }) {
   const [projects, setProjects] = useState<SerializedSequencer[]>([]);
 
-  /**
-   * Load a single project by id
-   */
   const loadProjectFromCache = useCallback(
     async (id: string): Promise<SerializedSequencer | undefined> => {
       await ensureMigrated();
@@ -88,9 +85,6 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  /**
-   * Save or update a project
-   */
   const saveProjectToCache = useCallback(
     async (id: string, data: SerializedSequencer) => {
       await ensureMigrated();
@@ -124,18 +118,12 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  /**
-   * Remove a project
-   */
   const removeFromCache = useCallback(async (id: string) => {
     await ensureMigrated();
     await del(`${CACHE_PREFIX}:${id}`);
     await fetchIndexCache();
   }, []);
 
-  /**
-   * Fetch all projects belonging to this app only
-   */
   const fetchIndexCache = useCallback(async () => {
     await ensureMigrated();
     const all = await entries<string, SerializedSequencer>();
@@ -153,10 +141,6 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
 
     setProjects(filtered);
   }, []);
-
-  /**
-   * Initial load only
-   */
 
   useEffect(() => {
     fetchIndexCache();

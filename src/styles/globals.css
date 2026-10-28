@@ -44,7 +44,6 @@ html {
   color: var(--color-text);
   min-height: 100lvh;
   min-height: -webkit-fill-available;
-  /* min-height: -webkit-fill-available; */
 }
 
 body {
@@ -89,7 +88,6 @@ h1 {
     }
   }
 }
-/* i don't remember why i have this in here */
 #__next {
   overflow: hidden;
   overflow-x: auto;

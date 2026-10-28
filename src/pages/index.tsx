@@ -93,9 +93,6 @@ const Home: NextPage = () => {
     }
   }
 
-  /**
-   * Create a new sequencer
-   */
   async function createNew() {
     const id = generateId();
     SIG_SERIALIZED_TRACKS.value = [generateTrack(0)];
