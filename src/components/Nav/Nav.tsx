@@ -220,7 +220,12 @@ export function Nav({
         </h1>
       </Link>
 
-      <div className={clsx(styles.cell, styles.name)}>{children}</div>
+      <div className={clsx(styles.cell, styles.name)}>
+        {children}
+        <span className={styles.title}>
+          {SIG_NAME.value || SIG_SEQUENCER.value?.id}
+        </span>
+      </div>
 
       <NavButton
         label={playing ? 'Stop' : 'Play'}

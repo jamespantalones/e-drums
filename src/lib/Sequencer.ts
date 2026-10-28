@@ -21,13 +21,9 @@ import {
   SIG_VOLUME,
 } from '../state/track';
 import { Config } from '../config';
+import { DubEcho } from './DubEcho';
 
-// a half-note echo, so every repeat lands on the beat
-const delayTime = (bpm: number) => (60 / bpm) * 2;
-
-// 0-100 controls to send gains; echoes at full send sit a bit under the dry hit
 const reverbLevel = (value: number) => value / 100;
-const delayLevel = (value: number) => (value / 100) * 0.85;
 
 export interface SequencerOpts {
   initialTracks?: SerializedTrack[];
@@ -46,10 +42,9 @@ export class Sequencer {
   public reverb: number;
 
   private reverbChain: Tone.Reverb;
-  private delayChain: Tone.FeedbackDelay;
-  // effect send levels; the dry signal always plays at full level
+  private echo: DubEcho;
+  // the dry signal always plays at full level
   private reverbSend: Tone.Gain;
-  private delaySend: Tone.Gain;
   private chain!: Tone.Volume;
 
   private transport!: Transport;
@@ -66,14 +61,8 @@ export class Sequencer {
     this.createdAt = opts.createdAt || new Date().toISOString();
     this.updatedAt = new Date().toISOString();
     this.reverbChain = new Tone.Reverb({ wet: 1 });
-    this.delayChain = new Tone.FeedbackDelay({
-      delayTime: delayTime(SIG_BPM.value),
-      maxDelay: delayTime(Config.MIN_BPM),
-      feedback: 0.45,
-      wet: 1,
-    });
+    this.echo = new DubEcho(SIG_BPM.value, Config.MIN_BPM);
     this.reverbSend = new Tone.Gain(reverbLevel(SIG_REVERB.value));
-    this.delaySend = new Tone.Gain(delayLevel(SIG_DELAY.value));
     this.chain = new Tone.Volume(SIG_VOLUME.value);
     this.swing = SIG_SWING.value / 100;
     this.reverb = 0;
@@ -94,7 +83,7 @@ export class Sequencer {
 
       this.chain.volume.value = SIG_VOLUME.value;
       this.reverbSend.gain.rampTo(reverbLevel(SIG_REVERB.value), 0.05);
-      this.delaySend.gain.rampTo(delayLevel(SIG_DELAY.value), 0.05);
+      this.echo.setDepth(SIG_DELAY.value);
     });
   }
 
@@ -103,8 +92,9 @@ export class Sequencer {
     // echoes also feed the reverb so they sit in the same room
     this.chain.connect(Tone.Destination);
     this.chain.chain(this.reverbSend, this.reverbChain, Tone.Destination);
-    this.chain.chain(this.delaySend, this.delayChain, Tone.Destination);
-    this.delayChain.connect(this.reverbSend);
+    this.chain.connect(this.echo.input);
+    this.echo.output.connect(Tone.Destination);
+    this.echo.output.connect(this.reverbSend);
 
     const trackPromises = SIG_TRACKS.value.map((t) => t.init());
     const resolvedTracks = await Promise.all(trackPromises);
@@ -250,7 +240,7 @@ export class Sequencer {
 
   private setBpm(val: number) {
     this.bpm = val;
-    this.delayChain.delayTime.rampTo(delayTime(val), 0.05);
+    this.echo.setTempo(val);
     if (this.transport) {
       this.transport.bpm.value = val;
     }
@@ -296,9 +286,8 @@ export class Sequencer {
     SIG_TRACKS.value.forEach((track) => track.sampler?.dispose());
     this.chain.dispose();
     this.reverbChain.dispose();
-    this.delayChain.dispose();
+    this.echo.dispose();
     this.reverbSend.dispose();
-    this.delaySend.dispose();
   }
 
   public exportJSON(): SerializedSequencer {

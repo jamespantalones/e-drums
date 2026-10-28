@@ -22,7 +22,7 @@ const SLIDERS: {
     min: Config.MIN_REVERB,
     max: Config.MAX_REVERB,
   },
-  { label: 'Delay', signal: SIG_DELAY, min: 0, max: 100 },
+  { label: 'Echo', signal: SIG_DELAY, min: 0, max: 100 },
 ];
 
 export function Footer() {

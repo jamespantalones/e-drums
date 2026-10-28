@@ -88,6 +88,13 @@
   }
 }
 
+/* phones show the name as text; renaming lives in the Save menu */
+.title {
+  @apply md:hidden block min-w-0 px-3 truncate;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
 .slidecontainer {
   width: 80%;
   @apply mr-2;
