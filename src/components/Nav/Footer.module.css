@@ -53,3 +53,11 @@
     @apply h-6 px-2.5 right-3;
   }
 }
+
+/* after the phone rules so the taller portrait tab wins */
+@media (max-width: 767px) and (orientation: portrait) {
+  .tab {
+    @apply px-4;
+    height: 40px;
+  }
+}

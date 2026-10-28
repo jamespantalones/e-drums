@@ -35,7 +35,10 @@
     @apply mr-1;
     @apply cursor-pointer;
     @media (orientation: portrait) {
-      @apply w-full mx-0;
+      @apply w-full mx-0 h-9;
+      svg {
+        @apply h-3.5;
+      }
     }
     &.no-portrait {
       @apply portrait:hidden;
@@ -122,7 +125,10 @@
     }
 
     @media (orientation: portrait) {
-      @apply w-1/2 p-1;
+      @apply w-1/2 h-9 p-1;
+      svg {
+        @apply h-3.5;
+      }
       @apply flex-grow-0 flex-shrink-0;
       @apply my-1;
     }
@@ -282,7 +288,13 @@
 .mini-button {
   @apply flex items-center justify-center w-full h-4;
   @media (orientation: portrait) {
-    @apply flex-1 w-auto;
+    @apply flex-1 w-auto h-9;
+    svg {
+      @apply h-3.5;
+    }
+    &:first-of-type {
+      @apply basis-full;
+    }
   }
   &:disabled {
     color: var(--color-muted);

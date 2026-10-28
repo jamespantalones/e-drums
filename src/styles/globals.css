@@ -107,6 +107,13 @@ button {
   }
 }
 
+/* portrait phones have the height to spare for full-size touch targets */
+@media (max-width: 767px) and (orientation: portrait) {
+  :root {
+    --bar-row: 44px;
+  }
+}
+
 .edit__area {
   /* clears the nav */
   margin-top: calc(var(--bar-row) + var(--bar-rule));

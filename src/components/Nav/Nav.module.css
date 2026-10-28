@@ -42,6 +42,9 @@
 .transport {
   @apply px-0;
   width: calc(var(--bar-row) * 2);
+  @media (max-width: 767px) and (orientation: portrait) {
+    width: calc(var(--bar-row) * 1.5);
+  }
 }
 
 .nav .button.transport svg {
@@ -161,5 +164,15 @@
 @media (prefers-reduced-motion: reduce) {
   .menu {
     animation: none;
+  }
+}
+
+/* the taller portrait bar takes larger glyphs; after the phone rules so it wins */
+@media (max-width: 767px) and (orientation: portrait) {
+  .icon svg {
+    @apply h-3.5;
+  }
+  .nav .button.transport svg {
+    @apply h-4;
   }
 }
