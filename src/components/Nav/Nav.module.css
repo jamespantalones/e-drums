@@ -56,6 +56,11 @@
   @apply bg-white text-black;
 }
 
+/* two lit cells side by side would merge into one white block */
+.active + .active {
+  border-left-color: var(--color-bg);
+}
+
 /* get around the notch in landscape */
 .logo {
   padding-left: max(1.5rem, env(safe-area-inset-left));
