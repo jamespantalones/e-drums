@@ -46,9 +46,6 @@
 .transport {
   @apply px-0;
   width: calc(var(--bar-row) * 2);
-  @media (max-width: 767px) and (orientation: portrait) {
-    width: calc(var(--bar-row) * 1.5);
-  }
 }
 
 .nav .button.transport svg {

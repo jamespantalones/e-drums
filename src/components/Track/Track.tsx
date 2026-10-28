@@ -16,6 +16,7 @@ import {
   CONTROLS_EASE,
   SIG_CONTROLS_OPEN,
   SIG_EDIT_PITCH,
+  SIG_PORTRAIT_PHONE,
 } from '../../state/ui';
 import { Edit } from './Edit';
 import { useDeleteTrackOnEmpty } from './useDeleteTrackOnEmpty';
@@ -30,7 +31,7 @@ export function TrackItem({
 }) {
   // every track re-renders on the toggle, so framer can measure the move
   useSignals();
-  const open = SIG_CONTROLS_OPEN.value;
+  const open = SIG_CONTROLS_OPEN.value || SIG_PORTRAIT_PHONE.value;
   const reduceMotion = useReducedMotion();
   const transition = reduceMotion ? { duration: 0 } : CONTROLS_EASE;
 

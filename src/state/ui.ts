@@ -15,6 +15,11 @@ export const SIG_FOOTER_OPEN = signal(true);
 export const SIG_CONTROLS_OPEN = signal(true);
 // steps tune their note instead of toggling it; not remembered
 export const SIG_EDIT_PITCH = signal(false);
+// upright phones always show the full track controls: collapsing there
+// saves no room, so the toggle is hidden and the saved choice ignored
+export const SIG_PORTRAIT_PHONE = signal(false);
+
+const PORTRAIT_PHONE = '(max-width: 767px) and (orientation: portrait)';
 
 let loaded = false;
 
@@ -22,6 +27,12 @@ let loaded = false;
 export function loadUiPrefs() {
   if (loaded) return;
   loaded = true;
+
+  const portrait = window.matchMedia(PORTRAIT_PHONE);
+  SIG_PORTRAIT_PHONE.value = portrait.matches;
+  portrait.addEventListener('change', (ev) => {
+    SIG_PORTRAIT_PHONE.value = ev.matches;
+  });
 
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) || '{}');

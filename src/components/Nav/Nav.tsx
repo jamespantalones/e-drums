@@ -14,7 +14,11 @@ import {
 } from '../../state/track';
 import { SequencerPlayState } from '../../types';
 import { Logo, PixelText } from '../Logo/Logo';
-import { SIG_CONTROLS_OPEN, SIG_EDIT_PITCH } from '../../state/ui';
+import {
+  SIG_CONTROLS_OPEN,
+  SIG_EDIT_PITCH,
+  SIG_PORTRAIT_PHONE,
+} from '../../state/ui';
 import { downloadJSON, slug, toBackup } from '../../lib/backup';
 
 function NavButton({
@@ -192,14 +196,16 @@ export function Nav({
         active={playing}
         wide
       />
-      <NavButton
-        label={controlsOpen ? 'Hide track controls' : 'Show track controls'}
-        text="◧"
-        onClick={() => {
-          SIG_CONTROLS_OPEN.value = !controlsOpen;
-        }}
-        active={controlsOpen}
-      />
+      {!SIG_PORTRAIT_PHONE.value && (
+        <NavButton
+          label={controlsOpen ? 'Hide track controls' : 'Show track controls'}
+          text="◧"
+          onClick={() => {
+            SIG_CONTROLS_OPEN.value = !controlsOpen;
+          }}
+          active={controlsOpen}
+        />
+      )}
       <NavButton
         label={editPitch ? 'Stop tuning notes' : 'Tune notes'}
         text="♪"
