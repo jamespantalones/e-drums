@@ -15,10 +15,10 @@ const FACTS = [
 export default function About() {
   return (
     <main className="full-bleed min-h-screen bg-black text-white font-mono tracking-normal">
-      <header className="flex items-stretch border-b-4 border-white">
+      <header className="flex items-stretch border-b border-white">
         <Link
           href="/"
-          className="flex items-center border-r-4 border-white px-4 md:px-8 hover:bg-white hover:text-black"
+          className="flex items-center border-r border-white px-4 md:px-8 hover:bg-white hover:text-black"
         >
           <PixelText text="Back" label="Back" className="h-5 md:h-7 w-auto" />
         </Link>
@@ -40,9 +40,9 @@ export default function About() {
         put it out.
       </p>
 
-      <ul className="border-t-4 border-white">
+      <ul className="border-t border-white">
         {FACTS.map((fact) => (
-          <li key={fact} className="border-b-4 border-white p-4 md:px-6">
+          <li key={fact} className="border-b border-white p-4 md:px-6">
             <PixelText text={fact} label={fact} className="h-5 md:h-7 w-auto" />
           </li>
         ))}

@@ -10,7 +10,7 @@
     height: calc(var(--slice-size) / 2);
   }
   &.useBorder {
-    @apply border-2 border-current;
+    @apply border border-current;
   }
 
   &:not(:disabled) {

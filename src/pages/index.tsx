@@ -120,7 +120,7 @@ const Home: NextPage = () => {
       {showIntro && <Intro onDone={introDone} target={wordmark} />}
 
       <main className="full-bleed min-h-screen bg-black text-white font-mono tracking-normal">
-        <header className="border-b-4 border-white p-4 md:p-6">
+        <header className="border-b border-white p-4 md:p-6">
           <h1 className="!transform-none not-italic">
             {/* hidden, not removed, while the intro word flies onto it */}
             <Link
@@ -134,14 +134,14 @@ const Home: NextPage = () => {
           </h1>
         </header>
 
-        <div className="flex items-stretch border-b-4 border-white">
+        <div className="flex items-stretch border-b border-white">
           <p className="flex-1 px-4 py-3 md:px-6 md:py-4 text-base md:text-lg text-neutral-400">
             Euclidean polyrhythm machine.
           </p>
           <Link
             href="/about"
             className={clsx(
-              'flex items-center border-l-4 border-white px-4 md:px-6',
+              'flex items-center border-l border-white px-4 md:px-6',
               INVERT,
               FOCUS,
             )}
@@ -152,7 +152,7 @@ const Home: NextPage = () => {
 
         {/* a step-sequencer row: New takes four cells, then steps, then the
             file buttons (their own row on phones) */}
-        <div className="seq grid grid-cols-8 md:grid-cols-16 gap-1 bg-white border-b-4 border-white">
+        <div className="seq grid grid-cols-8 md:grid-cols-16 gap-px bg-white border-b border-white">
           <button
             onClick={createNew}
             className={clsx(
@@ -179,7 +179,7 @@ const Home: NextPage = () => {
               <div
                 className={clsx(
                   'seq-dot w-1/4 h-1/4',
-                  lit ? 'seq-lit bg-white' : 'border-2 border-neutral-700',
+                  lit ? 'seq-lit bg-white' : 'border border-neutral-700',
                 )}
               />
             </div>
@@ -217,7 +217,7 @@ const Home: NextPage = () => {
         </div>
 
         <section>
-          <h2 className="flex items-center gap-3 md:gap-4 border-b-4 border-white px-4 py-3 md:px-6">
+          <h2 className="flex items-center gap-3 md:gap-4 border-b border-white px-4 py-3 md:px-6">
             <PixelText text="Saved" label="Saved" className="h-3 md:h-4 w-auto" />
             <PixelText
               text={String(projects.length).padStart(2, '0')}
@@ -236,7 +236,7 @@ const Home: NextPage = () => {
                 <li
                   key={p.id}
                   className={clsx(
-                    'flex items-stretch border-b-4 border-white',
+                    'flex items-stretch border-b border-white',
                     INVERT,
                     'focus-within:bg-white focus-within:text-black',
                   )}
@@ -266,7 +266,7 @@ const Home: NextPage = () => {
                   </Link>
                   <button
                     className={clsx(
-                      'shrink-0 border-l-4 border-current px-5 md:px-8 hover:bg-black hover:text-white focus-visible:bg-black focus-visible:text-white',
+                      'shrink-0 border-l border-current px-5 md:px-8 hover:bg-black hover:text-white focus-visible:bg-black focus-visible:text-white',
                       FOCUS,
                     )}
                     aria-label={`Download ${p.name}`}
@@ -279,7 +279,7 @@ const Home: NextPage = () => {
                   </button>
                   <button
                     className={clsx(
-                      'shrink-0 border-l-4 border-current px-5 md:px-8 hover:bg-danger hover:text-white focus-visible:bg-danger focus-visible:text-white',
+                      'shrink-0 border-l border-current px-5 md:px-8 hover:bg-danger hover:text-white focus-visible:bg-danger focus-visible:text-white',
                       FOCUS,
                     )}
                     aria-label={`Delete ${p.name}`}

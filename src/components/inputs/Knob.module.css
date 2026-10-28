@@ -22,7 +22,7 @@
 .outer {
   width: var(--knob-width);
   height: var(--knob-width);
-  @apply border-current border-2;
+  @apply border-current border;
 }
 
 .inner {

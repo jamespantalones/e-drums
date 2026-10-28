@@ -97,7 +97,7 @@ const Track: NextPage = () => {
   if (missing) {
     return (
       <main className="full-bleed min-h-screen bg-black text-white">
-        <p className="border-b-4 border-white p-4 md:p-6 text-3xl md:text-5xl leading-none">
+        <p className="border-b border-white p-4 md:p-6 text-3xl md:text-5xl leading-none">
           No saved sequence called {id}. It may have been deleted, or saved
           in another browser.
         </p>

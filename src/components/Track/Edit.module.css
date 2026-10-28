@@ -196,13 +196,13 @@
 
   .sound::picker(select) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 2px;
+    gap: 1px;
     width: max(16rem, anchor-size(width));
     max-height: min(70vh, 24rem);
     margin-block: 4px;
     padding: 0;
     overflow-y: auto;
-    border: 2px solid var(--color-text);
+    border: 1px solid var(--color-text);
     border-radius: 0;
     /* the gaps show this colour as rules between cells */
     background: var(--color-text);

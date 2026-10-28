@@ -16,7 +16,7 @@
   --border-width: 1px;
   /* one row of the mix footer; the nav is exactly one row tall */
   --bar-row: 37px;
-  --bar-rule: 4px;
+  --bar-rule: 1px;
   --box-shadow-sm: 0 0 2px rgb(80, 80, 80);
   --box-shadow-lg: 0 0 5px rgb(190, 190, 190);
 
