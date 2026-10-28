@@ -151,6 +151,8 @@ export class Sequencer {
     this.transport.cancel();
 
     this.context = Tone.getContext();
+    // Tone schedules 100ms ahead by default, which is felt as a late start
+    this.context.lookAhead = 0.03;
 
     // steps are 16ths, so swing delays every other 16th
     Tone.Transport.swingSubdivision = '16n';

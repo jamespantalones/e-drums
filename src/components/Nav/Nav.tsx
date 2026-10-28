@@ -28,13 +28,16 @@ function NavButton({
   disabled,
   active,
   wide,
+  onPress,
 }: {
   label: string;
   text: string;
-  onClick: () => void;
+  onClick?: () => void;
   disabled?: boolean;
   active?: boolean;
   wide?: boolean;
+  /** fires on press rather than release; keyboard still uses click */
+  onPress?: () => void;
 }) {
   return (
     <button
@@ -42,7 +45,16 @@ function NavButton({
       title={label}
       aria-label={label}
       aria-pressed={active}
-      onClick={onClick}
+      onPointerDown={
+        onPress &&
+        ((ev) => {
+          if (ev.button === 0) onPress();
+        })
+      }
+      onClick={(ev) => {
+        if (!onPress) onClick?.();
+        else if (ev.detail === 0) onPress();
+      }}
       disabled={disabled}
       className={clsx(
         styles.cell,
@@ -230,7 +242,7 @@ export function Nav({
       <NavButton
         label={playing ? 'Stop' : 'Play'}
         text={playing ? '■' : '▶'}
-        onClick={togglePlay}
+        onPress={togglePlay}
         active={playing}
         wide
       />

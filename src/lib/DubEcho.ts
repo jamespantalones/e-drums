@@ -25,17 +25,17 @@ export class DubEcho {
     this.delay = new Tone.Delay(echoTime(bpm), echoTime(minBpm));
     this.highpass = new Tone.Filter({
       type: 'highpass',
-      frequency: 150,
-      Q: 0.5,
+      frequency: 100,
+      Q: 0.707,
     });
     this.lowpass = new Tone.Filter({
       type: 'lowpass',
-      frequency: 5000,
-      Q: 0.5,
+      frequency: 6000,
+      Q: 0.707,
     });
     // unity gain for quiet signals, so the loop gain never passes the feedback
     this.clip = new Tone.WaveShaper((x) => Math.tanh(x));
-    this.feedback = new Tone.Gain(0.3);
+    this.feedback = new Tone.Gain(0.45);
     this.output = new Tone.Gain(0.9);
 
     this.input.chain(this.delay, this.highpass, this.lowpass, this.clip);
@@ -54,9 +54,9 @@ export class DubEcho {
     this.depth = d;
 
     this.input.gain.rampTo(0.85 * Math.sqrt(d), 0.05);
-    this.feedback.gain.rampTo(0.3 + 0.45 * d, fall);
-    this.highpass.frequency.rampTo(150 + 300 * d, fall);
-    this.lowpass.frequency.rampTo(5000 - 2800 * d, fall);
+    this.feedback.gain.rampTo(0.45 + 0.45 * d, fall);
+    this.highpass.frequency.rampTo(100 + 150 * d, fall);
+    this.lowpass.frequency.rampTo(6000 - 3000 * d, fall);
   }
 
   dispose() {
