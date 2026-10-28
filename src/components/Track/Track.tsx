@@ -2,7 +2,7 @@ import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
 import styles from './Track.module.css';
 import clsx from 'clsx';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Slice } from './Slice';
 
 import {
@@ -12,7 +12,11 @@ import {
   useReducedMotion,
 } from 'framer-motion';
 import { useSignals } from '@preact/signals-react/runtime';
-import { CONTROLS_EASE, SIG_CONTROLS_OPEN } from '../../state/ui';
+import {
+  CONTROLS_EASE,
+  SIG_CONTROLS_OPEN,
+  SIG_EDIT_PITCH,
+} from '../../state/ui';
 import { Edit } from './Edit';
 import { useDeleteTrackOnEmpty } from './useDeleteTrackOnEmpty';
 
@@ -34,7 +38,7 @@ export function TrackItem({
     methods: { setTrackVal },
   } = useAudioContext();
 
-  const [editPitch, setEditPitch] = useState(false);
+  const editPitch = SIG_EDIT_PITCH.value;
 
   const { length } = useMemo(() => rhythm.pattern, [rhythm.pattern]);
 
@@ -71,8 +75,6 @@ export function TrackItem({
           open={open}
           rhythm={rhythm}
           removeNote={removeNote}
-          editPitch={editPitch}
-          setEditPitch={setEditPitch}
           dragControls={dragControls}
         />
 

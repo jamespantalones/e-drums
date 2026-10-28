@@ -57,15 +57,18 @@ body {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-weight: 300;
   letter-spacing: 0;
-  /* get around notch*/
-  @apply px-12 lg:px-3 portrait:px-1 portrait:pr-0;
+  /* a small gutter, widened only as far as a notch needs */
+  padding-left: max(0.75rem, env(safe-area-inset-left));
+  padding-right: max(0.75rem, env(safe-area-inset-right));
+  @apply portrait:px-1 portrait:pr-0;
 }
 
 body[data-scroll-locked] {
   overflow: hidden !important;
   overscroll-behavior: contain;
   position: relative !important;
-  @apply !px-12 lg:!px-3 portrait:!px-1 portrait:!pr-0;
+  padding-left: max(0.75rem, env(safe-area-inset-left)) !important;
+  @apply portrait:!px-1 portrait:!pr-0;
   padding-right: 0px;
   margin-left: ;
   margin-top: 0;

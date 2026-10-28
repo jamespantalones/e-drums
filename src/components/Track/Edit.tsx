@@ -1,13 +1,7 @@
 import { AnimatePresence, DragControls, motion } from 'framer-motion';
 
 import styles from './Edit.module.css';
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useState,
-} from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
 import { Config, SOUNDS } from '../../config';
@@ -33,18 +27,14 @@ const SWAP = {
 export function Edit({
   open,
   dragControls,
-  editPitch,
   rhythm,
   removeNote,
-  setEditPitch,
 }: {
   /** full controls, or the collapsed strip */
   open: boolean;
   dragControls: DragControls;
-  editPitch: boolean;
   rhythm: Track;
   removeNote: (index: number) => void;
-  setEditPitch: Dispatch<SetStateAction<boolean>>;
 }) {
   useSignals();
 
@@ -68,10 +58,6 @@ export function Edit({
   }, [rhythm, deleteTrack, removeNote]);
 
   const soundName = rhythm.instrument?.sound.name ?? '';
-
-  const toggleEditPitch = useCallback(() => {
-    setEditPitch((p) => !p);
-  }, [setEditPitch]);
 
   const toggleMute = useCallback(() => {
     rhythm.toggleMute();
@@ -155,17 +141,6 @@ export function Edit({
                     text={muted ? '🔇' : '🔊'}
                     className="h-2.5 w-auto"
                   />
-                </button>
-                <button
-                  onClick={toggleEditPitch}
-                  title="Edit note pitches"
-                  aria-pressed={editPitch}
-                  className={clsx(styles.toggle, {
-                    [styles['no-portrait']]: true,
-                    [styles.pitch]: editPitch,
-                  })}
-                >
-                  <PixelText text="♪" className="h-2.5 w-auto" />
                 </button>
                 <button
                   title="Delete Track"

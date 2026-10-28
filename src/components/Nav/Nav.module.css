@@ -38,13 +38,24 @@
   @apply px-0 aspect-square;
 }
 
+/* play/stop is the one button you reach for, so it gets a wider target */
+.transport {
+  @apply px-0;
+  width: calc(var(--bar-row) * 2);
+}
+
+.nav .button.transport svg {
+  @apply h-3.5 md:h-4;
+}
+
 .active {
   @apply bg-white text-black;
 }
 
 /* get around the notch in landscape */
 .logo {
-  @apply pl-12 lg:pl-6 portrait:pl-4;
+  padding-left: max(1.5rem, env(safe-area-inset-left));
+  @apply portrait:pl-4;
 }
 
 .name {

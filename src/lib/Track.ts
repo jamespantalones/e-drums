@@ -287,7 +287,11 @@ export class Track {
     // loop through
     this.pitchOffset = this.pitchOffset.map((p, i) => {
       if (index !== i) return p;
-      return p + (type === 'INCREMENT' ? 1 : -1);
+      const next = p + (type === 'INCREMENT' ? 1 : -1);
+      return Math.max(
+        -Config.MAX_PITCH_OFFSET,
+        Math.min(Config.MAX_PITCH_OFFSET, next)
+      );
     });
 
     return this;

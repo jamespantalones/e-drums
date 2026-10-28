@@ -13,6 +13,8 @@ export const CONTROLS_EASE = {
 
 export const SIG_FOOTER_OPEN = signal(true);
 export const SIG_CONTROLS_OPEN = signal(true);
+// steps tune their note instead of toggling it; not remembered
+export const SIG_EDIT_PITCH = signal(false);
 
 let loaded = false;
 

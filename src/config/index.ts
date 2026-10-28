@@ -13,6 +13,8 @@ export const Config = {
   MIN_SLICES: 0,
   MAX_SLICES: 16,
   MAX_TRACKS: 16,
+  // per-note pitch offset, in semitones either way
+  MAX_PITCH_OFFSET: 24,
   ID_LENGTH: 10,
   MOBILE_CUTOFF: 768,
   SEED_SLICES_MAX_DESKTOP: 5,

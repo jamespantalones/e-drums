@@ -14,7 +14,7 @@ import {
 } from '../../state/track';
 import { SequencerPlayState } from '../../types';
 import { Logo, PixelText } from '../Logo/Logo';
-import { SIG_CONTROLS_OPEN } from '../../state/ui';
+import { SIG_CONTROLS_OPEN, SIG_EDIT_PITCH } from '../../state/ui';
 import { downloadJSON, slug, toBackup } from '../../lib/backup';
 
 function NavButton({
@@ -23,12 +23,14 @@ function NavButton({
   onClick,
   disabled,
   active,
+  wide,
 }: {
   label: string;
   text: string;
   onClick: () => void;
   disabled?: boolean;
   active?: boolean;
+  wide?: boolean;
 }) {
   return (
     <button
@@ -41,7 +43,7 @@ function NavButton({
       className={clsx(
         styles.cell,
         styles.button,
-        text.length === 1 && styles.icon,
+        text.length === 1 && (wide ? styles.transport : styles.icon),
         active && styles.active,
       )}
     >
@@ -148,6 +150,7 @@ export function Nav({
 
   const playing = SIG_PLAY_STATE.value === SequencerPlayState.STARTED;
   const controlsOpen = SIG_CONTROLS_OPEN.value;
+  const editPitch = SIG_EDIT_PITCH.value;
 
   // the same file format the index page exports and imports
   function download() {
@@ -159,10 +162,12 @@ export function Nav({
     );
   }
 
-  function play() {
-    if (!playing) {
+  function togglePlay() {
+    if (playing) {
       methods.stop();
+      return;
     }
+    methods.stop();
     methods.play();
   }
 
@@ -180,12 +185,12 @@ export function Nav({
 
       <div className={clsx(styles.cell, styles.name)}>{children}</div>
 
-      <NavButton label="Play" text="▶" onClick={play} active={playing} />
       <NavButton
-        label="Stop"
-        text="■"
-        onClick={methods.stop}
-        disabled={!SIG_INITIALIZED.value}
+        label={playing ? 'Stop' : 'Play'}
+        text={playing ? '■' : '▶'}
+        onClick={togglePlay}
+        active={playing}
+        wide
       />
       <NavButton
         label={controlsOpen ? 'Hide track controls' : 'Show track controls'}
@@ -194,6 +199,14 @@ export function Nav({
           SIG_CONTROLS_OPEN.value = !controlsOpen;
         }}
         active={controlsOpen}
+      />
+      <NavButton
+        label={editPitch ? 'Stop tuning notes' : 'Tune notes'}
+        text="♪"
+        onClick={() => {
+          SIG_EDIT_PITCH.value = !editPitch;
+        }}
+        active={editPitch}
       />
       <NavButton
         label="Add track"

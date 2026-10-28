@@ -116,3 +116,19 @@
     @apply absolute right-full;
   }
 }
+
+/* lit steps in pitch mode can be dragged up and down to tune them */
+.tunable.enabled {
+  cursor: ns-resize;
+}
+
+.dragging {
+  outline: 2px solid var(--color-foreground);
+  outline-offset: -2px;
+  .pitch {
+    @apply invisible;
+  }
+  .pitch-overlay {
+    @apply opacity-100 text-lg;
+  }
+}
