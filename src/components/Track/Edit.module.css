@@ -204,8 +204,7 @@
     overflow-y: auto;
     border: 1px solid var(--color-text);
     border-radius: 0;
-    /* the gaps show this colour as rules between cells */
-    background: var(--color-text);
+    background: var(--color-bg);
     color: var(--color-text);
     box-shadow: 0 12px 32px rgb(0 0 0 / 0.5);
     position-try-fallbacks: flip-block;
@@ -235,6 +234,11 @@
     background: var(--color-bg);
     color: var(--color-text);
     outline: none;
+    /* rules drawn by the cells into the gaps, so a short last row leaves
+       its empty space dark */
+    box-shadow:
+      1px 0 0 var(--color-text),
+      0 1px 0 var(--color-text);
     transition: background-color 80ms;
 
     &:hover,
@@ -261,11 +265,16 @@
     }
   }
 
-  /* spans the picker's full width, set apart from the sounds */
+  /* spans the picker's full width and stays pinned to its bottom edge,
+     so it's reachable without scrolling past every sound */
   .sound option.delete-option {
     grid-column: 1 / -1;
+    position: sticky;
+    bottom: 0;
     @apply justify-center;
     color: var(--color-danger);
+    box-shadow: 0 -1px 0 var(--color-text);
+    z-index: 1;
     &::checkmark {
       display: none;
     }
