@@ -17,6 +17,7 @@ import {
 } from '../state/track';
 import { PixelText, Wordmark } from '../components/Logo/Logo';
 import { Intro } from '../components/Intro/Intro';
+import { ConfirmDialog } from '../components/Dialog/ConfirmDialog';
 import { downloadJSON, parseBackup, slug, toBackup } from '../lib/backup';
 
 const INTRO_KEY = 'edrums:intro-seen';
@@ -71,15 +72,8 @@ const Home: NextPage = () => {
   const [doomed, setDoomed] = React.useState<(typeof projects)[number] | null>(
     null,
   );
-  const dialog = React.useRef<HTMLDialogElement>(null);
-
-  React.useEffect(() => {
-    if (doomed) dialog.current?.showModal();
-  }, [doomed]);
-
   async function confirmDelete() {
     if (!doomed) return;
-    dialog.current?.close();
     await removeFromCache(doomed.id);
     await fetchIndexCache();
   }
@@ -102,7 +96,9 @@ const Home: NextPage = () => {
       const { imported, skipped } = await importProjects(found);
       window.alert(
         `Imported ${imported} sequence${imported === 1 ? '' : 's'}.` +
-          (skipped ? ` Kept ${skipped} newer cop${skipped === 1 ? 'y' : 'ies'} already saved here.` : ''),
+          (skipped
+            ? ` Kept ${skipped} newer cop${skipped === 1 ? 'y' : 'ies'} already saved here.`
+            : ''),
       );
     } catch (err) {
       window.alert(err instanceof Error ? err.message : 'Import failed.');
@@ -162,7 +158,11 @@ const Home: NextPage = () => {
               FOCUS,
             )}
           >
-            <PixelText text="About" label="About" className="h-3 md:h-4 w-auto" />
+            <PixelText
+              text="About"
+              label="About"
+              className="h-3 md:h-4 w-auto"
+            />
           </Link>
         </div>
 
@@ -207,7 +207,11 @@ const Home: NextPage = () => {
             title="Import sequences from a backup file"
             onClick={() => fileInput.current?.click()}
           >
-            <PixelText text="Import" label="Import" className="h-3 md:h-4 w-auto" />
+            <PixelText
+              text="Import"
+              label="Import"
+              className="h-3 md:h-4 w-auto"
+            />
           </button>
           <input
             ref={fileInput}
@@ -228,13 +232,21 @@ const Home: NextPage = () => {
             onClick={exportAll}
             disabled={!projects.length}
           >
-            <PixelText text="Export" label="Export all" className="h-3 md:h-4 w-auto" />
+            <PixelText
+              text="Export"
+              label="Export all"
+              className="h-3 md:h-4 w-auto"
+            />
           </button>
         </div>
 
         <section>
           <h2 className="flex items-center gap-3 md:gap-4 border-b border-white px-4 py-3 md:px-6">
-            <PixelText text="Saved" label="Saved" className="h-3 md:h-4 w-auto" />
+            <PixelText
+              text="Saved"
+              label="Saved"
+              className="h-3 md:h-4 w-auto"
+            />
             <PixelText
               text={String(projects.length).padStart(2, '0')}
               label={`${projects.length} sequences`}
@@ -288,7 +300,10 @@ const Home: NextPage = () => {
                     aria-label={`Download ${p.name}`}
                     title="Download"
                     onClick={() =>
-                      downloadJSON(`edrums-${slug(p.name || p.id)}.json`, toBackup([p]))
+                      downloadJSON(
+                        `edrums-${slug(p.name || p.id)}.json`,
+                        toBackup([p]),
+                      )
                     }
                   >
                     <PixelText text="↓" className="h-3 md:h-4 w-auto" />
@@ -316,49 +331,14 @@ const Home: NextPage = () => {
         </p>
       </main>
 
-      <dialog
-        ref={dialog}
+      <ConfirmDialog
+        open={!!doomed}
+        title={`Delete ${doomed?.name || 'Untitled'}?`}
+        message="This can't be undone."
+        confirmLabel="Delete"
+        onConfirm={confirmDelete}
         onClose={() => setDoomed(null)}
-        onClick={(ev) => {
-          if (ev.target === ev.currentTarget) dialog.current?.close();
-        }}
-        aria-labelledby="delete-title"
-        className="w-[min(24rem,calc(100vw-2rem))] p-0 border border-white bg-black text-white backdrop:bg-[rgb(0_0_0/0.7)]"
-      >
-        <div className="p-5 md:p-6">
-          <h2 id="delete-title">
-            <PixelText
-              text={`Delete ${doomed?.name || 'Untitled'}?`}
-              label={`Delete ${doomed?.name || 'Untitled'}?`}
-              className="h-3 md:h-4 w-auto max-w-full"
-            />
-          </h2>
-          <p className="mt-3 text-sm text-neutral-400">
-            This can&apos;t be undone.
-          </p>
-        </div>
-        <form method="dialog" className="flex border-t border-white">
-          <button
-            autoFocus
-            className={clsx(
-              'flex-1 py-4 hover:bg-white hover:text-black active:bg-white active:text-black',
-              'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-current',
-            )}
-          >
-            <PixelText text="Cancel" className="h-3 w-auto mx-auto" />
-          </button>
-          <button
-            type="button"
-            onClick={confirmDelete}
-            className={clsx(
-              'flex-1 py-4 border-l border-white bg-danger text-white hover:brightness-110 active:brightness-90',
-              'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-current',
-            )}
-          >
-            <PixelText text="Delete" className="h-3 w-auto mx-auto" />
-          </button>
-        </form>
-      </dialog>
+      />
     </>
   );
 };

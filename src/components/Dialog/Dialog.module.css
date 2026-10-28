@@ -1,0 +1,61 @@
+.dialog {
+  @apply p-0 border border-white;
+  width: min(24rem, calc(100vw - 2rem));
+  background: var(--color-bg);
+  color: var(--color-text);
+  &::backdrop {
+    background: rgb(0 0 0 / 0.7);
+  }
+}
+
+.body {
+  @apply flex flex-col gap-3 p-5 md:p-6;
+}
+
+.message {
+  @apply text-sm text-neutral-400;
+}
+
+.field {
+  @apply w-full px-3 border border-white bg-transparent outline-none;
+  height: var(--bar-row);
+  /* 16px keeps iOS from zooming in on focus */
+  font-size: 16px;
+  &:focus-visible {
+    background: var(--color-surface);
+  }
+}
+
+.actions {
+  @apply flex border-t border-white;
+  button {
+    @apply flex-1 flex items-center justify-center;
+    height: var(--bar-row);
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-current;
+    @media (hover: hover) {
+      &:hover {
+        @apply bg-white text-black;
+      }
+    }
+    &:active {
+      @apply bg-white text-black;
+    }
+  }
+  button + button {
+    @apply border-l border-white;
+  }
+  .primary {
+    @apply bg-white text-black;
+  }
+  .danger {
+    @apply bg-danger text-white;
+    @media (hover: hover) {
+      &:hover {
+        @apply bg-danger text-white brightness-110;
+      }
+    }
+    &:active {
+      @apply bg-danger text-white brightness-90;
+    }
+  }
+}

@@ -20,6 +20,7 @@ import {
   SIG_PORTRAIT_PHONE,
 } from '../../state/ui';
 import { downloadJSON, slug, toBackup } from '../../lib/backup';
+import { dialogStyles } from '../Dialog/ConfirmDialog';
 
 function NavButton({
   label,
@@ -65,7 +66,9 @@ function NavButton({
     >
       <PixelText
         text={text}
-        className={text.length === 1 ? 'h-2.5 md:h-3 w-auto' : 'h-2 md:h-2.5 w-auto'}
+        className={
+          text.length === 1 ? 'h-2.5 md:h-3 w-auto' : 'h-2 md:h-2.5 w-auto'
+        }
       />
     </button>
   );
@@ -106,12 +109,13 @@ function TitleButton({ save }: { save: () => void }) {
         onClick={(ev) => {
           if (ev.target === ev.currentTarget) dialog.current?.close();
         }}
-        className={styles.dialog}
+        className={dialogStyles.dialog}
       >
         <form onSubmit={commit}>
-          <label className={styles.field}>
+          <label className={dialogStyles.body}>
             <PixelText text="Name" className="h-2.5 w-auto" />
             <input
+              className={dialogStyles.field}
               autoFocus
               type="text"
               value={draft}
@@ -120,11 +124,11 @@ function TitleButton({ save }: { save: () => void }) {
               enterKeyHint="done"
             />
           </label>
-          <div className={styles.actions}>
+          <div className={dialogStyles.actions}>
             <button type="button" onClick={() => dialog.current?.close()}>
               <PixelText text="Cancel" className="h-2.5 w-auto" />
             </button>
-            <button type="submit" className={styles.primary}>
+            <button type="submit" className={dialogStyles.primary}>
               <PixelText text="Rename" className="h-2.5 w-auto" />
             </button>
           </div>
@@ -168,7 +172,6 @@ function SaveMenu({
     action();
   }
 
-
   return (
     <div ref={root} className={clsx(styles.cell, styles.split)}>
       <button
@@ -197,7 +200,11 @@ function SaveMenu({
       {open && (
         <div role="menu" className={styles.menu}>
           <button role="menuitem" type="button" onClick={() => choose(save)}>
-            <PixelText text="Save" label="Save" className="h-2 md:h-2.5 w-auto" />
+            <PixelText
+              text="Save"
+              label="Save"
+              className="h-2 md:h-2.5 w-auto"
+            />
           </button>
           <button
             role="menuitem"
@@ -238,7 +245,7 @@ export function Nav({
     if (!project) return;
     downloadJSON(
       `edrums-${slug(SIG_NAME.value || project.id)}.json`,
-      toBackup([project])
+      toBackup([project]),
     );
   }
 

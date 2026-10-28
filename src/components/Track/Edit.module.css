@@ -261,6 +261,16 @@
     }
   }
 
+  /* spans the picker's full width, set apart from the sounds */
+  .sound option.delete-option {
+    grid-column: 1 / -1;
+    @apply justify-center;
+    color: var(--color-danger);
+    &::checkmark {
+      display: none;
+    }
+  }
+
   /* phones get slightly larger cells to tap */
   @media (max-width: 767px) and (orientation: portrait) {
     .sound::picker(select) {

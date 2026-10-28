@@ -12,7 +12,11 @@ import { Slider } from '../inputs/Slider';
 import { PixelText } from '../Logo/Logo';
 import { useSignals } from '@preact/signals-react/runtime';
 import { markChanged } from '../../state/track';
-import { CONTROLS_EASE } from '../../state/ui';
+import { CONTROLS_EASE, SIG_PORTRAIT_PHONE } from '../../state/ui';
+import { ConfirmDialog } from '../Dialog/ConfirmDialog';
+
+// an entry in the sound picker rather than a sound
+const DELETE_TRACK = '__delete';
 
 // the outgoing panel is popped out of layout and fades while the steps
 // slide over; only opacity and transforms animate
@@ -42,6 +46,7 @@ export function Edit({
   } = useAudioContext();
 
   const [muted, setMuted] = useState(rhythm.muted);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const addNote = useCallback(() => {
     setTrackVal(rhythm, { method: 'addNote' });
@@ -66,6 +71,10 @@ export function Edit({
 
   const handleInstrumentChange = useCallback(
     (val: string) => {
+      if (val === DELETE_TRACK) {
+        setConfirmingDelete(true);
+        return;
+      }
       const target = SOUNDS.find((s) => s.name === val);
       if (target) {
         setTrackVal(rhythm, {
@@ -114,7 +123,24 @@ export function Edit({
                     {sound.name}
                   </option>
                 ))}
+                {/* upright phones have no room for the delete button */}
+                {SIG_PORTRAIT_PHONE.value && (
+                  <option
+                    value={DELETE_TRACK}
+                    className={styles['delete-option']}
+                  >
+                    Delete track
+                  </option>
+                )}
               </select>
+              <ConfirmDialog
+                open={confirmingDelete}
+                title={`Delete ${soundName}?`}
+                message="The track and its steps go with it."
+                confirmLabel="Delete"
+                onConfirm={() => deleteTrack(rhythm.id)}
+                onClose={() => setConfirmingDelete(false)}
+              />
 
               <div className="flex">
                 <ReorderIcon dragControls={dragControls} />
