@@ -270,6 +270,17 @@
       outline-offset: -1px;
     }
   }
+
+  /* phones get slightly larger cells to tap */
+  @media (max-width: 767px) and (orientation: portrait) {
+    .sound::picker(select) {
+      width: max(18rem, anchor-size(width));
+      max-height: min(70vh, 30rem);
+    }
+    .sound option {
+      @apply py-3 text-xs;
+    }
+  }
 }
 
 /* collapsed controls: one thin column of toggles sized like the full ones */
