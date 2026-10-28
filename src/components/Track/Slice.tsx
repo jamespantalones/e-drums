@@ -38,7 +38,7 @@ export function Slice({
   }).value;
 
   const id = useId();
-  const drag = useRef<{ y: number; start: number; moved: boolean }>();
+  const drag = useRef<{ y: number; start: number; moved: boolean } | undefined>(undefined);
   const [dragging, setDragging] = useState(false);
 
   const handleClick = useCallback(() => {

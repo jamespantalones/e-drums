@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { euclideanRhythm, generateRandomColor } from '../utils';
 
 describe('Utils', () => {
-  it('should generate a random hsl color', () => {
-    const [color, hue] = generateRandomColor();
-    expect(color).toEqual(expect.stringContaining('hsl'));
-    expect(hue).toEqual(expect.any(Number));
+  it('should generate a random [hue, saturation, lightness] color', () => {
+    const color = generateRandomColor();
+    expect(color).toHaveLength(3);
+    color.forEach((v) => expect(v).toEqual(expect.any(Number)));
   });
 
   describe('Euclidean Rhythm', () => {

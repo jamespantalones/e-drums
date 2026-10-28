@@ -26,7 +26,7 @@ export function Intro({
 }: {
   onDone: () => void;
   /** the page's wordmark; the intro word morphs onto it when leaving */
-  target?: React.RefObject<HTMLElement>;
+  target?: React.RefObject<HTMLElement | null>;
 }) {
   const [phase, setPhase] = React.useState<Phase>('booting');
   const [color, setColor] = React.useState(LIT);

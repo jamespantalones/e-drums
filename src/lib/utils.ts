@@ -151,6 +151,6 @@ export function createAsyncSampler(file: string): Promise<Tone.Sampler> {
       return reject(err);
     }
 
-    const buffer = new Tone.Buffer(file, onLoad, onError);
+    const buffer = new Tone.ToneAudioBuffer(file, onLoad, onError);
   });
 }

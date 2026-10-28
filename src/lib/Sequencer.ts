@@ -1,5 +1,4 @@
 import * as Tone from 'tone';
-import { Transport } from 'tone/build/esm/core/clock/Transport';
 import {
   SequencerPlayState,
   SerializedSequencer,
@@ -47,7 +46,7 @@ export class Sequencer {
   private reverbSend: Tone.Gain;
   private chain!: Tone.Volume;
 
-  private transport!: Transport;
+  private transport!: ReturnType<typeof Tone.getTransport>;
 
   // the step being scheduled; SIG_TICK follows it on the draw clock
   private step = -1;
@@ -126,7 +125,7 @@ export class Sequencer {
       await this.context.resume();
     }
 
-    Tone.Transport.start();
+    Tone.getTransport().start();
     SIG_PLAY_STATE.value = SequencerPlayState.STARTED;
   }
 
@@ -147,7 +146,7 @@ export class Sequencer {
   }
 
   private _setupTransport() {
-    this.transport = Tone.Transport;
+    this.transport = Tone.getTransport();
     this.transport.cancel();
 
     this.context = Tone.getContext();
@@ -159,18 +158,18 @@ export class Sequencer {
     }
 
     // steps are 16ths, so swing delays every other 16th
-    Tone.Transport.swingSubdivision = '16n';
+    this.transport.swingSubdivision = '16n';
     // later tempo changes arrive through setBpm
     this.setBpm(SIG_BPM.value);
 
     this.transport?.scheduleRepeat((time) => {
       const step = (this.step += 1);
 
-      Tone.Transport.swing = SIG_SWING.value / 100;
+      this.transport.swing = SIG_SWING.value / 100;
 
       // this callback runs ahead of the audio; move the playhead
       // when the step is actually heard
-      Tone.Draw.schedule(() => {
+      Tone.getDraw().schedule(() => {
         SIG_TICK.value = step;
       }, time);
 

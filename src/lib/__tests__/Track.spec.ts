@@ -11,7 +11,7 @@ describe('Track', () => {
       })
     ).toEqual(
       expect.objectContaining({
-        color: expect.any(String),
+        color: expect.any(Array),
         id: expect.any(String),
         index: 0,
         instrument: null,
@@ -21,7 +21,7 @@ describe('Track', () => {
         pitch: 50,
         totalNotes: 8,
         updateSelfInParent: expect.any(Function),
-        volume: 0.3,
+        volume: 30,
       })
     );
   });
@@ -46,10 +46,10 @@ describe('Track', () => {
           sound: SOUNDS[0],
           frequency: 50,
         },
-        color: expect.stringContaining('hsl'),
+        color: expect.any(Array),
         hue: expect.any(Number),
-        volume: 0.3,
-        prevVolume: 0.3,
+        volume: 30,
+        prevVolume: 30,
         pitch: 50,
         pattern: [1, 0, 1, 0, 1, 0, 1, 0],
         pitchOffset: [0, 0, 0, 0, 0, 0, 0, 0],

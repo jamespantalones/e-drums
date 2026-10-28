@@ -85,13 +85,31 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  const fetchIndexCache = useCallback(async () => {
+    await ensureMigrated();
+    const all = await entries<string, SerializedSequencer>();
+
+    const filtered = all
+      .filter(
+        ([key]) => typeof key === 'string' && key.startsWith(`${CACHE_PREFIX}:`)
+      )
+      .map(([, value]) => value)
+      .sort((a, b) => {
+        const at = new Date(a.updatedAt).getTime();
+        const bt = new Date(b.updatedAt).getTime();
+        return bt - at;
+      });
+
+    setProjects(filtered);
+  }, []);
+
   const saveProjectToCache = useCallback(
     async (id: string, data: SerializedSequencer) => {
       await ensureMigrated();
       await set(`${CACHE_PREFIX}:${id}`, data);
       await fetchIndexCache();
     },
-    []
+    [fetchIndexCache]
   );
 
   /**
@@ -115,32 +133,14 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
       await fetchIndexCache();
       return { imported, skipped: incoming.length - imported };
     },
-    []
+    [fetchIndexCache]
   );
 
   const removeFromCache = useCallback(async (id: string) => {
     await ensureMigrated();
     await del(`${CACHE_PREFIX}:${id}`);
     await fetchIndexCache();
-  }, []);
-
-  const fetchIndexCache = useCallback(async () => {
-    await ensureMigrated();
-    const all = await entries<string, SerializedSequencer>();
-
-    const filtered = all
-      .filter(
-        ([key]) => typeof key === 'string' && key.startsWith(`${CACHE_PREFIX}:`)
-      )
-      .map(([, value]) => value)
-      .sort((a, b) => {
-        const at = new Date(a.updatedAt).getTime();
-        const bt = new Date(b.updatedAt).getTime();
-        return bt - at;
-      });
-
-    setProjects(filtered);
-  }, []);
+  }, [fetchIndexCache]);
 
   useEffect(() => {
     fetchIndexCache();

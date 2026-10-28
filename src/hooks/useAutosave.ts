@@ -21,7 +21,9 @@ export function useAutosave(
   delay = 600,
 ) {
   const saveRef = useRef(save);
-  saveRef.current = save;
+  useEffect(() => {
+    saveRef.current = save;
+  });
 
   useEffect(() => {
     if (!enabled) return;

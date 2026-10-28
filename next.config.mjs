@@ -29,6 +29,9 @@ const withPWA = PWA({
   dest: 'public',
   scope: `${BASE_PATH}/`,
   disable: process.env.NODE_ENV === 'development',
+  // Next 16 lists this in the build manifest but never serves it, and one
+  // missing file fails the whole precache install
+  buildExcludes: [/dynamic-css-manifest\.json$/],
 });
 
 export default withPWA(config);
