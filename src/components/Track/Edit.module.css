@@ -125,9 +125,9 @@
     }
 
     @media (orientation: portrait) {
-      @apply w-1/2 h-9 p-1;
+      @apply w-1/2 h-7 p-1;
       svg {
-        @apply h-3.5;
+        @apply h-3;
       }
       @apply flex-grow-0 flex-shrink-0;
       @apply my-1;
@@ -288,15 +288,12 @@
 .mini-button {
   @apply flex items-center justify-center w-full h-4;
   @media (orientation: portrait) {
-    @apply flex-1 w-auto h-9;
+    @apply flex-1 w-auto h-7;
     svg {
-      @apply h-3.5;
+      @apply h-3;
     }
     &:first-of-type {
-      @apply basis-full h-7;
-      svg {
-        @apply h-3;
-      }
+      @apply basis-full;
     }
   }
   &:disabled {
