@@ -20,6 +20,7 @@ import {
 } from '../../state/ui';
 import { Edit } from './Edit';
 import { useDeleteTrackOnEmpty } from './useDeleteTrackOnEmpty';
+import { trackChroma, trackLightness } from '../../lib/utils';
 
 export function TrackItem({
   rhythm,
@@ -53,9 +54,9 @@ export function TrackItem({
   const dragControls = useDragControls();
 
   const style: React.CSSProperties = {
-    '--color-track-h': rhythm.color[0],
-    '--color-track-s': `${rhythm.color[1]}%`,
-    '--color-track-l': `${rhythm.color[2]}%`,
+    '--track-h': rhythm.color[0],
+    '--track-c': trackChroma(rhythm.color[1]),
+    '--track-l': trackLightness(rhythm.color[2]),
   } as React.CSSProperties;
 
   useDeleteTrackOnEmpty(rhythm);

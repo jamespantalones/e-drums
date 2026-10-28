@@ -7,7 +7,6 @@ import { Track } from '../../lib/Track';
 import { Config, SOUNDS } from '../../config';
 import clsx from 'clsx';
 import { ReorderIcon } from './ReorderIcon';
-import { generateRandomColor } from '../../lib/utils';
 import { padNumber } from '../../utils';
 import { Slider } from '../inputs/Slider';
 import { PixelText } from '../Logo/Logo';

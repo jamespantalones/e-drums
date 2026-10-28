@@ -20,10 +20,7 @@
   @apply w-full h-full;
   @apply select-none;
   @apply relative;
-  background: hsl(
-    var(--color-track-h) calc(var(--color-track-s) - 40%)
-      calc(var(--color-track-l) - 40%)
-  );
+  background: var(--track-step);
   opacity: 0.5;
   @apply overflow-hidden;
 }
@@ -33,29 +30,21 @@
   &::after {
     content: '';
     @apply block w-full h-full;
-    background: hsl(
-      var(--color-track-h) calc(var(--color-track-s) - 20%)
-        calc(var(--color-track-l) - 40%)
-    );
+    background: var(--track-step-playing);
   }
 }
 
 /* pressed */
 .slice.enabled {
   opacity: 0.75;
-  background: hsl(
-    calc(var(--color-track-h) + 10) calc(var(--color-track-s))
-      calc(var(--color-track-l) - 10%)
-  );
+  background: var(--track-step-on);
 }
 
 /* tick & pressed */
 .slice.enabled.active {
   opacity: 1;
   &::after {
-    background: hsl(
-      var(--color-track-h) var(--color-track-s) calc(var(--color-track-l))
-    );
+    background: var(--track);
   }
 }
 

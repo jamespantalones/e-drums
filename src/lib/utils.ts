@@ -7,13 +7,30 @@ export function randomRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
+// warm, earthy OKLCH hues: clay, coral, ochre, olive, sage, cactus,
+// slate, heather, fig
+const TRACK_HUES = [40, 25, 75, 105, 145, 180, 245, 295, 350];
+
 export function generateRandomColor(): [number, number, number] {
-  const hue = randomRange(0, 360);
+  const base = TRACK_HUES[randomRange(0, TRACK_HUES.length)];
+  const hue = (base + randomRange(-6, 7) + 360) % 360;
   const saturation = randomRange(45, 97);
   const lightness = randomRange(52, 90);
 
   return [hue, saturation, lightness];
 }
+
+// colours are saved as [hue, 0-100 saturation, 0-100 lightness]; they
+// render in OKLCH, squeezed into a soft band so every track sits in the
+// same muted family, older saves included
+const unit = (v: number, min: number, max: number) =>
+  Math.min(1, Math.max(0, (v - min) / (max - min)));
+
+export const trackChroma = (saturation: number) =>
+  0.06 + unit(saturation, 45, 97) * 0.07;
+
+export const trackLightness = (lightness: number) =>
+  0.64 + unit(lightness, 52, 90) * 0.16;
 
 // a fresh project opens on the 808, then a backbeat and a hat so the
 // first few tracks make a groove; after that anything goes

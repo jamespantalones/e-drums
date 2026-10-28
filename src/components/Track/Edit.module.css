@@ -85,18 +85,6 @@
 .mutebutton {
 }
 
-.toggle-color {
-  background: hsl(
-    var(--color-track-h) var(--color-track-s) calc(var(--color-track-l))
-  );
-  &:hover {
-    background: hsl(
-      var(--color-track-h) calc(var(--color-track-s) - 40%)
-        calc(var(--color-track-l) - 2%)
-    ) !important;
-  }
-}
-
 .length-panel {
   @apply flex flex-col portrait:flex-row-reverse;
   @apply w-12 mt-0 ml-1.5;

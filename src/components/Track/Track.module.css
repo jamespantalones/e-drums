@@ -1,4 +1,14 @@
 .section {
+  --track: oklch(var(--track-l) var(--track-c) var(--track-h));
+  --track-step: oklch(
+    calc(var(--track-l) - 0.42) calc(var(--track-c) * 0.45) var(--track-h)
+  );
+  --track-step-playing: oklch(
+    calc(var(--track-l) - 0.36) calc(var(--track-c) * 0.7) var(--track-h)
+  );
+  --track-step-on: oklch(
+    calc(var(--track-l) - 0.08) var(--track-c) calc(var(--track-h) + 10)
+  );
   @apply relative;
   flex-shrink: 0;
   flex-grow: 0;
@@ -26,9 +36,7 @@
   &::before {
     content: '';
     @apply absolute left-0 top-3 bottom-3 w-0.5 portrait:hidden;
-    background: hsl(
-      var(--color-track-h) var(--color-track-s) var(--color-track-l)
-    );
+    background: var(--track);
   }
 }
 
