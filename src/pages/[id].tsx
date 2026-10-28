@@ -125,7 +125,7 @@ const Track: NextPage = () => {
       <Nav save={() => save()}>
         <Input
           placeholder={(SIG_NAME.value || id) as string}
-          defaultValue={SIG_NAME.value || id}
+          value={SIG_NAME.value}
           onChange={updateName}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}

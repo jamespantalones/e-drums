@@ -59,7 +59,7 @@ function NavButton({
   );
 }
 
-/** Save, with a menu for downloading the project as a backup file */
+/** Save, with a menu for renaming and downloading the project */
 function SaveMenu({
   save,
   download,
@@ -70,6 +70,7 @@ function SaveMenu({
   disabled: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
+  const [renaming, setRenaming] = React.useState(false);
   const root = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -92,6 +93,11 @@ function SaveMenu({
     setOpen(false);
     action();
   }
+
+  React.useEffect(() => {
+    if (!open) setRenaming(false);
+  }, [open]);
+
 
   return (
     <div ref={root} className={clsx(styles.cell, styles.split)}>
@@ -120,6 +126,33 @@ function SaveMenu({
 
       {open && (
         <div role="menu" className={styles.menu}>
+          {/* phones have no room for the name field in the bar */}
+          {renaming ? (
+            <input
+              autoFocus
+              type="text"
+              aria-label="Name"
+              value={SIG_NAME.value}
+              placeholder={SIG_SEQUENCER.value?.id}
+              onChange={(ev) => {
+                SIG_NAME.value = ev.target.value;
+              }}
+              onBlur={() => choose(save)}
+              onKeyDown={(ev) => {
+                if (ev.key === 'Enter') ev.currentTarget.blur();
+              }}
+              className={styles.rename}
+            />
+          ) : (
+            <button
+              role="menuitem"
+              type="button"
+              onClick={() => setRenaming(true)}
+              className="md:hidden"
+            >
+              <PixelText text="Rename" label="Rename" className="h-2 md:h-2.5 w-auto" />
+            </button>
+          )}
           <button role="menuitem" type="button" onClick={() => choose(save)}>
             <PixelText text="Save" label="Save" className="h-2 md:h-2.5 w-auto" />
           </button>

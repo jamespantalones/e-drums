@@ -164,6 +164,15 @@
   }
 }
 
+.rename {
+  @apply w-full px-3 border-0 border-b-2 border-white bg-transparent;
+  height: var(--bar-row);
+  min-width: 14rem;
+  font-size: 16px;
+  @apply outline-none;
+  background: var(--color-surface);
+}
+
 @keyframes menu-in {
   from {
     opacity: 0;
