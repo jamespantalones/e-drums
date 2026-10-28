@@ -4,7 +4,13 @@
   @apply bg-white;
   @apply border-t border-white;
   @apply grid grid-cols-2;
-  height: calc(var(--bar-row) * 2 + 1px + var(--bar-rule));
+  /* the bottom row clears the home indicator */
+  grid-template-rows: var(--bar-row) calc(
+      var(--bar-row) + env(safe-area-inset-bottom)
+    );
+  height: calc(
+    var(--bar-row) * 2 + 1px + var(--bar-rule) + env(safe-area-inset-bottom)
+  );
   gap: 1px;
   transition: transform 220ms cubic-bezier(0.2, 0, 0, 1);
 
@@ -22,6 +28,11 @@
 
 .slidecontainer {
   @apply bg-background w-full px-4 md:px-8 flex items-center;
+  touch-action: none;
+  cursor: pointer;
+  &:nth-last-child(-n + 2) {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
 
 /* sits on the footer's top rule, so it stays on screen when collapsed */

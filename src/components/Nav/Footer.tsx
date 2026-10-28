@@ -7,6 +7,7 @@ import { Config } from '../../config';
 import { SIG_FOOTER_OPEN } from '../../state/ui';
 import { PixelText } from '../Logo/Logo';
 import clsx from 'clsx';
+import { PointerEvent } from 'react';
 
 const SLIDERS: {
   label: string;
@@ -24,6 +25,30 @@ const SLIDERS: {
   },
   { label: 'Echo', signal: SIG_DELAY, min: 0, max: 100 },
 ];
+
+// the meter is only a few pixels tall, so the whole cell drags it: a
+// touch over the meter jumps there, one beside it (on the label) nudges
+// from the current value
+const drags = new WeakMap<
+  Element,
+  { x: number; value: number; jump: boolean }
+>();
+
+function scrub(
+  ev: PointerEvent<HTMLDivElement>,
+  signal: Signal<number>,
+  min: number,
+  max: number,
+) {
+  const meter = ev.currentTarget.querySelector('input');
+  const drag = drags.get(ev.currentTarget);
+  if (!meter || !drag) return;
+  const { left, width } = meter.getBoundingClientRect();
+  const t = drag.jump
+    ? (ev.clientX - left) / width
+    : (drag.value - min) / (max - min) + (ev.clientX - drag.x) / width;
+  signal.value = Math.round(min + Math.min(1, Math.max(0, t)) * (max - min));
+}
 
 export function Footer() {
   useSignals();
@@ -45,7 +70,30 @@ export function Footer() {
         <PixelText text={open ? 'Mix ▼' : 'Mix ▲'} className="h-2.5 w-auto" />
       </button>
       {SLIDERS.map(({ label, signal, min, max }) => (
-        <div key={label} className={styles.slidecontainer}>
+        <div
+          key={label}
+          className={styles.slidecontainer}
+          onPointerDown={(ev) => {
+            if (ev.pointerType === 'mouse' && ev.button !== 0) return;
+            ev.preventDefault();
+            ev.currentTarget.setPointerCapture(ev.pointerId);
+            const meter = ev.currentTarget.querySelector('input');
+            if (!meter) return;
+            meter.focus();
+            const { left, right } = meter.getBoundingClientRect();
+            drags.set(ev.currentTarget, {
+              x: ev.clientX,
+              value: signal.value,
+              jump: ev.clientX >= left && ev.clientX <= right,
+            });
+            scrub(ev, signal, min, max);
+          }}
+          onPointerMove={(ev) => {
+            if (ev.currentTarget.hasPointerCapture(ev.pointerId)) {
+              scrub(ev, signal, min, max);
+            }
+          }}
+        >
           <Slider
             onChange={(val) => {
               signal.value = val;
