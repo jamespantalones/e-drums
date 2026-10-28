@@ -35,9 +35,9 @@
     @apply mr-1;
     @apply cursor-pointer;
     @media (orientation: portrait) {
-      @apply w-full mx-0 h-9;
+      @apply w-full mx-0 h-7;
       svg {
-        @apply h-3.5;
+        @apply h-3;
       }
     }
     &.no-portrait {
@@ -293,7 +293,10 @@
       @apply h-3.5;
     }
     &:first-of-type {
-      @apply basis-full;
+      @apply basis-full h-7;
+      svg {
+        @apply h-3;
+      }
     }
   }
   &:disabled {
