@@ -135,18 +135,18 @@ const Home: NextPage = () => {
         </header>
 
         <div className="flex items-stretch border-b-4 border-white">
-          <p className="flex-1 p-4 md:p-6 text-3xl md:text-5xl leading-none">
+          <p className="flex-1 px-4 py-3 md:px-6 md:py-4 text-base md:text-lg text-neutral-400">
             Euclidean polyrhythm machine.
           </p>
           <Link
             href="/about"
             className={clsx(
-              'flex items-center border-l-4 border-white px-4 md:px-8',
+              'flex items-center border-l-4 border-white px-4 md:px-6',
               INVERT,
               FOCUS,
             )}
           >
-            <PixelText text="About" label="About" className="h-5 md:h-7 w-auto" />
+            <PixelText text="About" label="About" className="h-3 md:h-4 w-auto" />
           </Link>
         </div>
 
@@ -163,7 +163,7 @@ const Home: NextPage = () => {
             <PixelText
               text="+ New"
               label="New sequence"
-              className="h-6 md:h-9 w-auto"
+              className="h-7 md:h-11 w-auto"
             />
           </button>
           {STEPS.map((lit, i) => (
@@ -217,17 +217,17 @@ const Home: NextPage = () => {
         </div>
 
         <section>
-          <h2 className="flex items-center gap-4 md:gap-6 border-b-4 border-white p-4 md:px-6">
-            <PixelText text="Saved" label="Saved" className="h-5 md:h-7 w-auto" />
+          <h2 className="flex items-center gap-3 md:gap-4 border-b-4 border-white px-4 py-3 md:px-6">
+            <PixelText text="Saved" label="Saved" className="h-3 md:h-4 w-auto" />
             <PixelText
               text={String(projects.length).padStart(2, '0')}
               label={`${projects.length} sequences`}
-              className="h-5 md:h-7 w-auto text-neutral-500"
+              className="h-3 md:h-4 w-auto text-neutral-500"
             />
           </h2>
 
           {projects.length === 0 ? (
-            <p className="p-4 md:p-6 text-4xl md:text-5xl text-neutral-400">
+            <p className="p-4 md:p-6 text-base md:text-lg text-neutral-500">
               Nothing saved yet.
             </p>
           ) : (
@@ -252,10 +252,10 @@ const Home: NextPage = () => {
                       <PixelText
                         text={p.name || 'Untitled'}
                         label={p.name || 'Untitled'}
-                        className="h-7 md:h-10 w-auto max-w-none"
+                        className="h-4 md:h-6 w-auto max-w-none"
                       />
                     </span>
-                    <span className="shrink-0 text-2xl md:text-3xl leading-none">
+                    <span className="shrink-0 text-sm md:text-base leading-none text-neutral-400">
                       {new Date(p.updatedAt).toLocaleString(undefined, {
                         month: 'short',
                         day: 'numeric',
@@ -275,7 +275,7 @@ const Home: NextPage = () => {
                       downloadJSON(`edrums-${slug(p.name || p.id)}.json`, toBackup([p]))
                     }
                   >
-                    <PixelText text="↓" className="h-5 md:h-7 w-auto" />
+                    <PixelText text="↓" className="h-3 md:h-4 w-auto" />
                   </button>
                   <button
                     className={clsx(
@@ -294,7 +294,7 @@ const Home: NextPage = () => {
                       }
                     }}
                   >
-                    <PixelText text="X" className="h-5 md:h-7 w-auto" />
+                    <PixelText text="X" className="h-3 md:h-4 w-auto" />
                   </button>
                 </li>
               ))}
@@ -302,7 +302,7 @@ const Home: NextPage = () => {
           )}
         </section>
 
-        <p className="hidden portrait:block p-4 text-2xl text-neutral-400">
+        <p className="hidden portrait:block p-4 text-sm text-neutral-500">
           Holding your phone upright hides some controls. Turn it sideways for
           the full editor.
         </p>
