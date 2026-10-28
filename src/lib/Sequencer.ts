@@ -22,12 +22,12 @@ import {
 } from '../state/track';
 import { Config } from '../config';
 
-// a dotted 8th echo, the classic syncopated repeat
-const delayTime = (bpm: number) => (60 / bpm) * 0.75;
+// a half-note echo, so every repeat lands on the beat
+const delayTime = (bpm: number) => (60 / bpm) * 2;
 
 // 0-100 controls to send gains; echoes at full send sit a bit under the dry hit
 const reverbLevel = (value: number) => value / 100;
-const delayLevel = (value: number) => (value / 100) * 0.7;
+const delayLevel = (value: number) => (value / 100) * 0.85;
 
 export interface SequencerOpts {
   initialTracks?: SerializedTrack[];
@@ -69,7 +69,7 @@ export class Sequencer {
     this.delayChain = new Tone.FeedbackDelay({
       delayTime: delayTime(SIG_BPM.value),
       maxDelay: delayTime(Config.MIN_BPM),
-      feedback: 0.35,
+      feedback: 0.45,
       wet: 1,
     });
     this.reverbSend = new Tone.Gain(reverbLevel(SIG_REVERB.value));
