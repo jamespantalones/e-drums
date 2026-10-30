@@ -325,11 +325,6 @@ const Home: NextPage = () => {
               </ul>
             )}
           </section>
-
-          <p className="hidden portrait:block p-4 text-sm text-neutral-500">
-            Holding your phone upright hides some controls. Turn it sideways for
-            the full editor.
-          </p>
         </div>
       </main>
 
