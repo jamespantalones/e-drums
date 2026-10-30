@@ -16,7 +16,7 @@ export function TempoInput({
         onChange(parseInt(ev.target.value, 10));
       }
     },
-    [onChange]
+    [onChange],
   );
 
   return (

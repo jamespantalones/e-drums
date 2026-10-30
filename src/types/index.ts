@@ -90,6 +90,7 @@ export type AudioContextReturnType = {
     incrementBpm: () => void;
     decrementBpm: () => void;
     createTrack: () => void;
+    removeLastTrack: () => void;
     repitchTick: (
       id: string,
       index: number,

@@ -37,7 +37,7 @@ import {
 } from '../state/track';
 
 const AudioContext = createContext<AudioContextReturnType | undefined>(
-  undefined
+  undefined,
 );
 
 export function AudioContextProvider({ children }: { children: ReactNode }) {
@@ -63,8 +63,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
             id: data.id,
           });
         });
-      }
-      else {
+      } else {
         throw new Error('No data passed');
       }
 
@@ -92,20 +91,32 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     destroySignals();
   }, []);
 
+  // newest last; tracks can be reordered, so their position doesn't say
+  const added = useRef<string[]>([]);
+
   const createTrack = useCallback(async () => {
-    await SIG_SEQUENCER.value?.addNewRhythm(
+    const track = await SIG_SEQUENCER.value?.addNewRhythm(
       generateTrack(
         SIG_TRACKS.value.length,
-        SIG_TRACKS.value.flatMap((t) => t.instrument?.sound.name ?? [])
-      )
+        SIG_TRACKS.value.flatMap((t) => t.instrument?.sound.name ?? []),
+      ),
     );
+    if (track) added.current.push(track.id);
+  }, []);
+
+  // the newest track added this session, else the bottom one
+  const removeLastTrack = useCallback(() => {
+    const ids = new Set(SIG_TRACKS.value.map((t) => t.id));
+    added.current = added.current.filter((id) => ids.has(id));
+    const id = added.current.pop() ?? SIG_TRACKS.value.at(-1)?.id;
+    if (id) SIG_SEQUENCER.value?.deleteTrack(id);
   }, []);
 
   const repitchTick = useCallback(
     (id: string, index: number, type: 'INCREMENT' | 'DECREMENT') => {
       SIG_SEQUENCER.value?.repitchTick(id, index, type);
     },
-    []
+    [],
   );
 
   const toggleTick = useCallback((id: string, index: number) => {
@@ -121,7 +132,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       markChanged();
       return v;
     },
-    []
+    [],
   );
 
   const clear = useCallback(() => {
@@ -165,6 +176,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       incrementBpm,
       decrementBpm,
       createTrack,
+      removeLastTrack,
       repitchTick,
       toggleTick,
       setTrackVal,
@@ -181,7 +193,7 @@ export function useAudioContext() {
 
   if (context === undefined) {
     throw new Error(
-      `useAudioContext must be used within an AudioContextProvider`
+      `useAudioContext must be used within an AudioContextProvider`,
     );
   }
 

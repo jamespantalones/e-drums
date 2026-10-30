@@ -1,0 +1,35 @@
+.hint {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  border: 0;
+  padding: 5px 7px 4px;
+  max-width: min(240px, calc(100vw - 16px));
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-family: var(--font-mono), monospace;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+  transform-origin: top;
+  animation: squish-in 120ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.above {
+  transform-origin: bottom;
+}
+
+@keyframes squish-in {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hint {
+    animation: none;
+  }
+}

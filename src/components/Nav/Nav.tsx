@@ -6,6 +6,7 @@ import { Config } from '../../config';
 import Link from 'next/link';
 import clsx from 'clsx';
 import {
+  SIG_BPM,
   SIG_INITIALIZED,
   SIG_NAME,
   SIG_PLAY_STATE,
@@ -21,6 +22,8 @@ import {
 } from '../../state/ui';
 import { downloadJSON, slug, toBackup } from '../../lib/backup';
 import { dialogStyles } from '../Dialog/ConfirmDialog';
+import { useHotKeys, useKeyLabel } from '../../hooks/useHotKeys';
+import { ShortcutsDialog } from './Shortcuts';
 
 function NavButton({
   label,
@@ -28,22 +31,26 @@ function NavButton({
   onClick,
   disabled,
   active,
-  wide,
+  large,
   onPress,
+  shortcut,
 }: {
   label: string;
   text: string;
   onClick?: () => void;
   disabled?: boolean;
   active?: boolean;
-  wide?: boolean;
+  /** a bigger glyph, for play/stop */
+  large?: boolean;
   /** fires on press rather than release; keyboard still uses click */
   onPress?: () => void;
+  /** shown in the hint, already formatted */
+  shortcut?: string;
 }) {
   return (
     <button
       type="button"
-      title={label}
+      title={shortcut ? `${label} (${shortcut})` : label}
       aria-label={label}
       aria-pressed={active}
       onPointerDown={
@@ -60,16 +67,12 @@ function NavButton({
       className={clsx(
         styles.cell,
         styles.button,
-        text.length === 1 && (wide ? styles.transport : styles.icon),
+        styles.icon,
+        large && styles.transport,
         active && styles.active,
       )}
     >
-      <PixelText
-        text={text}
-        className={
-          text.length === 1 ? 'h-2.5 md:h-3 w-auto' : 'h-2 md:h-2.5 w-auto'
-        }
-      />
+      <PixelText text={text} className="h-2.5 md:h-3 w-auto" />
     </button>
   );
 }
@@ -138,33 +141,46 @@ function TitleButton({ save }: { save: () => void }) {
   );
 }
 
-/** Save, with a menu for downloading the project */
-function SaveMenu({
+/** Everything that doesn't need a button of its own; the project autosaves */
+function MoreMenu({
   save,
   download,
+  removeTrack,
+  showShortcuts,
   disabled,
 }: {
   save: () => void;
   download: () => void;
+  /** undefined when there's no track to remove */
+  removeTrack?: () => void;
+  showShortcuts: () => void;
   disabled: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
   const root = React.useRef<HTMLDivElement>(null);
+
+  useHotKeys({
+    // autosave makes this redundant, but it keeps the browser's own
+    // save-page dialog away
+    'Mod+s': {
+      inFields: true,
+      handler: () => {
+        if (!disabled) save();
+      },
+    },
+    'Mod+Shift+s': () => {
+      if (!disabled) download();
+    },
+    ...(open && { Escape: () => setOpen(false) }),
+  });
 
   React.useEffect(() => {
     if (!open) return;
     function onPointer(ev: PointerEvent) {
       if (!root.current?.contains(ev.target as Node)) setOpen(false);
     }
-    function onKey(ev: KeyboardEvent) {
-      if (ev.key === 'Escape') setOpen(false);
-    }
     window.addEventListener('pointerdown', onPointer);
-    window.addEventListener('keydown', onKey);
-    return () => {
-      window.removeEventListener('pointerdown', onPointer);
-      window.removeEventListener('keydown', onKey);
-    };
+    return () => window.removeEventListener('pointerdown', onPointer);
   }, [open]);
 
   function choose(action: () => void) {
@@ -176,21 +192,12 @@ function SaveMenu({
     <div ref={root} className={clsx(styles.cell, styles.split)}>
       <button
         type="button"
-        title="Save"
-        aria-label="Save"
-        onClick={save}
-        className={clsx(styles.cell, styles.button)}
-      >
-        <PixelText text="Save" className="h-2 md:h-2.5 w-auto" />
-      </button>
-      <button
-        type="button"
-        title="More save options"
-        aria-label="More save options"
+        title="More"
+        aria-label="More"
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className={clsx(styles.cell, styles.button, styles.caret, {
+        className={clsx(styles.cell, styles.button, styles.icon, {
           [styles.active]: open,
         })}
       >
@@ -199,13 +206,6 @@ function SaveMenu({
 
       {open && (
         <div role="menu" className={styles.menu}>
-          <button role="menuitem" type="button" onClick={() => choose(save)}>
-            <PixelText
-              text="Save"
-              label="Save"
-              className="h-2 md:h-2.5 w-auto"
-            />
-          </button>
           <button
             role="menuitem"
             type="button"
@@ -215,6 +215,29 @@ function SaveMenu({
             <PixelText
               text="Download file"
               label="Download file"
+              className="h-2 md:h-2.5 w-auto"
+            />
+          </button>
+          <button
+            role="menuitem"
+            type="button"
+            onClick={() => removeTrack && choose(removeTrack)}
+            disabled={!removeTrack}
+          >
+            <PixelText
+              text="Remove last track"
+              label="Remove last track"
+              className="h-2 md:h-2.5 w-auto"
+            />
+          </button>
+          <button
+            role="menuitem"
+            type="button"
+            onClick={() => choose(showShortcuts)}
+          >
+            <PixelText
+              text="Shortcuts"
+              label="Shortcuts"
               className="h-2 md:h-2.5 w-auto"
             />
           </button>
@@ -234,6 +257,8 @@ export function Nav({
   useSignals();
 
   const { methods } = useAudioContext();
+  const keyLabel = useKeyLabel();
+  const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
 
   const playing = SIG_PLAY_STATE.value === SequencerPlayState.STARTED;
   const controlsOpen = SIG_CONTROLS_OPEN.value;
@@ -258,15 +283,54 @@ export function Nav({
     methods.play();
   }
 
+  const canAddTrack =
+    SIG_INITIALIZED.value && SIG_TRACKS.value.length < Config.MAX_TRACKS;
+
+  const canRemoveTrack = SIG_INITIALIZED.value && SIG_TRACKS.value.length > 0;
+
+  function nudgeTempo(by: number) {
+    SIG_BPM.value = Math.min(
+      Config.MAX_BPM,
+      Math.max(Config.MIN_BPM, SIG_BPM.value + by),
+    );
+  }
+
+  useHotKeys({
+    // beats activating whichever button has focus
+    Space: () => {
+      if (SIG_INITIALIZED.value) togglePlay();
+    },
+    t: () => {
+      SIG_EDIT_PITCH.value = !editPitch;
+    },
+    ...(editPitch && {
+      Escape: () => {
+        SIG_EDIT_PITCH.value = false;
+      },
+    }),
+    c: () => {
+      if (!SIG_PORTRAIT_PHONE.value) SIG_CONTROLS_OPEN.value = !controlsOpen;
+    },
+    '[': { repeat: true, handler: () => nudgeTempo(-1) },
+    ']': { repeat: true, handler: () => nudgeTempo(1) },
+    'Ctrl+n': () => {
+      if (canAddTrack) methods.createTrack();
+    },
+    'Ctrl+Backspace': () => {
+      if (canRemoveTrack) methods.removeLastTrack();
+    },
+    'Shift+?': () => setShortcutsOpen(true),
+  });
+
   return (
-    <nav className={styles.nav}>
+    <nav className={styles.nav} style={{ viewTransitionName: 'nav' }}>
       <Link
         href="/"
         className={clsx(styles.cell, styles.button, styles.logo)}
         onClick={() => methods.stop()}
       >
         <h1 className="!transform-none not-italic text-[15px] leading-none flex">
-          <Logo />
+          <Logo transitionName="wordmark" />
         </h1>
       </Link>
 
@@ -280,7 +344,8 @@ export function Nav({
         text={playing ? '■' : '▶'}
         onPress={togglePlay}
         active={playing}
-        wide
+        shortcut={keyLabel('Space')}
+        large
       />
       {!SIG_PORTRAIT_PHONE.value && (
         <NavButton
@@ -290,6 +355,7 @@ export function Nav({
             SIG_CONTROLS_OPEN.value = !controlsOpen;
           }}
           active={controlsOpen}
+          shortcut={keyLabel('c')}
         />
       )}
       <NavButton
@@ -299,20 +365,25 @@ export function Nav({
           SIG_EDIT_PITCH.value = !editPitch;
         }}
         active={editPitch}
+        shortcut={keyLabel('t')}
       />
       <NavButton
         label="Add track"
-        text="+ Trk"
+        text="+"
         onClick={methods.createTrack}
-        disabled={
-          SIG_TRACKS.value.length === Config.MAX_TRACKS ||
-          !SIG_INITIALIZED.value
-        }
+        disabled={!canAddTrack}
+        shortcut={keyLabel('Ctrl+n')}
       />
-      <SaveMenu
+      <MoreMenu
         save={save}
         download={download}
+        removeTrack={canRemoveTrack ? methods.removeLastTrack : undefined}
+        showShortcuts={() => setShortcutsOpen(true)}
         disabled={!SIG_INITIALIZED.value}
+      />
+      <ShortcutsDialog
+        open={shortcutsOpen}
+        onClose={() => setShortcutsOpen(false)}
       />
     </nav>
   );

@@ -1,7 +1,5 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import { pixelsFor } from '../Logo/bitmap';
-import { PIXEL } from '../Logo/geometry';
 import {
   canAutoplay,
   preloadVoices,
@@ -9,12 +7,18 @@ import {
   stopSpeaking,
   unlockAudio,
 } from './sound';
+import {
+  SQUISH,
+  fitScale,
+  prefersReducedMotion,
+  stretchClass,
+  useWarp,
+} from '../Logo/StretchText';
 import styles from './Intro.module.css';
 
-const WORD = pixelsFor('EDRUMS');
+const WORD = 'EDRUMS';
 const LIT = 'var(--color-foreground)';
 const OFF = 'var(--color-muted)';
-const MORPH_MS = 500;
 
 type Phase = 'booting' | 'waiting' | 'playing' | 'leaving';
 
@@ -32,8 +36,22 @@ export function Intro({
   const [color, setColor] = React.useState(LIT);
   const cancelled = React.useRef(false);
   const started = React.useRef(false);
-  const word = React.useRef<SVGSVGElement>(null);
-  const [morph, setMorph] = React.useState<React.CSSProperties>();
+  const box = React.useRef<HTMLDivElement>(null);
+  const word = React.useRef<HTMLSpanElement>(null);
+  const [fill, setFill] = React.useState<string>();
+  const warp = useWarp();
+
+  // stretch the text's natural box to fill the screen
+  React.useLayoutEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const fit = () => word.current && setFill(fitScale(el, word.current));
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    document.fonts?.ready.then(fit);
+    return () => ro.disconnect();
+  }, []);
 
   const finish = React.useCallback(async () => {
     if (cancelled.current) return;
@@ -41,22 +59,31 @@ export function Intro({
     stopSpeaking();
     setColor(LIT);
 
-    // FLIP the stretched intro word onto the page's wordmark, so when the
-    // intro unmounts the logo is already where it lands
-    const from = word.current?.getBoundingClientRect();
-    const to = target?.current?.getBoundingClientRect();
-    if (from && to && to.width > 0 && to.height > 0) {
-      setMorph({
-        transform: `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${to.width / from.width}, ${to.height / from.height})`,
-      });
-    }
     setPhase('leaving');
-    await sleep(MORPH_MS);
+
+    // squash the stretched intro word onto the page's wordmark, so when the
+    // intro unmounts the logo is already where it lands
+    const from = box.current?.getBoundingClientRect();
+    const w = word.current;
+    const to = target?.current?.getBoundingClientRect();
+    if (from && w && to && to.width > 0 && to.height > 0) {
+      w.animate(
+        {
+          transform: `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${to.width / w.offsetWidth}, ${to.height / w.offsetHeight})`,
+        },
+        {
+          ...SQUISH,
+          duration: prefersReducedMotion() ? 0 : SQUISH.duration,
+          fill: 'forwards',
+        },
+      );
+    }
+    await sleep(SQUISH.duration);
     onDone();
   }, [onDone, target]);
 
   const play = React.useCallback(async () => {
-    if (started.current) return;
+    if (started.current || cancelled.current) return;
     started.current = true;
     setPhase('playing');
     await unlockAudio();
@@ -109,27 +136,25 @@ export function Intro({
       onPointerDown={() => finish()}
     >
       <h1 className="sr-only">e-drums</h1>
-      <svg
-        viewBox={`0 0 ${WORD.width} ${WORD.height}`}
-        preserveAspectRatio="none"
-        ref={word}
-        className={styles.word}
-        style={{ color, ...morph }}
-        aria-hidden
-      >
-        {WORD.pixels.map(({ x, y }) => (
-          <rect
-            key={`${x}-${y}`}
-            x={x + PIXEL.inset}
-            y={y + PIXEL.inset}
-            width={PIXEL.size}
-            height={PIXEL.size}
-            fill="currentColor"
-            className={styles.pixel}
-            style={{ animationDelay: `${x * 16 + ((x * 7 + y * 13) % 5) * 30}ms` }}
-          />
-        ))}
-      </svg>
+      <div ref={box} className={styles.word}>
+        {warp.defs}
+        <span
+          ref={word}
+          className={clsx(stretchClass, styles.text)}
+          style={{ color, transform: fill, filter: warp.filter }}
+          aria-hidden
+        >
+          {Array.from(WORD).map((char, i) => (
+            <span
+              key={i}
+              className={styles.pixel}
+              style={{ animationDelay: `${i * 90}ms` }}
+            >
+              {char}
+            </span>
+          ))}
+        </span>
+      </div>
 
       <div className={styles.footer}>
         {phase === 'waiting' ? (

@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { pixelsFor } from './bitmap';
 import { PIXEL, markPixels } from './geometry';
+import { StretchText } from './StretchText';
 
 /**
  * Text drawn on the LED grid used by the intro screen.
@@ -63,21 +64,38 @@ export function LogoMark({ className }: { className?: string }) {
   );
 }
 
+/** Stretched font wordmark, 5:1 like the old pixel one; size it by width or height */
 export function Wordmark({
   className,
-  stretch,
+  transitionName,
 }: {
   className?: string;
-  stretch?: boolean;
+  /** view-transition-name, to morph into the wordmark on another page */
+  transitionName?: string;
 }) {
-  return <PixelText text="EDRUMS" className={className} stretch={stretch} />;
+  return (
+    <StretchText
+      text="EDRUMS"
+      className={clsx('aspect-[5/1]', className)}
+      transitionName={transitionName}
+    />
+  );
 }
 
 /** Wordmark sized by font-size */
-export function Logo({ className }: { className?: string }) {
+export function Logo({
+  className,
+  transitionName,
+}: {
+  className?: string;
+  transitionName?: string;
+}) {
   return (
     <span className={clsx('inline-block', className)}>
-      <Wordmark className="block h-[1em] w-auto" />
+      <Wordmark
+        className="block h-[1em] w-auto"
+        transitionName={transitionName}
+      />
       <span className="sr-only">e-drums</span>
     </span>
   );

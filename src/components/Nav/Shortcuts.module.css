@@ -1,0 +1,17 @@
+.list {
+  @apply grid items-center gap-x-4 gap-y-2 text-sm;
+  grid-template-columns: auto 1fr;
+  dd {
+    @apply text-neutral-400;
+  }
+}
+
+.keys {
+  @apply flex gap-1;
+  kbd {
+    @apply inline-flex items-center justify-center border border-white px-1.5 text-xs leading-none;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    font-family: inherit;
+  }
+}

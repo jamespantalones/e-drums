@@ -174,6 +174,7 @@ export function Edit({
                 >
                   <PixelText text="X" className="h-2 w-auto" />
                 </button>
+                <ReorderIcon dragControls={dragControls} cell />
               </div>
             </section>
 

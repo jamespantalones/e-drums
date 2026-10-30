@@ -56,7 +56,10 @@ export function Footer() {
   const open = SIG_FOOTER_OPEN.value;
 
   return (
-    <footer className={clsx(styles.footer, !open && styles.collapsed)}>
+    <footer
+      className={clsx(styles.footer, !open && styles.collapsed)}
+      style={{ viewTransitionName: 'footer' }}
+    >
       <button
         type="button"
         className={styles.tab}

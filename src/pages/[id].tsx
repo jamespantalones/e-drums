@@ -8,7 +8,6 @@ import { useAudioContext } from '../contexts/AudioContext';
 import { useOfflineStorage } from '../contexts/OfflineStorageContext';
 import { useRouter } from 'next/router';
 import isMobile from 'is-mobile';
-import { useHotKeys } from '../hooks/useHotKeys';
 import { useAutosave } from '../hooks/useAutosave';
 import { SIG_BPM, SIG_NAME, SIG_SEQUENCER, SIG_TRACKS } from '../state/track';
 import { Config } from '../config';
@@ -17,16 +16,19 @@ import { Footer } from '../components/Nav/Footer';
 import { Input } from '../components/inputs/input';
 import Link from 'next/link';
 import { PixelText } from '../components/Logo/Logo';
-import { loadUiPrefs } from '../state/ui';
+import { SIG_PORTRAIT, loadUiPrefs } from '../state/ui';
+import { usePageReady } from '../lib/pageTransition';
 
 const Track: NextPage = () => {
   useSignals();
   const [loaded, setLoaded] = React.useState(false);
   const [missing, setMissing] = React.useState(false);
 
-  const {
-    query: { id },
-  } = useRouter();
+  // kept from the first render: during a page transition this page briefly
+  // renders against the next route, where there's no id to load or save to
+  const { query } = useRouter();
+  const [id, setId] = React.useState(query.id as string | undefined);
+  if (!id && query.id) setId(query.id as string);
 
   const { initialize, methods } = useAudioContext();
 
@@ -45,6 +47,8 @@ const Track: NextPage = () => {
       updatedAt: new Date().toISOString(),
     });
   };
+
+  usePageReady(loaded || missing);
 
   React.useEffect(loadUiPrefs, []);
 
@@ -81,8 +85,6 @@ const Track: NextPage = () => {
     save();
   }
 
-  useHotKeys({ 'Meta+s': save, 'Ctrl+n': methods.createTrack });
-
   // declared before the unmount effect so its final save runs first,
   // while the sequencer state still exists
   useAutosave(save, loaded);
@@ -98,8 +100,8 @@ const Track: NextPage = () => {
     return (
       <main className="full-bleed min-h-screen bg-black text-white">
         <p className="border-b border-white p-4 md:p-6 text-3xl md:text-5xl leading-none">
-          No saved sequence called {id}. It may have been deleted, or saved
-          in another browser.
+          No saved sequence called {id}. It may have been deleted, or saved in
+          another browser.
         </p>
         <Link
           href="/"
@@ -133,9 +135,9 @@ const Track: NextPage = () => {
           title="Name"
         ></Input>
       </Nav>
-      <main>
+      <main style={{ viewTransitionName: 'editor' }}>
         <Reorder.Group
-          axis="y"
+          axis={SIG_PORTRAIT.value ? 'x' : 'y'}
           className="edit__area"
           onReorder={methods.reorderTracks}
           values={SIG_TRACKS.value}

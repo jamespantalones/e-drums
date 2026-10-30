@@ -18,13 +18,20 @@ export const SIG_EDIT_PITCH = signal(false);
 // upright phones always show the full track controls: collapsing there
 // saves no room, so the toggle is hidden and the saved choice ignored
 export const SIG_PORTRAIT_PHONE = signal(false);
+// tracks stack as columns rather than rows in any upright layout
+export const SIG_PORTRAIT = signal(false);
 
 const PORTRAIT_PHONE = '(max-width: 767px) and (orientation: portrait)';
+// there's room for the track controls on a desktop, so the editor always
+// opens with them showing; touch screens keep the remembered choice
+const DESKTOP = '(hover: hover) and (pointer: fine)';
 
 let loaded = false;
 
-/** Restore saved layout; call once on the client */
+/** Restore saved layout; call when the editor mounts */
 export function loadUiPrefs() {
+  const desktop = window.matchMedia(DESKTOP).matches;
+  if (desktop) SIG_CONTROLS_OPEN.value = true;
   if (loaded) return;
   loaded = true;
 
@@ -34,10 +41,16 @@ export function loadUiPrefs() {
     SIG_PORTRAIT_PHONE.value = ev.matches;
   });
 
+  const upright = window.matchMedia('(orientation: portrait)');
+  SIG_PORTRAIT.value = upright.matches;
+  upright.addEventListener('change', (ev) => {
+    SIG_PORTRAIT.value = ev.matches;
+  });
+
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
     if (typeof saved.footer === 'boolean') SIG_FOOTER_OPEN.value = saved.footer;
-    if (typeof saved.controls === 'boolean') {
+    if (!desktop && typeof saved.controls === 'boolean') {
       SIG_CONTROLS_OPEN.value = saved.controls;
     }
   } catch {

@@ -14,18 +14,18 @@
 }
 
 .word {
+  position: relative;
   flex: 1;
   width: 100%;
   min-height: 0;
-  transform-origin: 0 0;
-  transition: transform 500ms cubic-bezier(0.7, 0, 0.2, 1);
+  overflow: visible;
 }
 
 /* the word flies onto the page logo while the backdrop fades away */
 .leaving {
   pointer-events: none;
   cursor: default;
-  animation: fade 500ms cubic-bezier(0.7, 0, 0.2, 1) forwards;
+  animation: fade 600ms cubic-bezier(0.7, 0, 0.2, 1) forwards;
 }
 
 .leaving .footer {
@@ -95,7 +95,5 @@
   .cursor {
     animation: none;
   }
-  .word {
-    transition: none;
-  }
+
 }

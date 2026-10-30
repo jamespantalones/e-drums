@@ -12,7 +12,36 @@
   svg {
     @apply h-full w-auto;
   }
+  /* a fingertip needs more than the 16px icon */
+  @media (pointer: coarse) {
+    position: relative;
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -10px;
+    }
+  }
   @media (orientation: portrait) {
+    @apply hidden;
+  }
+}
+
+/* upright layouts: sits beside mute, in the slot the delete button has
+   when the tracks are rows */
+.cell {
+  @apply flex items-center justify-center w-full h-7 ml-1;
+  @apply cursor-grab;
+  touch-action: none;
+  color: var(--color-text);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.45);
+  transition: background-color 80ms, color 80ms;
+  svg {
+    @apply h-3 w-auto;
+  }
+  &:active {
+    @apply cursor-grabbing bg-white text-black;
+  }
+  @media (orientation: landscape) {
     @apply hidden;
   }
 }

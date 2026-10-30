@@ -140,195 +140,197 @@ const Home: NextPage = () => {
               ref={wordmark}
               className={clsx('block', showIntro && 'invisible')}
             >
-              <Wordmark className="block h-auto w-full" />
+              <Wordmark className="w-full" transitionName="wordmark" />
               <span className="sr-only">e-drums</span>
             </Link>
           </h1>
         </header>
-
-        <div className="flex items-stretch border-b border-white">
-          <p className="flex-1 px-4 py-3 md:px-6 md:py-4 text-base md:text-lg text-neutral-400">
-            Euclidean polyrhythm machine.
-          </p>
-          <Link
-            href="/about"
-            className={clsx(
-              'flex items-center border-l border-white px-4 md:px-6',
-              INVERT,
-              FOCUS,
-            )}
-          >
-            <PixelText
-              text="About"
-              label="About"
-              className="h-3 md:h-4 w-auto"
-            />
-          </Link>
-        </div>
-
-        {/* a step-sequencer row: New takes four cells, then steps, then the
-            file buttons (their own row on phones) */}
-        <div className="seq grid grid-cols-8 md:grid-cols-16 gap-px bg-white border-b border-white">
-          <button
-            onClick={createNew}
-            className={clsx(
-              'col-span-4 flex items-center justify-center bg-white text-black hover:bg-black hover:text-white active:bg-white active:text-black',
-              FOCUS,
-            )}
-          >
-            <PixelText
-              text="+ New"
-              label="New sequence"
-              className="h-7 md:h-11 w-auto"
-            />
-          </button>
-          {STEPS.map((lit, i) => (
-            <div
-              key={i}
-              aria-hidden
-              className={clsx(
-                'seq-step aspect-square bg-black flex items-center justify-center',
-                i >= 4 && 'hidden md:flex',
-              )}
-              style={{ '--i': i } as React.CSSProperties}
-            >
-              <div
-                className={clsx(
-                  'seq-dot w-1/4 h-1/4',
-                  lit ? 'seq-lit bg-white' : 'border border-neutral-700',
-                )}
-              />
-            </div>
-          ))}
-
-          {/* a file backup outlives cleared browser storage */}
-          <button
-            className={clsx(FILE_CELL, INVERT, FOCUS)}
-            title="Import sequences from a backup file"
-            onClick={() => fileInput.current?.click()}
-          >
-            <PixelText
-              text="Import"
-              label="Import"
-              className="h-3 md:h-4 w-auto"
-            />
-          </button>
-          <input
-            ref={fileInput}
-            type="file"
-            accept=".json,application/json"
-            multiple
-            hidden
-            onChange={importFiles}
-          />
-          <button
-            className={clsx(
-              FILE_CELL,
-              'disabled:text-neutral-600 disabled:hover:bg-black',
-              INVERT,
-              FOCUS,
-            )}
-            title="Download every sequence as a backup file"
-            onClick={exportAll}
-            disabled={!projects.length}
-          >
-            <PixelText
-              text="Export"
-              label="Export all"
-              className="h-3 md:h-4 w-auto"
-            />
-          </button>
-        </div>
-
-        <section>
-          <h2 className="flex items-center gap-3 md:gap-4 border-b border-white px-4 py-3 md:px-6">
-            <PixelText
-              text="Saved"
-              label="Saved"
-              className="h-3 md:h-4 w-auto"
-            />
-            <PixelText
-              text={String(projects.length).padStart(2, '0')}
-              label={`${projects.length} sequences`}
-              className="h-3 md:h-4 w-auto text-neutral-500"
-            />
-          </h2>
-
-          {projects.length === 0 ? (
-            <p className="p-4 md:p-6 text-base md:text-lg text-neutral-500">
-              Nothing saved yet.
+        {/* slides in from the bottom on page transitions */}
+        <div style={{ viewTransitionName: 'page' }}>
+          <div className="flex items-stretch border-b border-white">
+            <p className="flex-1 px-4 py-3 md:px-6 md:py-4 text-base md:text-lg text-neutral-400">
+              Euclidean polyrhythm machine.
             </p>
-          ) : (
-            <ul>
-              {projects.map((p) => (
-                <li
-                  key={p.id}
-                  className={clsx(
-                    'flex items-stretch border-b border-white',
-                    INVERT,
-                    '[&:has(:focus-visible)]:bg-white [&:has(:focus-visible)]:text-black',
-                  )}
-                >
-                  <Link
-                    href={`/${p.id}`}
-                    className={clsx(
-                      'flex flex-1 min-w-0 flex-col md:flex-row md:items-center gap-2 md:gap-6 p-4 md:px-6',
-                      FOCUS,
-                    )}
-                  >
-                    <span className="flex-1 min-w-0 overflow-hidden">
-                      <PixelText
-                        text={p.name || 'Untitled'}
-                        label={p.name || 'Untitled'}
-                        className="h-4 md:h-6 w-auto max-w-none"
-                      />
-                    </span>
-                    <span className="shrink-0 text-sm md:text-base leading-none text-neutral-400">
-                      {new Date(p.updatedAt).toLocaleString(undefined, {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: '2-digit',
-                      })}
-                    </span>
-                  </Link>
-                  <button
-                    className={clsx(
-                      'shrink-0 border-l border-current px-5 md:px-8 hover:bg-black hover:text-white focus-visible:bg-black focus-visible:text-white',
-                      FOCUS,
-                    )}
-                    aria-label={`Download ${p.name}`}
-                    title="Download"
-                    onClick={() =>
-                      downloadJSON(
-                        `edrums-${slug(p.name || p.id)}.json`,
-                        toBackup([p]),
-                      )
-                    }
-                  >
-                    <PixelText text="↓" className="h-3 md:h-4 w-auto" />
-                  </button>
-                  <button
-                    className={clsx(
-                      'shrink-0 border-l border-current px-5 md:px-8 hover:bg-danger hover:text-white focus-visible:bg-danger focus-visible:text-white',
-                      FOCUS,
-                    )}
-                    aria-label={`Delete ${p.name}`}
-                    title="Delete"
-                    onClick={() => setDoomed(p)}
-                  >
-                    <PixelText text="X" className="h-3 md:h-4 w-auto" />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+            <Link
+              href="/about"
+              className={clsx(
+                'flex items-center border-l border-white px-4 md:px-6',
+                INVERT,
+                FOCUS,
+              )}
+            >
+              <PixelText
+                text="About"
+                label="About"
+                className="h-3 md:h-4 w-auto"
+              />
+            </Link>
+          </div>
 
-        <p className="hidden portrait:block p-4 text-sm text-neutral-500">
-          Holding your phone upright hides some controls. Turn it sideways for
-          the full editor.
-        </p>
+          {/* a step-sequencer row: New takes four cells, then steps, then the
+              file buttons (their own row on phones) */}
+          <div className="seq grid grid-cols-8 md:grid-cols-16 gap-px bg-white border-b border-white">
+            <button
+              onClick={createNew}
+              className={clsx(
+                'col-span-4 flex items-center justify-center bg-white text-black hover:bg-black hover:text-white active:bg-white active:text-black',
+                FOCUS,
+              )}
+            >
+              <PixelText
+                text="+ New"
+                label="New sequence"
+                className="h-7 md:h-11 w-auto"
+              />
+            </button>
+            {STEPS.map((lit, i) => (
+              <div
+                key={i}
+                aria-hidden
+                className={clsx(
+                  'seq-step aspect-square bg-black flex items-center justify-center',
+                  i >= 4 && 'hidden md:flex',
+                )}
+                style={{ '--i': i } as React.CSSProperties}
+              >
+                <div
+                  className={clsx(
+                    'seq-dot w-1/4 h-1/4',
+                    lit ? 'seq-lit bg-white' : 'border border-neutral-700',
+                  )}
+                />
+              </div>
+            ))}
+
+            {/* a file backup outlives cleared browser storage */}
+            <button
+              className={clsx(FILE_CELL, INVERT, FOCUS)}
+              title="Import sequences from a backup file"
+              onClick={() => fileInput.current?.click()}
+            >
+              <PixelText
+                text="Import"
+                label="Import"
+                className="h-3 md:h-4 w-auto"
+              />
+            </button>
+            <input
+              ref={fileInput}
+              type="file"
+              accept=".json,application/json"
+              multiple
+              hidden
+              onChange={importFiles}
+            />
+            <button
+              className={clsx(
+                FILE_CELL,
+                'disabled:text-neutral-600 disabled:hover:bg-black',
+                INVERT,
+                FOCUS,
+              )}
+              title="Download every sequence as a backup file"
+              onClick={exportAll}
+              disabled={!projects.length}
+            >
+              <PixelText
+                text="Export"
+                label="Export all"
+                className="h-3 md:h-4 w-auto"
+              />
+            </button>
+          </div>
+
+          <section>
+            <h2 className="flex items-center gap-3 md:gap-4 border-b border-white px-4 py-3 md:px-6">
+              <PixelText
+                text="Saved"
+                label="Saved"
+                className="h-3 md:h-4 w-auto"
+              />
+              <PixelText
+                text={String(projects.length).padStart(2, '0')}
+                label={`${projects.length} sequences`}
+                className="h-3 md:h-4 w-auto text-neutral-500"
+              />
+            </h2>
+
+            {projects.length === 0 ? (
+              <p className="p-4 md:p-6 text-base md:text-lg text-neutral-500">
+                Nothing saved yet.
+              </p>
+            ) : (
+              <ul>
+                {projects.map((p) => (
+                  <li
+                    key={p.id}
+                    className={clsx(
+                      'flex items-stretch border-b border-white',
+                      INVERT,
+                      '[&:has(:focus-visible)]:bg-white [&:has(:focus-visible)]:text-black',
+                    )}
+                  >
+                    <Link
+                      href={`/${p.id}`}
+                      className={clsx(
+                        'flex flex-1 min-w-0 flex-col md:flex-row md:items-center gap-2 md:gap-6 p-4 md:px-6',
+                        FOCUS,
+                      )}
+                    >
+                      <span className="flex-1 min-w-0 overflow-hidden">
+                        <PixelText
+                          text={p.name || 'Untitled'}
+                          label={p.name || 'Untitled'}
+                          className="h-4 md:h-6 w-auto max-w-none"
+                        />
+                      </span>
+                      <span className="shrink-0 text-sm md:text-base leading-none text-neutral-400">
+                        {new Date(p.updatedAt).toLocaleString(undefined, {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: 'numeric',
+                          minute: '2-digit',
+                        })}
+                      </span>
+                    </Link>
+                    <button
+                      className={clsx(
+                        'shrink-0 border-l border-current px-5 md:px-8 hover:bg-black hover:text-white focus-visible:bg-black focus-visible:text-white',
+                        FOCUS,
+                      )}
+                      aria-label={`Download ${p.name}`}
+                      title="Download"
+                      onClick={() =>
+                        downloadJSON(
+                          `edrums-${slug(p.name || p.id)}.json`,
+                          toBackup([p]),
+                        )
+                      }
+                    >
+                      <PixelText text="↓" className="h-3 md:h-4 w-auto" />
+                    </button>
+                    <button
+                      className={clsx(
+                        'shrink-0 border-l border-current px-5 md:px-8 hover:bg-danger hover:text-white focus-visible:bg-danger focus-visible:text-white',
+                        FOCUS,
+                      )}
+                      aria-label={`Delete ${p.name}`}
+                      title="Delete"
+                      onClick={() => setDoomed(p)}
+                    >
+                      <PixelText text="X" className="h-3 md:h-4 w-auto" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <p className="hidden portrait:block p-4 text-sm text-neutral-500">
+            Holding your phone upright hides some controls. Turn it sideways for
+            the full editor.
+          </p>
+        </div>
       </main>
 
       <ConfirmDialog

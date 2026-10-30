@@ -37,15 +37,17 @@
   }
 }
 
-/* single-glyph transport buttons sit in square cells */
+/* every button is one square cell */
 .icon {
   @apply px-0 aspect-square;
 }
 
-/* play/stop gets a wider target where the bar has room */
-.transport {
-  @apply px-0;
-  width: calc(var(--bar-row) * 2);
+/* landscape phones squeeze the row to 29px, so keep touch targets 44px wide */
+@media (pointer: coarse) {
+  .icon {
+    aspect-ratio: auto;
+    width: max(44px, var(--bar-row));
+  }
 }
 
 .nav .button.transport svg {
@@ -88,7 +90,7 @@
   }
 }
 
-/* phones show the name as text; renaming lives in the Save menu */
+/* phones show the name as text; tapping it renames in a dialog */
 .title {
   @apply md:hidden block w-full h-full min-w-0 px-3 truncate text-left;
   font-size: 11px;
@@ -105,17 +107,8 @@
 
 /* phones, including landscape where the width passes md */
 @media (max-width: 767px), (max-height: 500px) {
-  .button:not(.icon) {
-    @apply px-3;
-  }
-  .button:not(.icon) svg {
-    @apply h-2;
-  }
   .icon svg {
     @apply h-2.5;
-  }
-  .nav .button.transport {
-    width: var(--bar-row);
   }
   .logo {
     h1 {
@@ -128,7 +121,7 @@
   }
 }
 
-/* Save plus a caret that opens the save menu */
+/* the caret that opens the more menu */
 .split {
   @apply relative;
   align-self: stretch;
@@ -137,10 +130,6 @@
   & > .cell {
     @apply self-stretch;
   }
-}
-
-.caret {
-  @apply px-3 md:px-4 self-stretch;
 }
 
 .menu {
