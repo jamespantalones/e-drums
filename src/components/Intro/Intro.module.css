@@ -5,8 +5,9 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
-    max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  padding: max(16px, env(safe-area-inset-top))
+    max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
   background: var(--color-bg);
   font-family: var(--font-mono), monospace;
   font-weight: 300;
@@ -69,12 +70,18 @@
   }
 }
 
+/* the squish scales from the top-left, like the page wordmark it lands on */
+.svg {
+  transform-origin: 0 0;
+}
+
+/* letters are SVG tspans, which take fill-opacity rather than opacity */
 @keyframes boot {
   from {
-    opacity: 0;
+    fill-opacity: 0;
   }
   to {
-    opacity: 1;
+    fill-opacity: 1;
   }
 }
 
@@ -95,5 +102,4 @@
   .cursor {
     animation: none;
   }
-
 }

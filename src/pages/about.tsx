@@ -5,11 +5,8 @@ const LINK =
   'underline decoration-2 underline-offset-4 hover:bg-white hover:text-black';
 
 const FACTS = [
-  'Works offline',
-  'Saves to your browser',
-  'No tracking',
-  'No third parties',
-  'No analytics',
+  'Works offline. Saves to your browser',
+  'No tracking. Cool sounds.',
 ];
 
 export default function About() {

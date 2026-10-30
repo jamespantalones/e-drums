@@ -7,13 +7,7 @@ import {
   stopSpeaking,
   unlockAudio,
 } from './sound';
-import {
-  SQUISH,
-  fitScale,
-  prefersReducedMotion,
-  stretchClass,
-  useWarp,
-} from '../Logo/StretchText';
+import { SQUISH, WarpedWord, prefersReducedMotion } from '../Logo/StretchText';
 import styles from './Intro.module.css';
 
 const WORD = 'EDRUMS';
@@ -37,21 +31,7 @@ export function Intro({
   const cancelled = React.useRef(false);
   const started = React.useRef(false);
   const box = React.useRef<HTMLDivElement>(null);
-  const word = React.useRef<HTMLSpanElement>(null);
-  const [fill, setFill] = React.useState<string>();
-  const warp = useWarp();
-
-  // stretch the text's natural box to fill the screen
-  React.useLayoutEffect(() => {
-    const el = box.current;
-    if (!el) return;
-    const fit = () => word.current && setFill(fitScale(el, word.current));
-    fit();
-    const ro = new ResizeObserver(fit);
-    ro.observe(el);
-    document.fonts?.ready.then(fit);
-    return () => ro.disconnect();
-  }, []);
+  const word = React.useRef<SVGSVGElement>(null);
 
   const finish = React.useCallback(async () => {
     if (cancelled.current) return;
@@ -63,13 +43,13 @@ export function Intro({
 
     // squash the stretched intro word onto the page's wordmark, so when the
     // intro unmounts the logo is already where it lands
-    const from = box.current?.getBoundingClientRect();
     const w = word.current;
+    const from = w?.getBoundingClientRect();
     const to = target?.current?.getBoundingClientRect();
-    if (from && w && to && to.width > 0 && to.height > 0) {
+    if (w && from && to && to.width > 0 && to.height > 0) {
       w.animate(
         {
-          transform: `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${to.width / w.offsetWidth}, ${to.height / w.offsetHeight})`,
+          transform: `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${to.width / from.width}, ${to.height / from.height})`,
         },
         {
           ...SQUISH,
@@ -137,23 +117,14 @@ export function Intro({
     >
       <h1 className="sr-only">e-drums</h1>
       <div ref={box} className={styles.word}>
-        {warp.defs}
-        <span
+        <WarpedWord
           ref={word}
-          className={clsx(stretchClass, styles.text)}
-          style={{ color, transform: fill, filter: warp.filter }}
-          aria-hidden
-        >
-          {Array.from(WORD).map((char, i) => (
-            <span
-              key={i}
-              className={styles.pixel}
-              style={{ animationDelay: `${i * 90}ms` }}
-            >
-              {char}
-            </span>
-          ))}
-        </span>
+          text={WORD}
+          className={styles.svg}
+          style={{ color }}
+          letterClassName={styles.pixel}
+          letterStyle={(i) => ({ animationDelay: `${i * 90}ms` })}
+        />
       </div>
 
       <div className={styles.footer}>

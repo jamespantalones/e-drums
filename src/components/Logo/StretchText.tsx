@@ -1,8 +1,5 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import styles from './StretchText.module.css';
-
-export const stretchClass = styles.text;
 
 export const SQUISH = {
   duration: 600,
@@ -13,21 +10,53 @@ export function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+// IBM Plex Mono at its natural size: every glyph advances 0.6em, and the
+// capitals stand 0.698em tall, so the box is trimmed to the letters
+const SIZE = 500;
+const ADVANCE = 0.6 * SIZE;
+const CAP = 0.698 * SIZE;
+
 /**
- * A rubbery bend through the letters. It works in the text's natural,
- * unscaled coordinates, so it stretches with the logo and every copy (intro,
- * pages, editor) warps identically and the squish transitions line up.
+ * Text stretched to fill its parent, ignoring aspect ratio, with a rubbery
+ * bend through the letters. It's SVG text so the warp filter renders at the
+ * size on screen (iOS drops filters on large HTML text) while its numbers
+ * stay in the text's natural coordinates, so every copy warps identically
+ * and the squish transitions line up.
  */
-export function useWarp() {
+export function WarpedWord({
+  text,
+  className,
+  style,
+  letterClassName,
+  letterStyle,
+  ref,
+}: {
+  text: string;
+  className?: string;
+  style?: React.CSSProperties;
+  letterClassName?: string;
+  letterStyle?: (index: number) => React.CSSProperties;
+  ref?: React.Ref<SVGSVGElement>;
+}) {
   const id = `warp${React.useId().replace(/[^\w-]/g, '')}`;
-  const defs = (
-    <svg width="0" height="0" className="absolute" aria-hidden>
+  const width = text.length * ADVANCE;
+
+  return (
+    <svg
+      ref={ref}
+      viewBox={`0 0 ${width} ${CAP}`}
+      preserveAspectRatio="none"
+      className={clsx('absolute inset-0 w-full h-full', className)}
+      style={{ overflow: 'visible', pointerEvents: 'none', ...style }}
+      aria-hidden
+    >
       <filter
         id={id}
-        x="-10%"
-        y="-20%"
-        width="120%"
-        height="140%"
+        filterUnits="userSpaceOnUse"
+        x={-0.1 * width}
+        y={-0.2 * CAP}
+        width={1.2 * width}
+        height={1.4 * CAP}
         colorInterpolationFilters="sRGB"
       >
         <feTurbulence
@@ -49,14 +78,35 @@ export function useWarp() {
           <feFuncA type="linear" slope={4} intercept={-1.5} />
         </feComponentTransfer>
       </filter>
+      <text
+        x={0}
+        y={CAP}
+        // holds the width even before the web font swaps in
+        textLength={width}
+        lengthAdjust="spacingAndGlyphs"
+        filter={`url(#${id})`}
+        fill="currentColor"
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontWeight: 700,
+          fontSize: SIZE,
+          letterSpacing: 0,
+        }}
+      >
+        {letterClassName || letterStyle
+          ? Array.from(text).map((char, i) => (
+              <tspan
+                key={i}
+                className={letterClassName}
+                style={letterStyle?.(i)}
+              >
+                {char}
+              </tspan>
+            ))
+          : text}
+      </text>
     </svg>
   );
-  return { defs, filter: `url(#${id})` };
-}
-
-/** scale that stretches `text` (natural size) to fill `box` exactly */
-export function fitScale(box: HTMLElement, text: HTMLElement) {
-  return `scale(${box.clientWidth / text.offsetWidth}, ${box.clientHeight / text.offsetHeight})`;
 }
 
 /** Font text stretched to fill its box, ignoring aspect ratio */
@@ -70,39 +120,13 @@ export function StretchText({
   /** view-transition-name, to morph into the same text on another page */
   transitionName?: string;
 }) {
-  const box = React.useRef<HTMLSpanElement>(null);
-  const inner = React.useRef<HTMLSpanElement>(null);
-  const [transform, setTransform] = React.useState<string>();
-  const warp = useWarp();
-
-  React.useLayoutEffect(() => {
-    const el = box.current;
-    if (!el) return;
-    const fit = () =>
-      inner.current && setTransform(fitScale(el, inner.current));
-    fit();
-    const ro = new ResizeObserver(fit);
-    ro.observe(el);
-    // the web font can swap in after first paint and change the natural size
-    document.fonts?.ready.then(fit);
-    return () => ro.disconnect();
-  }, []);
-
   return (
     <span
-      ref={box}
       className={clsx('relative block', className)}
       style={{ viewTransitionName: transitionName }}
       aria-hidden
     >
-      {warp.defs}
-      <span
-        ref={inner}
-        className={styles.text}
-        style={{ transform, filter: warp.filter }}
-      >
-        {text}
-      </span>
+      <WarpedWord text={text} />
     </span>
   );
 }
